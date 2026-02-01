@@ -5,8 +5,29 @@
 <div class="o-project-grid" data-behavior="oProjectGrid">
   <h3 class="f-body--em">{{ section.settings.title | default: 'Explore the gifts selection' }}</h3>
   <ul class="o-project-grid__inner">
-    {% for block in section.blocks %}
-      <li class="o-project-grid__item" {{ block.shopify_attributes }}>
+    {% comment %} Always show at least 4 items - use blocks if available, otherwise show placeholders {% endcomment %}
+    {% assign blocks_count = section.blocks.size %}
+    {% if blocks_count == 0 %}
+      {% comment %} If no blocks, create 4 default items {% endcomment %}
+      {% for i in (1..4) %}
+        <li class="o-project-grid__item">
+          <a href="#">
+            <div class="o-project-grid__img-wrapper">
+              <figure>
+                <div class="a-ratio-box a-ratio-box--1:1">
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+                <figcaption class="f-body--em">
+                  {% if i == 1 %}GIFTS FOR HER{% elsif i == 2 %}GIFTS FOR HIM{% elsif i == 3 %}HAUTE PARFUMERIE{% else %}BELTS{% endif %}
+                </figcaption>
+              </figure>
+            </div>
+          </a>
+        </li>
+      {% endfor %}
+    {% else %}
+      {% for block in section.blocks %}
+        <li class="o-project-grid__item" {{ block.shopify_attributes }}>
         <a href="{{ block.settings.link | default: '#' }}">
           <div class="o-project-grid__img-wrapper">
             <figure>
@@ -18,6 +39,8 @@
                     data-sizes="auto"
                     loading="lazy"
                   >
+                {% else %}
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
                 {% endif %}
               </div>
               <figcaption class="f-body--em">{{ block.settings.title }}</figcaption>
@@ -25,7 +48,8 @@
           </div>
         </a>
       </li>
-    {% endfor %}
+      {% endfor %}
+    {% endif %}
   </ul>
 </div>
 
