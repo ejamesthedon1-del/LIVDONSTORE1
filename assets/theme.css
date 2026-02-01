@@ -2718,6 +2718,70 @@ body {
   border-width: 0;
 }
 
+/* Cart Message Styles */
+.o-cart__message {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  text-align: center;
+  display: none;
+}
+
+.o-cart__message--success {
+  background: #f0f9f0;
+  color: #006400;
+  border: 1px solid #c3e6c3;
+}
+
+.o-cart__message--error {
+  background: #fff5f5;
+  color: #cc0000;
+  border: 1px solid #ffcccc;
+}
+
+/* Dynamic Checkout Buttons */
+.additional-checkout-buttons {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.additional-checkout-buttons > * {
+  margin-bottom: 0.5rem;
+}
+
+.additional-checkout-buttons > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Style Shopify's dynamic checkout buttons to match theme */
+.additional-checkout-buttons [data-shopify-buttoncontainer] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.additional-checkout-buttons iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Disabled button states */
+.o-cart__update-btn:disabled,
+.o-cart__checkout-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Loading state for cart items */
+.o-cart__item[style*="opacity: 0.5"] {
+  transition: opacity 0.3s ease;
+}
+
+.o-cart__item[style*="opacity: 0"] {
+  transition: opacity 0.3s ease;
+}
+
 @media (max-width: 768px) {
   .o-cart {
     padding: 1rem;

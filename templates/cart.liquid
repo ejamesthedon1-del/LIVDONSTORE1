@@ -64,9 +64,10 @@
                     
                     <div class="o-cart__item-remove">
                       <a 
-                        href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0"
+                        href="{{ routes.cart_change_url }}?line={{ forloop.index | plus: 1 }}&quantity=0"
                         class="o-cart__remove-link"
                         data-remove-item
+                        data-line-index="{{ forloop.index | plus: 1 }}"
                         aria-label="Remove {{ item.product.title }}"
                       >
                         Remove
@@ -97,14 +98,22 @@
                       UPDATE CART
                     </button>
                     
-                    <a 
-                      href="{{ routes.cart_url }}?checkout" 
+                    <button 
+                      type="submit" 
+                      name="checkout" 
                       class="a-btn o-cart__checkout-btn"
-                      data-checkout-link
+                      data-checkout-btn
                     >
                       CHECKOUT
-                    </a>
+                    </button>
                   </div>
+                  
+                  {% comment %} Shopify Dynamic Checkout Buttons (Apple Pay, Google Pay, etc.) {% endcomment %}
+                  {% if additional_checkout_buttons %}
+                    <div class="additional-checkout-buttons">
+                      {{ content_for_additional_checkout_buttons }}
+                    </div>
+                  {% endif %}
                   
                   <a href="{{ routes.all_products_collection_url }}" class="o-cart__continue-link f-body">
                     ← Continue shopping
@@ -129,30 +138,4 @@
   </div>
 </div>
 
-<script>
-  // Handle quantity updates
-  document.addEventListener('DOMContentLoaded', function() {
-    const quantityInputs = document.querySelectorAll('[data-quantity-input]');
-    const updateBtn = document.querySelector('[data-update-cart]');
-    const form = document.getElementById('cart-form');
-    
-    // Auto-update on quantity change (optional - can be removed if you prefer manual update)
-    quantityInputs.forEach(input => {
-      input.addEventListener('change', function() {
-        if (this.value < 0) this.value = 0;
-        // Optionally auto-submit or wait for update button
-      });
-    });
-    
-    // Handle remove links
-    const removeLinks = document.querySelectorAll('[data-remove-item]');
-    removeLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
-        // Let the link work normally, or add confirmation
-        if (!confirm('Remove this item from cart?')) {
-          e.preventDefault();
-        }
-      });
-    });
-  });
-</script>
+{% comment %} Cart functionality is handled in global.js {% endcomment %}

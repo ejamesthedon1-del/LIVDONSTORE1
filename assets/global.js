@@ -622,6 +622,279 @@
     }
   }
 
+  // Cart Page Functionality
+  function initCartPage() {
+    const cartForm = document.getElementById('cart-form');
+    if (!cartForm) return;
+
+    const updateBtn = cartForm.querySelector('[data-update-cart]');
+    const checkoutBtn = cartForm.querySelector('[data-checkout-btn]');
+    const quantityInputs = cartForm.querySelectorAll('[data-quantity-input]');
+    const removeLinks = cartForm.querySelectorAll('[data-remove-item]');
+    let isUpdating = false;
+
+    // Helper function to show message
+    function showCartMessage(message, type = 'success') {
+      let messageEl = document.querySelector('.o-cart__message');
+      if (!messageEl) {
+        messageEl = document.createElement('div');
+        messageEl.className = `o-cart__message o-cart__message--${type}`;
+        const totals = cartForm.querySelector('.o-cart__totals');
+        if (totals) {
+          totals.insertBefore(messageEl, totals.firstChild);
+        }
+      }
+      messageEl.textContent = message;
+      messageEl.style.display = 'block';
+      
+      setTimeout(() => {
+        messageEl.style.display = 'none';
+      }, 3000);
+    }
+
+    // Helper function to format money (Shopify returns price in cents)
+    function formatMoney(cents, currency = 'USD') {
+      const amount = (cents / 100).toFixed(2);
+      // Get currency symbol from Shopify's format or use default
+      const currencySymbols = {
+        'USD': '$',
+        'EUR': '€',
+        'GBP': '£',
+        'CAD': 'C$',
+        'AUD': 'A$'
+      };
+      const symbol = currencySymbols[currency] || '$';
+      return `${symbol}${amount}`;
+    }
+
+    // Helper function to update cart totals
+    function updateCartTotals(cartData) {
+      const subtotalEl = cartForm.querySelector('.o-cart__subtotal span:last-child');
+      if (subtotalEl && cartData.total_price !== undefined) {
+        const currency = cartData.currency || 'USD';
+        subtotalEl.textContent = formatMoney(cartData.total_price, currency);
+      }
+
+      // Update item prices
+      if (cartData.items) {
+        cartData.items.forEach((item) => {
+          const itemEl = cartForm.querySelector(`[data-key="${item.key}"]`);
+          if (itemEl) {
+            const priceEl = itemEl.querySelector('.o-cart__item-price');
+            if (priceEl && item.final_line_price !== undefined) {
+              const currency = cartData.currency || 'USD';
+              priceEl.textContent = formatMoney(item.final_line_price, currency);
+            }
+          }
+        });
+      }
+    }
+
+    // AJAX Cart Update
+    async function updateCartAjax() {
+      if (isUpdating) return;
+      isUpdating = true;
+
+      // Disable buttons and show loading
+      if (updateBtn) {
+        updateBtn.disabled = true;
+        updateBtn.textContent = 'UPDATING...';
+      }
+      if (checkoutBtn) {
+        checkoutBtn.disabled = true;
+      }
+
+      // Collect quantity updates - Shopify expects updates[] array indexed by line number (1-based)
+      // Match line numbers with cart items order
+      const formData = new FormData();
+      const cartItems = Array.from(cartForm.querySelectorAll('[data-cart-item]'));
+      
+      cartItems.forEach((itemEl, index) => {
+        const input = itemEl.querySelector('[data-quantity-input]');
+        if (input) {
+          const quantity = parseInt(input.value) || 0;
+          // Shopify uses 1-based line indexing
+          formData.append(`updates[${index + 1}]`, quantity.toString());
+        }
+      });
+
+      try {
+        const response = await fetch(window.routes.cart_update_url + '.js', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        const contentType = response.headers.get('content-type');
+        let data;
+
+        if (contentType && contentType.includes('application/json')) {
+          data = await response.json();
+        } else {
+          const text = await response.text();
+          try {
+            data = JSON.parse(text);
+          } catch {
+            throw new Error('Invalid response format');
+          }
+        }
+
+        if (response.ok && !data.errors) {
+          // Success - update cart display
+          updateCartTotals(data);
+          showCartMessage('Cart updated successfully', 'success');
+          
+          // Update cart count in header
+          await updateCartCount();
+
+          // Remove items with quantity 0
+          quantityInputs.forEach(input => {
+            if (parseInt(input.value) === 0) {
+              const itemEl = input.closest('[data-cart-item]');
+              if (itemEl) {
+                itemEl.style.opacity = '0';
+                setTimeout(() => {
+                  itemEl.remove();
+                  // Check if cart is empty
+                  const remainingItems = cartForm.querySelectorAll('[data-cart-item]');
+                  if (remainingItems.length === 0) {
+                    window.location.reload();
+                  }
+                }, 300);
+              }
+            }
+          });
+        } else {
+          // Error
+          const errorMsg = data.description || data.message || 'Error updating cart';
+          showCartMessage(errorMsg, 'error');
+        }
+      } catch (error) {
+        console.error('Cart update error:', error);
+        showCartMessage('Error updating cart. Please try again.', 'error');
+      } finally {
+        isUpdating = false;
+        if (updateBtn) {
+          updateBtn.disabled = false;
+          updateBtn.textContent = 'UPDATE CART';
+        }
+        if (checkoutBtn) {
+          checkoutBtn.disabled = false;
+        }
+      }
+    }
+
+    // AJAX Item Removal
+    async function removeItemAjax(lineIndex, itemKey) {
+      if (isUpdating) return;
+      isUpdating = true;
+
+      const itemEl = document.querySelector(`[data-key="${itemKey}"]`);
+      if (itemEl) {
+        itemEl.style.opacity = '0.5';
+      }
+
+      try {
+        const response = await fetch(`${window.routes.cart_change_url}?line=${lineIndex}&quantity=0`, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        const contentType = response.headers.get('content-type');
+        let data;
+
+        if (contentType && contentType.includes('application/json')) {
+          data = await response.json();
+        } else {
+          const text = await response.text();
+          try {
+            data = JSON.parse(text);
+          } catch {
+            throw new Error('Invalid response format');
+          }
+        }
+
+        if (response.ok && !data.errors) {
+          // Success - remove item from DOM
+          if (itemEl) {
+            itemEl.style.transition = 'opacity 0.3s';
+            itemEl.style.opacity = '0';
+            setTimeout(() => {
+              itemEl.remove();
+              
+              // Check if cart is empty
+              const remainingItems = cartForm.querySelectorAll('[data-cart-item]');
+              if (remainingItems.length === 0) {
+                window.location.reload();
+              } else {
+                // Update totals
+                updateCartTotals(data);
+                await updateCartCount();
+                showCartMessage('Item removed', 'success');
+              }
+            }, 300);
+          }
+        } else {
+          // Error
+          if (itemEl) {
+            itemEl.style.opacity = '1';
+          }
+          const errorMsg = data.description || data.message || 'Error removing item';
+          showCartMessage(errorMsg, 'error');
+        }
+      } catch (error) {
+        console.error('Remove item error:', error);
+        if (itemEl) {
+          itemEl.style.opacity = '1';
+        }
+        showCartMessage('Error removing item. Please try again.', 'error');
+      } finally {
+        isUpdating = false;
+      }
+    }
+
+    // Handle form submission for update
+    cartForm.addEventListener('submit', async (e) => {
+      const submitBtn = e.submitter;
+      
+      // If checkout button clicked, let form submit normally
+      if (submitBtn && submitBtn.name === 'checkout') {
+        return; // Let Shopify handle checkout redirect
+      }
+
+      // If update button clicked, use AJAX
+      if (submitBtn && submitBtn.name === 'update') {
+        e.preventDefault();
+        await updateCartAjax();
+      }
+    });
+
+    // Handle remove links
+    removeLinks.forEach((link) => {
+      link.addEventListener('click', async (e) => {
+        e.preventDefault();
+        
+        if (!confirm('Remove this item from cart?')) {
+          return;
+        }
+
+        const itemEl = link.closest('[data-cart-item]');
+        const itemKey = itemEl ? itemEl.getAttribute('data-key') : null;
+        // Get line index from data attribute (Shopify uses 1-based indexing)
+        const lineIndex = link.getAttribute('data-line-index') || 
+                         (Array.from(removeLinks).indexOf(link) + 1);
+
+        if (itemKey) {
+          await removeItemAjax(parseInt(lineIndex), itemKey);
+        }
+      });
+    });
+  }
+
   // Initialize all functionality when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
@@ -634,6 +907,7 @@
       initProductDrawer();
       initVariantSelection();
       initAddToCart();
+      initCartPage(); // Initialize cart page functionality
       updateCartCount(); // Load initial cart count
     });
   } else {
@@ -646,6 +920,7 @@
     initProductDrawer();
     initVariantSelection();
     initAddToCart();
+    initCartPage(); // Initialize cart page functionality
     updateCartCount(); // Load initial cart count
   }
 })();
