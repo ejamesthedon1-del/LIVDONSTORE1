@@ -97,20 +97,12 @@
                     <div class="a11y" aria-live="polite" id="add-to-cart-live" role="status"></div>
                     
                     <div class="prices-add-to-cart-actions o-product__action-ctas">
-                      {% comment %} Apple Pay Button {% endcomment %}
-                      <button
-                        class="apple-pay-button a-btn"
-                        type="button"
-                        data-buy-now
-                        aria-label="Pay with Apple Pay"
-                      >
-                        <svg class="apple-pay-icon" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12.5 1.5c-.8-1.3-2.1-2.3-3.5-2.3-1.4 0-2.7 1-3.5 2.3-.8 1.3-1 2.9-.4 4.1.6 1.2 1.5 2.2 2.4 3.1.9.9 2 1.9 3.1 2.4 1.2.5 2.8.3 4.1-.4 1.3-.8 2.3-2.1 2.3-3.5 0-1.4-1-2.7-2.3-3.5-.5-.3-1.1-.5-1.6-.7zm-1.6 1.3c.5.1 1.1.4 1.6.7 1.3.8 2.3 2.1 2.3 3.5 0 1.4-1 2.7-2.3 3.5-1.3.8-2.9 1-4.1.4-1.2-.5-2.2-1.4-3.1-2.4-.9-.9-1.9-2-2.4-3.1-.6-1.2-.4-2.8.4-4.1.8-1.3 2.1-2.3 3.5-2.3 1.4 0 2.7 1 3.5 2.3z"/>
-                          <path d="M9 5c-.2 0-.4.2-.4.4v7.2c0 .2.2.4.4.4s.4-.2.4-.4V5.4c0-.2-.2-.4-.4-.4z"/>
-                          <path d="M6.5 7.5c-.2 0-.4.2-.4.4v2.2c0 .2.2.4.4.4s.4-.2.4-.4V7.9c0-.2-.2-.4-.4-.4zm5 0c-.2 0-.4.2-.4.4v2.2c0 .2.2.4.4.4s.4-.2.4-.4V7.9c0-.2-.2-.4-.4-.4z"/>
-                        </svg>
-                        <span>Pay</span>
-                      </button>
+                      {% comment %} Shopify Dynamic Checkout Buttons (Apple Pay, Google Pay, etc.) {% endcomment %}
+                      {% if additional_checkout_buttons %}
+                        <div class="product-dynamic-checkout-buttons">
+                          {{ content_for_additional_checkout_buttons }}
+                        </div>
+                      {% endif %}
 
                       {% comment %} Add to Bag Button {% endcomment %}
                       <button

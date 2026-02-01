@@ -410,7 +410,6 @@
   // Add to Cart
   function initAddToCart() {
     const addToCartBtn = document.querySelector('[data-add-to-cart]');
-    const buyNowBtn = document.querySelector('[data-buy-now]');
     const form = document.querySelector('[data-product-form]');
     const liveRegion = document.getElementById('add-to-cart-live');
 
@@ -440,9 +439,12 @@
         const originalText = addToCartBtn.textContent;
         addToCartBtn.textContent = 'ADDING...';
       }
-      if (buyNowBtn) {
-        buyNowBtn.disabled = true;
-      }
+      
+      // Disable dynamic checkout buttons
+      const dynamicCheckoutButtons = form.querySelectorAll('.shopify-payment-button button, [data-shopify-buttoncontainer] button');
+      dynamicCheckoutButtons.forEach(btn => {
+        btn.disabled = true;
+      });
 
       const formData = new FormData();
       formData.append('id', variantId);
@@ -500,9 +502,12 @@
             addToCartBtn.disabled = false;
             addToCartBtn.textContent = addToCartBtn.getAttribute('data-default-text') || 'ADD TO BAG';
           }
-          if (buyNowBtn) {
-            buyNowBtn.disabled = false;
-          }
+          
+          // Re-enable dynamic checkout buttons
+          const dynamicCheckoutButtons = form.querySelectorAll('.shopify-payment-button button, [data-shopify-buttoncontainer] button');
+          dynamicCheckoutButtons.forEach(btn => {
+            btn.disabled = false;
+          });
           
           isSubmitting = false;
           return false;
@@ -515,9 +520,12 @@
           addToCartBtn.disabled = false;
           addToCartBtn.textContent = addToCartBtn.getAttribute('data-default-text') || 'ADD TO BAG';
         }
-        if (buyNowBtn) {
-          buyNowBtn.disabled = false;
-        }
+        
+        // Re-enable dynamic checkout buttons
+        const dynamicCheckoutButtons = form.querySelectorAll('.shopify-payment-button button, [data-shopify-buttoncontainer] button');
+        dynamicCheckoutButtons.forEach(btn => {
+          btn.disabled = false;
+        });
         
         isSubmitting = false;
         return false;
@@ -545,35 +553,6 @@
 
       await addItemToCart(selectedVariantId, 1);
     });
-
-    // Handle Buy Now button (Pay button)
-    if (buyNowBtn) {
-      buyNowBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        
-        const variantIdInput = form.querySelector('[data-variant-id]');
-        const selectedVariantId = variantIdInput ? variantIdInput.value : null;
-
-        if (!selectedVariantId) {
-          showError('Please select a size');
-          return;
-        }
-
-        // Check if variant is available
-        const selectedSizeInput = form.querySelector('[data-size-input]:checked');
-        if (selectedSizeInput && selectedSizeInput.disabled) {
-          showError('This size is currently unavailable');
-          return;
-        }
-
-        const success = await addItemToCart(selectedVariantId, 1);
-        
-        if (success) {
-          // Redirect to checkout
-          window.location.href = window.routes.cart_url + '?checkout';
-        }
-      });
-    }
   }
 
   // Update cart count in header
