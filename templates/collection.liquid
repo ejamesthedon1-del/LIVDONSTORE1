@@ -78,30 +78,31 @@
             </div>
           </div>
 
-          {% comment %} Collection Hero Image {% endcomment %}
-          {% if collection.image != blank or section.settings.collection_hero != blank %}
-            <div class="o-collection-hero">
+          {% comment %} Collection Hero Section {% endcomment %}
+          <div class="o-collection-hero">
+            {% comment %} Collection Hero Image {% endcomment %}
+            {% if collection.image != blank %}
               <div class="m-media m-media--has-media">
                 <div class="m-media__media a-ratio-box a-ratio-box--4:5">
                   <img
-                    src="{{ collection.image | default: section.settings.collection_hero | image_url: width: 1000 }}"
+                    src="{{ collection.image | image_url: width: 1000 }}"
                     alt="{{ collection.title }}"
                     loading="eager"
                   >
                 </div>
               </div>
-              
-              {% comment %} Headline and Subtext {% endcomment %}
-              <div class="a-rich-text a-rich-text--main">
-                <h1 class="f-display--02 f-display--bold">
-                  {{ section.settings.headline | default: collection.title | default: 'NEW COLLECTION "PRINTEMPS 2026"' }}
-                </h1>
-                <p class="f-body">
-                  {{ section.settings.subtext | default: 'DISCOVER OUR LATEST COLLECTION OF PREMIUM LUXURY ITEMS' }}
-                </p>
-              </div>
+            {% endif %}
+            
+            {% comment %} Headline and Subtext - Always show {% endcomment %}
+            <div class="a-rich-text a-rich-text--main">
+              <h1 class="f-display--02 f-display--bold">
+                {{ collection.title | default: 'NEW COLLECTION "PRINTEMPS 2026"' }}
+              </h1>
+              <p class="f-body">
+                {{ collection.description | default: 'DISCOVER OUR LATEST COLLECTION OF PREMIUM LUXURY ITEMS' }}
+              </p>
             </div>
-          {% endif %}
+          </div>
 
           {% comment %} Product Grid {% endcomment %}
           <ul class="o-listing-grid" data-behavior="oListingGrid">
