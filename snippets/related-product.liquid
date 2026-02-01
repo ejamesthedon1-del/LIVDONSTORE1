@@ -1,0 +1,15 @@
+{% comment %}
+  Related Product Snippet - Converted from RelatedProduct.jsx
+  Usage: {% render 'related-product', product: product %}
+{% endcomment %}
+
+<div class="o-product__related-item">
+  <a href="{{ product.url }}" class="o-product__related-link">
+    <div class="o-product__related-image">
+      <div class="a-ratio-box a-ratio-box--1:1">
+        <img src="{{ product.featured_image | image_url: width: 500 }}" alt="{{ product.title }}" loading="lazy">
+      </div>
+    </div>
+    <h4 class="o-product__related-title f-body">{{ product.title }}</h4>
+  </a>
+</div>

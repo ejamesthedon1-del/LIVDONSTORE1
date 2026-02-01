@@ -1,0 +1,61 @@
+{% comment %}
+  Product Drawer Overlay Snippet - Mobile drawer overlay for product details
+  Usage: {% render 'product-drawer-overlay', product: product %}
+{% endcomment %}
+
+<div class="o-product__drawer-backdrop" data-drawer-backdrop style="display: none;"></div>
+
+<div class="o-product__drawer-overlay" data-drawer-overlay style="display: none;">
+  <div class="o-product__drawer-overlay-content">
+    {% comment %} Product Header {% endcomment %}
+    <div class="o-product__header">
+      <div class="o-product__header-meta">
+        <div class="o-product__header-titles">
+          <h1 class="o-product__title f-body">
+            <span class="o-product__title-truncate f-body">{{ product.title }}</span>
+          </h1>
+          <p class="f-body--em">
+            <span class="prices">
+              <strong data-description="value" class="f-body--em">
+                {{ product.price | money }} {{ cart.currency.iso_code }}
+              </strong>
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {% comment %} Product Content {% endcomment %}
+    <div class="o-product__content">
+      <form class="o-form o-form--selectors s-appears-complete" id="form-product-overlay">
+        {% render 'product-selectors', product: product %}
+      </form>
+
+      {% comment %} Estimated Delivery Date {% endcomment %}
+      <div class="o-product__delivery-info">
+        <p class="f-body--em">
+          ESTIMATED DELIVERY DATE: STARTING FROM TUESDAY FEBRUARY 3
+        </p>
+      </div>
+
+      {% comment %} Expandable Sections {% endcomment %}
+      <div class="o-product__info-sections">
+        {% render 'product-info-section', title: 'DETAILS', content: product.description %}
+        {% render 'product-info-section', title: 'CARE AND MAINTENANCE', content: section.settings.care_content %}
+      </div>
+
+      {% comment %} Information Links {% endcomment %}
+      <div class="o-product__info-links">
+        <a href="#check-availability" class="o-product__info-link">
+          CHECK AVAILABILITY IN STORE &gt;
+        </a>
+        <a href="#shipping" class="o-product__info-link">
+          SHIPPING &gt;
+        </a>
+        <a href="#returns" class="o-product__info-link">
+          RETURNS AND EXCHANGES (WITHIN 14 DAYS) &gt;
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

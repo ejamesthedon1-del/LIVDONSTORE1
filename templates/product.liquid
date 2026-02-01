@@ -1,0 +1,146 @@
+{% comment %}
+  Product Template - Converted from ProductDetailPage.jsx
+{% endcomment %}
+
+<div class="min-h-screen bg-white" style="width: 100%; max-width: 100vw; overflow-x: hidden;">
+  <div class="a17-grid__right">
+      <div class="home-main homepage">
+        {% comment %} Product Section {% endcomment %}
+        <section class="o-product product-detail" data-pid="{{ product.id }}">
+          <div class="o-product__product">
+            {% comment %} Product Gallery {% endcomment %}
+            {% render 'product-gallery', product: product %}
+
+            {% comment %} Product Header {% endcomment %}
+            <div class="o-product__header" data-oproductscroll-header="">
+              <div class="o-product__header-meta">
+                <div class="o-product__header-titles">
+                  <h1 class="o-product__title f-body">
+                    <span class="o-product__title-truncate f-body">{{ product.title }}</span>
+                  </h1>
+                  <p class="f-body--em">
+                    <span class="prices">
+                      <strong data-description="value" class="f-body--em">
+                        {{ product.price | money }} {{ cart.currency.iso_code }}
+                      </strong>
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {% comment %} Product Content {% endcomment %}
+            <div class="o-product__content" data-oproductscroll-content="">
+              <form class="o-form o-form--selectors s-appears-complete" id="form-product" action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" data-product-form>
+                {% comment %} Hidden input for variant ID - will be updated by JavaScript when size/color changes {% endcomment %}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
+                {% render 'product-selectors', product: product %}
+
+                {% comment %} Estimated Delivery Date {% endcomment %}
+                <div class="o-product__delivery-info">
+                  <p class="f-body--em">
+                    ESTIMATED DELIVERY DATE: STARTING FROM TUESDAY FEBRUARY 3
+                  </p>
+                </div>
+
+                {% comment %} Expandable Sections {% endcomment %}
+                <div class="o-product__info-sections">
+                  {% render 'product-info-section', title: 'DETAILS', content: product.description %}
+                  {% render 'product-info-section', title: 'CARE AND MAINTENANCE', content: section.settings.care_content %}
+                </div>
+
+                {% comment %} Information Links {% endcomment %}
+                <div class="o-product__info-links">
+                  <a href="#check-availability" class="o-product__info-link">
+                    CHECK AVAILABILITY IN STORE &gt;
+                  </a>
+                  <a href="#shipping" class="o-product__info-link">
+                    SHIPPING &gt;
+                  </a>
+                  <a href="#returns" class="o-product__info-link">
+                    RETURNS AND EXCHANGES (WITHIN 14 DAYS) &gt;
+                  </a>
+                </div>
+
+                {% comment %} You May Also Like Section {% endcomment %}
+                {% if recommendations.products_count > 0 %}
+                  <div class="o-product__related">
+                    <h3 class="o-product__related-title f-body--em">YOU MAY ALSO LIKE</h3>
+                    <div class="o-product__related-products">
+                      {% for recommendation in recommendations.products limit: 2 %}
+                        {% render 'related-product', product: recommendation %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
+
+                {% comment %} CTA Actions {% endcomment %}
+                <div class="o-product__cta-actions" data-oproductscroll-actions="">
+                  <div class="o-product__cta-actions-inner">
+                    {% comment %} Puller Signal {% endcomment %}
+                    <div class="o-product__cta-puller" data-puller>
+                      <div class="o-product__cta-puller-handle"></div>
+                      <div class="o-product__header-titles">
+                        <h1 class="o-product__title f-body">
+                          <span class="o-product__title-truncate f-body">{{ product.title }}</span>
+                        </h1>
+                        <p class="f-body--em">
+                          <span class="prices">
+                            <strong data-description="value" class="f-body--em">
+                              {{ product.price | money }} {{ cart.currency.iso_code }}
+                            </strong>
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div class="a11y" aria-live="polite" id="add-to-cart-live" role="status"></div>
+                    
+                    <div class="prices-add-to-cart-actions o-product__action-ctas">
+                      {% comment %} Apple Pay Button {% endcomment %}
+                      <button
+                        class="apple-pay-button a-btn"
+                        type="button"
+                        data-buy-now
+                        aria-label="Pay with Apple Pay"
+                      >
+                        <svg class="apple-pay-icon" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12.5 1.5c-.8-1.3-2.1-2.3-3.5-2.3-1.4 0-2.7 1-3.5 2.3-.8 1.3-1 2.9-.4 4.1.6 1.2 1.5 2.2 2.4 3.1.9.9 2 1.9 3.1 2.4 1.2.5 2.8.3 4.1-.4 1.3-.8 2.3-2.1 2.3-3.5 0-1.4-1-2.7-2.3-3.5-.5-.3-1.1-.5-1.6-.7zm-1.6 1.3c.5.1 1.1.4 1.6.7 1.3.8 2.3 2.1 2.3 3.5 0 1.4-1 2.7-2.3 3.5-1.3.8-2.9 1-4.1.4-1.2-.5-2.2-1.4-3.1-2.4-.9-.9-1.9-2-2.4-3.1-.6-1.2-.4-2.8.4-4.1.8-1.3 2.1-2.3 3.5-2.3 1.4 0 2.7 1 3.5 2.3z"/>
+                          <path d="M9 5c-.2 0-.4.2-.4.4v7.2c0 .2.2.4.4.4s.4-.2.4-.4V5.4c0-.2-.2-.4-.4-.4z"/>
+                          <path d="M6.5 7.5c-.2 0-.4.2-.4.4v2.2c0 .2.2.4.4.4s.4-.2.4-.4V7.9c0-.2-.2-.4-.4-.4zm5 0c-.2 0-.4.2-.4.4v2.2c0 .2.2.4.4.4s.4-.2.4-.4V7.9c0-.2-.2-.4-.4-.4z"/>
+                        </svg>
+                        <span>Pay</span>
+                      </button>
+
+                      {% comment %} Add to Bag Button {% endcomment %}
+                      <button
+                        class="add-to-cart a-btn"
+                        type="submit"
+                        data-add-to-cart
+                        data-default-text="ADD TO BAG"
+                        data-result-text="ADDED"
+                      >
+                        ADD TO BAG
+                      </button>
+                    </div>
+
+                    {% comment %} Terms of Service {% endcomment %}
+                    <p class="f-body a-text a-text--secondary a-text--apple-pay-notice">
+                      BY PLACING YOUR ORDER YOU AGREE TO THE
+                      <a href="/pages/terms-of-service" class="policy-link link--on-gray-bg" target="_blank" rel="noopener noreferrer">
+                        TERMS OF SERVICE
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  {% comment %} Drawer Overlay - Slides up from bottom {% endcomment %}
+  {% render 'product-drawer-overlay', product: product %}
+  </div>
+</div>

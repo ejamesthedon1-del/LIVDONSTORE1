@@ -1,0 +1,87 @@
+{% comment %}
+  Mobile Menu Snippet - CELINE-style sidebar navigation
+{% endcomment %}
+
+<div class="a17-grid__left o-sidebar-nav" data-mobile-menu>
+  <nav class="o-sidebar-nav__nav" aria-labelledby="sidebar-nav-label">
+    <p class="sr-only" id="sidebar-nav-label">SIDEBAR NAVIGATION</p>
+    
+    {% comment %} Mobile Menu Header {% endcomment %}
+    <div class="o-sidebar-nav__header">
+      <h1>
+        <a href="{{ routes.root_url }}" class="a-logo" title="{{ shop.name }} | HOMEPAGE">
+          {% if settings.logo != blank %}
+            <img src="{{ settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" class="a-logo__img" loading="eager">
+          {% else %}
+            <span class="a-logo__text">{{ shop.name }}</span>
+          {% endif %}
+        </a>
+      </h1>
+      <button
+        type="button"
+        class="o-sidebar-nav__close"
+        data-menu-close
+        aria-label="CLOSE MENU"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <ul class="o-sidebar-nav__list">
+      {% comment %} General Links {% endcomment %}
+      {% for link in linklists.main-menu.links %}
+        <li>
+          <a
+            href="{{ link.url }}"
+            class="a-btn a-btn--as-link o-sidebar-nav__link"
+            data-menu-close
+          >
+            {{ link.title }}
+          </a>
+        </li>
+      {% endfor %}
+
+      {% comment %} Default menu items if no menu is set {% endcomment %}
+      {% if linklists.main-menu.links.size == 0 %}
+        <li>
+          <a href="{{ collections.all.url }}" class="a-btn a-btn--as-link o-sidebar-nav__link" data-menu-close>
+            LIVDON SHOP WOMEN
+          </a>
+        </li>
+        <li>
+          <a href="{{ collections.all.url }}" class="a-btn a-btn--as-link o-sidebar-nav__link" data-menu-close>
+            LIVDON SHOP MEN
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+
+    {% comment %} Utility Links {% endcomment %}
+    <div class="o-sidebar-nav__utilities">
+      <a href="{{ pages.store-locator.url | default: '#' }}" class="a-btn a-btn--as-link o-sidebar-nav__utility-link" data-menu-close>
+        STORE LOCATOR
+      </a>
+      <a href="{{ routes.account_login_url }}" class="a-btn a-btn--as-link o-sidebar-nav__utility-link" data-menu-close>
+        SIGN IN / REGISTER
+      </a>
+      {% if cart.item_count > 0 %}
+        <a href="{{ routes.cart_url }}" class="a-btn a-btn--as-link o-sidebar-nav__utility-link" data-menu-close>
+          SHOPPING BAG ({{ cart.item_count }})
+        </a>
+      {% endif %}
+      <a href="{{ pages.contact.url | default: '/pages/contact' }}" class="a-btn a-btn--as-link o-sidebar-nav__utility-link" data-menu-close>
+        CONTACT US
+      </a>
+    </div>
+
+    {% comment %} Region/Language {% endcomment %}
+    <div class="o-sidebar-nav__region">
+      <button type="button" class="a-btn a-btn--as-link o-sidebar-nav__region-link">
+        UNITED STATES | EN
+      </button>
+    </div>
+  </nav>
+</div>

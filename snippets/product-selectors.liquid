@@ -1,0 +1,104 @@
+{% comment %}
+  Product Selectors Snippet - Converted from ProductSelectors.jsx
+  Usage: {% render 'product-selectors', product: product %}
+{% endcomment %}
+
+<div class="o-product__selectors">
+  {% comment %} Color Selector {% endcomment %}
+  {% assign color_option = product.options_with_values | where: 'name', 'Color' | first %}
+  {% if color_option != blank %}
+    <div class="m-selector m-selector--grid m-selector--color" data-behavior="mSelector">
+      <p class="m-selector__title" data-color-title>{{ color_option.values.first }}</p>
+      <div class="m-selector__content" id="selector-content" data-mselector-content="">
+        <ul class="m-selector__list">
+          {% for value in color_option.values %}
+            <li
+              data-mselector-listitem=""
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              aria-current="{% if forloop.first %}page{% endif %}"
+            >
+              <a
+                href="{{ product.url }}?variant={{ product.variants[forloop.index0].id }}"
+                class="m-selector__item {% if forloop.first %}s-selected{% endif %}"
+                data-mselector-link
+                data-color-value="{{ value }}"
+                style="background: linear-gradient(135deg, {{ value | handleize }} 50%, {{ value | handleize }} 50%);"
+                aria-label="Select color {{ value }}"
+              >
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+
+  {% comment %} Size Selector {% endcomment %}
+  {% assign size_option = product.options_with_values | where: 'name', 'Size' | first %}
+  {% if size_option != blank %}
+    <div class="m-selector m-selector--grid m-selector--size" data-behavior="mSelector">
+      <div class="m-selector__content" id="selector-content" data-mselector-content="">
+        <p class="m-selector__error-msg" aria-hidden="true" data-mselector-errormsg="">
+          Please select a size
+        </p>
+        <ul class="m-selector__list">
+          {% for value in size_option.values %}
+            {% comment %} Find variant matching this size value {% endcomment %}
+            {% assign matching_variant = null %}
+            {% for variant in product.variants %}
+              {% if size_option.position == 1 %}
+                {% if variant.option1 == value %}
+                  {% assign matching_variant = variant %}
+                  {% break %}
+                {% endif %}
+              {% elsif size_option.position == 2 %}
+                {% if variant.option2 == value %}
+                  {% assign matching_variant = variant %}
+                  {% break %}
+                {% endif %}
+              {% elsif size_option.position == 3 %}
+                {% if variant.option3 == value %}
+                  {% assign matching_variant = variant %}
+                  {% break %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {% if matching_variant == null %}
+              {% assign matching_variant = product.variants[forloop.index0] %}
+            {% endif %}
+            <li
+              data-mselector-listitem=""
+              aria-selected="false"
+            >
+              <input
+                name="id"
+                type="radio"
+                id="selector-size-{{ forloop.index0 }}"
+                value="{{ matching_variant.id }}"
+                {% unless matching_variant.available %}disabled{% endunless %}
+                class="{% unless matching_variant.available %}s-disabled{% endunless %}"
+                data-size-input
+                data-variant-id="{{ matching_variant.id }}"
+                {% if forloop.first %}checked{% endif %}
+                required
+              >
+              <label
+                class="m-selector__item {% unless variant.available %}s-disabled{% endunless %}"
+                for="selector-size-{{ forloop.index0 }}"
+                role="button"
+                tabindex="0"
+                data-mselector-label=""
+              >
+                {{ value }}
+              </label>
+            </li>
+          {% endfor %}
+        </ul>
+        {% comment %} Size Guide Link {% endcomment %}
+        <a href="#size-guide" class="m-selector__size-guide-link">
+          SIZE GUIDE &gt;
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>

@@ -1,0 +1,116 @@
+{% comment %}
+  Collection Template - Converted from ProductListingPage.jsx
+{% endcomment %}
+
+<div class="min-h-screen bg-white">
+  <div class="a17-grid__right">
+      <div class="home-main homepage">
+        <div class="o-search" data-behavior="oSearch">
+          {% comment %} Breadcrumb {% endcomment %}
+          <div class="m-breadcrumb m-breadcrumb--inline" data-behavior="mBreadcrumb">
+            <div class="m-breadcrumb__items">
+              <div class="m-breadcrumb__item f-body--em">
+                <h1>{{ collection.title | default: 'NEW COLLECTION WOMEN' }}</h1>
+              </div>
+            </div>
+          </div>
+
+          {% comment %} Filters Header {% endcomment %}
+          <div class="m-filters" data-behavior="mFilterSticky">
+            <div class="m-filters__header">
+              <ul class="m-filters__header-ctas f-body">
+                <li>
+                  <div class="m-field m-field--checkbox m-field--availableOnline" data-behavior="mField">
+                    <input
+                      type="checkbox"
+                      id="availableOnline"
+                      name="availableOnline"
+                      class="m-field__input"
+                      data-filter-in-stock
+                    >
+                    <label class="m-field__label m-field__label--checkbox" for="availableOnline">
+                      IN STOCK ONLINE
+                    </label>
+                  </div>
+                </li>
+
+                <li class="m-filters__right-group">
+                  <div class="g-selectors" data-behavior="oSorting">
+                    <button
+                      type="button"
+                      class="a-btn a-btn--as-link g-selectors--open"
+                      id="sorting-btn"
+                      data-sort-toggle
+                      aria-expanded="false"
+                    >
+                      Sort By
+                    </button>
+                    <div class="g-selectors--menu-wrapper" data-sort-menu style="display: none;">
+                      <div class="g-selectors--menu">
+                        <button
+                          type="button"
+                          class="g-selectors--option"
+                          data-sort-value="price-ascending"
+                        >
+                          PRICE LOW TO HIGH
+                        </button>
+                        <button
+                          type="button"
+                          class="g-selectors--option"
+                          data-sort-value="price-descending"
+                        >
+                          PRICE HIGH TO LOW
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="a-btn a-btn--as-link"
+                    data-filters-toggle
+                    aria-controls="filtersPanel"
+                  >
+                    FILTERS
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {% comment %} Collection Hero Image {% endcomment %}
+          {% if collection.image != blank or section.settings.collection_hero != blank %}
+            <div class="o-collection-hero">
+              <div class="m-media m-media--has-media">
+                <div class="m-media__media a-ratio-box a-ratio-box--4:5">
+                  <img
+                    src="{{ collection.image | default: section.settings.collection_hero | image_url: width: 1000 }}"
+                    alt="{{ collection.title }}"
+                    loading="eager"
+                  >
+                </div>
+              </div>
+              
+              {% comment %} Headline and Subtext {% endcomment %}
+              <div class="a-rich-text a-rich-text--main">
+                <h1 class="f-display--02 f-display--bold">
+                  {{ section.settings.headline | default: collection.title | default: 'NEW COLLECTION "PRINTEMPS 2026"' }}
+                </h1>
+                <p class="f-body">
+                  {{ section.settings.subtext | default: 'DISCOVER OUR LATEST COLLECTION OF PREMIUM LUXURY ITEMS' }}
+                </p>
+              </div>
+            </div>
+          {% endif %}
+
+          {% comment %} Product Grid {% endcomment %}
+          <ul class="o-listing-grid" data-behavior="oListingGrid">
+            {% for product in collection.products %}
+              {% render 'product-tile', product: product %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

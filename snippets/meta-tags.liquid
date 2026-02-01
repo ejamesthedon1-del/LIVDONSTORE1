@@ -1,0 +1,15 @@
+{% comment %}
+  Meta Tags Snippet
+{% endcomment %}
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="">
+
+{%- if canonical_url != blank -%}
+  <link rel="canonical" href="{{ canonical_url }}">
+{%- endif -%}
+
+{%- if settings.favicon != blank -%}
+  <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+{%- endif -%}

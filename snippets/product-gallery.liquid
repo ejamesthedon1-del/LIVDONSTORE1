@@ -1,0 +1,57 @@
+{% comment %}
+  Product Gallery Snippet - Converted from ProductGallery.jsx
+  Usage: {% render 'product-gallery', product: product %}
+{% endcomment %}
+
+<div class="o-product__gallery" data-oproductscroll-gallery="">
+  {% comment %} Main Image {% endcomment %}
+  <div class="o-product__gallery-main" itemScope itemType="https://schema.org/ImageObject">
+    <button
+      class="o-product__gallery-main-img"
+      data-zoom-toggle
+      aria-label="View image 1 of {{ product.images.size }}"
+    >
+      <img
+        src="{{ product.featured_image | image_url: width: 1200 }}"
+        alt="{{ product.featured_image.alt | default: product.title }}"
+        loading="eager"
+        class="d-block img-fluid"
+        itemProp="image"
+        data-main-image
+      >
+      <meta itemProp="name" content="{{ product.title }} - 1 | {{ shop.name }}">
+    </button>
+  </div>
+
+  {% comment %} Thumbnail Grid - 2 columns, 2 rows (4 images max) {% endcomment %}
+  {% if product.images.size > 1 %}
+    <div class="o-product__gallery-thumbnails">
+      <div class="o-product__gallery-thumbnails-grid">
+        {% for image in product.images limit: 4 offset: 1 %}
+          <button
+            class="o-product__gallery-thumbnail {% if forloop.first %}s-selected{% endif %}"
+            data-thumbnail-index="{{ forloop.index0 | plus: 1 }}"
+            aria-label="Select image {{ forloop.index | plus: 1 }}"
+            data-thumbnail
+          >
+            <img
+              src="{{ image | image_url: width: 200 }}"
+              alt="{{ image.alt | default: product.title }} thumbnail {{ forloop.index | plus: 1 }}"
+              loading="lazy"
+            >
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% comment %} Zoom Modal {% endcomment %}
+<div class="o-product__zoom-modal" data-zoom-modal style="display: none;">
+  <button class="o-product__zoom-close" data-zoom-close aria-label="Close zoom">×</button>
+  <button class="o-product__zoom-prev" data-zoom-prev aria-label="Previous image">‹</button>
+  <button class="o-product__zoom-next" data-zoom-next aria-label="Next image">›</button>
+  <div class="o-product__zoom-image" data-zoom-image>
+    <img src="" alt="" data-zoom-img>
+  </div>
+</div>

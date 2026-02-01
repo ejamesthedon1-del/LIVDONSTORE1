@@ -1,0 +1,54 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Livdon",
+    "theme_version": "1.0.0",
+    "theme_author": "Livdon",
+    "theme_documentation_url": "https://livdon.com",
+    "theme_support_url": "https://livdon.com"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "colors_accent_1",
+        "default": "#000000",
+        "label": "Accent color 1"
+      },
+      {
+        "type": "color",
+        "id": "colors_accent_2",
+        "default": "#ffffff",
+        "label": "Accent color 2"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "default": "assistant_n4",
+        "label": "Heading font"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "default": "assistant_n4",
+        "label": "Body font"
+      }
+    ]
+  },
+  {
+    "name": "Logo",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      }
+    ]
+  }
+]

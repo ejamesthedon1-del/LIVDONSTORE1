@@ -1,0 +1,24 @@
+{% comment %}
+  Product Info Section Snippet - Converted from ProductInfoSection.jsx
+  Usage: {% render 'product-info-section', title: 'DETAILS', content: product.description %}
+{% endcomment %}
+
+<div class="o-product__info-section">
+  <button
+    class="o-product__info-section-header"
+    data-info-toggle
+    aria-expanded="false"
+    aria-controls="section-{{ title | handleize }}"
+  >
+    <span class="o-product__info-section-title">{{ title }}</span>
+    <span class="o-product__info-section-icon" data-info-icon>+</span>
+  </button>
+  <div
+    id="section-{{ title | handleize }}"
+    class="o-product__info-section-content"
+    data-info-content
+    style="display: none;"
+  >
+    <p class="f-body">{{ content }}</p>
+  </div>
+</div>

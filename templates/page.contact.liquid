@@ -1,0 +1,63 @@
+{% comment %}
+  Contact Page Template - Converted from ContactPage.jsx
+{% endcomment %}
+
+<div class="min-h-screen bg-white">
+  <div class="a17-grid__right">
+      <div class="home-main homepage">
+        <div class="o-contact-page">
+          {% comment %} Client Service Hours {% endcomment %}
+          <div class="m-contact-info">
+            <p class="m-contact-info__hours f-body">
+              THE LIVDON CLIENT SERVICE IS OPEN FROM MONDAY TO FRIDAY, 10 AM TO 7 PM (EASTERN TIME), EXCLUDING HOLIDAYS.
+            </p>
+          </div>
+
+          {% comment %} Contact Details {% endcomment %}
+          <div class="m-contact-details">
+            <div class="m-contact-details__item">
+              <h3 class="m-contact-details__label f-body--em">PHONE</h3>
+              <p class="m-contact-details__value f-body">
+                <a href="tel:+18338474860" class="m-contact-details__link">+1 833 847 4860</a>
+              </p>
+            </div>
+
+            <div class="m-contact-details__item">
+              <h3 class="m-contact-details__label f-body--em">CUSTOMER SERVICE</h3>
+              <p class="m-contact-details__value f-body">
+                <a href="mailto:clientservice.us@livdon.com" class="m-contact-details__link">CLIENTSERVICE.US@LIVDON.COM</a>
+              </p>
+            </div>
+
+            <div class="m-contact-details__item">
+              <h3 class="m-contact-details__label f-body--em">CONTACT FORM</h3>
+              <p class="m-contact-details__value f-body">
+                <a href="#contact-form" class="m-contact-details__link m-contact-details__link--action">SEND INQUIRY</a>
+              </p>
+            </div>
+
+            <div class="m-contact-details__item">
+              <h3 class="m-contact-details__label f-body--em">REQUEST AN APPOINTMENT</h3>
+              <p class="m-contact-details__value f-body">
+                <a href="#appointment" class="m-contact-details__link m-contact-details__link--action">SELECT A STORE</a>
+              </p>
+            </div>
+          </div>
+
+          {% comment %} Store Image {% endcomment %}
+          {% if section.settings.store_image != blank %}
+            <div class="m-contact-image">
+              <div class="a-ratio-box a-ratio-box--4:5">
+                <img
+                  src="{{ section.settings.store_image | image_url: width: 1000 }}"
+                  alt="LIVDON Store Interior"
+                  loading="lazy"
+                >
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

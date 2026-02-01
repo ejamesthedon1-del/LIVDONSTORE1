@@ -1,0 +1,98 @@
+{% comment %}
+  Image Slider Section - Converted from ImageSlider.jsx
+{% endcomment %}
+
+<div class="o-project-grid" data-behavior="oProjectGrid">
+  <h3 class="f-body--em">{{ section.settings.title | default: 'Explore the gifts selection' }}</h3>
+  <ul class="o-project-grid__inner">
+    {% for block in section.blocks %}
+      <li class="o-project-grid__item" {{ block.shopify_attributes }}>
+        <a href="{{ block.settings.link | default: '#' }}">
+          <div class="o-project-grid__img-wrapper">
+            <figure>
+              <div class="a-ratio-box a-ratio-box--1:1">
+                {% if block.settings.image != blank %}
+                  <img
+                    src="{{ block.settings.image | image_url: width: 500 }}"
+                    alt="{{ block.settings.title }}"
+                    data-sizes="auto"
+                    loading="lazy"
+                  >
+                {% endif %}
+              </div>
+              <figcaption class="f-body--em">{{ block.settings.title }}</figcaption>
+            </figure>
+          </div>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Image Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Explore the gifts selection"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_item",
+      "name": "Collection Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image Slider",
+      "blocks": [
+        {
+          "type": "collection_item",
+          "settings": {
+            "title": "GIFTS FOR HER"
+          }
+        },
+        {
+          "type": "collection_item",
+          "settings": {
+            "title": "GIFTS FOR HIM"
+          }
+        },
+        {
+          "type": "collection_item",
+          "settings": {
+            "title": "HAUTE PARFUMERIE"
+          }
+        },
+        {
+          "type": "collection_item",
+          "settings": {
+            "title": "BELTS"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

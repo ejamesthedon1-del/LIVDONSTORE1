@@ -1,0 +1,58 @@
+{% comment %}
+  Footer section - CELINE-style footer with links
+{% endcomment %}
+
+<footer class="g-footer" id="goToFooter" role="contentinfo">
+  <div class="g-footer__wrapper">
+    <div class="g-footer__nav">
+      <div class="g-footer__col">
+        <button type="button" class="a-btn a-btn--as-link g-footer__location">
+          <strong>UNITED STATES | EN</strong>
+        </button>
+        <a href="{{ pages.contact.url | default: '/pages/contact' }}" class="a-btn a-btn--as-link g-footer__link">
+          CONTACT US
+        </a>
+        <a href="{{ pages.faq.url | default: '/pages/faq' }}" class="a-btn a-btn--as-link g-footer__link">
+          FAQ
+        </a>
+        <a href="{{ pages.legal.url | default: '/pages/legal' }}" class="a-btn a-btn--as-link g-footer__link">
+          LEGAL TERMS
+        </a>
+        <a href="{{ pages.privacy.url | default: '/pages/privacy' }}" class="a-btn a-btn--as-link g-footer__link">
+          PRIVACY POLICY
+        </a>
+        <a href="{{ pages.supply-chain.url | default: '/pages/supply-chain' }}" class="a-btn a-btn--as-link g-footer__link">
+          SUPPLY CHAIN TRANSPARENCY ACT
+        </a>
+        <button type="button" class="a-btn a-btn--as-link g-footer__link">
+          SOCIAL
+        </button>
+        <button type="button" class="a-btn a-btn--as-link g-footer__link">
+          NEWSLETTER LIVDON
+        </button>
+        <a href="{{ pages.do-not-sell.url | default: '/pages/do-not-sell' }}" class="a-btn a-btn--as-link g-footer__link">
+          DO NOT SELL OR SHARE MY PERSONAL INFORMATION
+        </a>
+        <a href="{{ pages.accessibility.url | default: '/pages/accessibility' }}" class="a-btn a-btn--as-link g-footer__link">
+          ACCESSIBILITY
+        </a>
+        <a href="{{ pages.jobs.url | default: '/pages/jobs' }}" class="a-btn a-btn--as-link g-footer__link">
+          JOBS
+        </a>
+        <a href="{{ pages.ethics.url | default: '/pages/ethics' }}" class="a-btn a-btn--as-link g-footer__link">
+          ETHICS AND COMPLIANCE
+        </a>
+        <a href="{{ pages.sitemap.url | default: '/sitemap.xml' }}" class="a-btn a-btn--as-link g-footer__link">
+          SITEMAP
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": []
+}
+{% endschema %}

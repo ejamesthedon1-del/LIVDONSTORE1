@@ -1,0 +1,107 @@
+{% comment %}
+  Header section - CELINE-style header with logo, search, cart, and mobile menu
+{% endcomment %}
+
+<header id="header">
+  <div class="g-header-logo">
+    <h1>
+      <a href="{{ routes.root_url }}" class="a-logo" title="{{ shop.name }} | HOMEPAGE">
+        {% if section.settings.logo != blank %}
+          <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" class="a-logo__img" loading="eager" width="{{ section.settings.logo.width }}" height="{{ section.settings.logo.height }}">
+        {% else %}
+          <span class="a-logo__text">{{ shop.name }}</span>
+        {% endif %}
+      </a>
+    </h1>
+    
+    {% comment %} Desktop Header Controls {% endcomment %}
+    <div class="g-header-desktop">
+      <button type="button" class="a-search a-search--desktop" aria-label="SEARCH" data-search-toggle>
+        <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="9" cy="9" r="6"></circle>
+          <path d="m17 17-4-4"></path>
+        </svg>
+      </button>
+      {% if cart.item_count > 0 %}
+        <div class="minicart">
+          <a class="a-btn a-btn--as-link minicart-link a-cart" href="{{ routes.cart_url }}">
+            <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 7h10l-1 8H6L5 7z"></path>
+              <circle cx="7" cy="17" r="1"></circle>
+              <circle cx="13" cy="17" r="1"></circle>
+            </svg>
+            <span class="a-cart__infos">
+              SHOPPING BAG (<span class="minicart-quantity a-cart__quantity">{{ cart.item_count }}</span>)
+            </span>
+          </a>
+        </div>
+      {% endif %}
+    </div>
+    
+    {% comment %} Mobile Header Controls {% endcomment %}
+    <div class="g-header-mobile">
+      {% if cart.item_count > 0 %}
+        <div class="minicart">
+          <a class="a-btn a-btn--as-link minicart-link a-cart" href="{{ routes.cart_url }}">
+            <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 7h10l-1 8H6L5 7z"></path>
+              <circle cx="7" cy="17" r="1"></circle>
+              <circle cx="13" cy="17" r="1"></circle>
+            </svg>
+            <span class="a-cart__infos a-cart__infos--mobile">
+              (<span class="minicart-quantity a-cart__quantity">{{ cart.item_count }}</span>)
+            </span>
+          </a>
+        </div>
+      {% endif %}
+      
+      {% comment %} Search Icon - Show when scrolled {% endcomment %}
+      <button type="button" class="a-search a-search--mobile-scrolled" aria-label="SEARCH" data-search-toggle style="display: none;">
+        <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="9" cy="9" r="6"></circle>
+          <path d="m17 17-4-4"></path>
+        </svg>
+      </button>
+      
+      {% comment %} Hamburger Menu - Mobile Only {% endcomment %}
+      <button
+        type="button"
+        class="a-ham a-ham--mobile-only"
+        aria-pressed="false"
+        data-menu-toggle
+        aria-label="NAVIGATION"
+      >
+        <span class="a-ham__menu"></span>
+        <span class="a-ham__menu"></span>
+        <span class="a-ham__menu"></span>
+      </button>
+    </div>
+  </div>
+  
+  {% comment %} Mobile Search Input - Below Header {% endcomment %}
+  <div class="g-header-search-mobile" data-search-mobile>
+    <input
+      type="text"
+      placeholder="SEARCH"
+      class="g-header-search-input"
+      aria-label="Search"
+      data-search-input
+    >
+  </div>
+</header>
+
+{% comment %} Mobile Backdrop Mask {% endcomment %}
+<div class="o-sidebar-nav__mask" data-menu-mask style="display: none;"></div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    }
+  ]
+}
+{% endschema %}
