@@ -81,17 +81,19 @@
           {% comment %} Collection Hero Section {% endcomment %}
           <div class="o-collection-hero">
             {% comment %} Collection Hero Image {% endcomment %}
-            {% if collection.image != blank %}
-              <div class="m-media m-media--has-media">
-                <div class="m-media__media a-ratio-box a-ratio-box--4:5">
+            <div class="m-media m-media--has-media">
+              <div class="m-media__media a-ratio-box a-ratio-box--4:5">
+                {% if collection.image != blank %}
                   <img
                     src="{{ collection.image | image_url: width: 1000 }}"
                     alt="{{ collection.title }}"
                     loading="eager"
                   >
-                </div>
+                {% else %}
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
               </div>
-            {% endif %}
+            </div>
             
             {% comment %} Headline and Subtext - Always show {% endcomment %}
             <div class="a-rich-text a-rich-text--main">
