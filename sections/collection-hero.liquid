@@ -1,0 +1,69 @@
+{% comment %}
+  Collection Hero Section - Editable in theme editor
+{% endcomment %}
+
+<div class="o-collection-hero">
+  {% comment %} Collection Hero Image {% endcomment %}
+  <div class="m-media m-media--has-media">
+    <div class="m-media__media a-ratio-box a-ratio-box--4:5">
+      {% if section.settings.collection_hero_image != blank %}
+        <img
+          src="{{ section.settings.collection_hero_image | image_url: width: 1000 }}"
+          alt="{{ section.settings.collection_hero_image.alt | default: collection.title }}"
+          loading="eager"
+        >
+      {% elsif collection.image != blank %}
+        <img
+          src="{{ collection.image | image_url: width: 1000 }}"
+          alt="{{ collection.title }}"
+          loading="eager"
+        >
+      {% else %}
+        {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {% endif %}
+    </div>
+  </div>
+  
+  {% comment %} Headline and Subtext - Always show {% endcomment %}
+  <div class="a-rich-text a-rich-text--main">
+    <h1 class="f-display--02 f-display--bold">
+      {{ section.settings.headline | default: collection.title | default: 'NEW COLLECTION "PRINTEMPS 2026"' }}
+    </h1>
+    <p class="f-body">
+      {{ section.settings.subtext | default: collection.description | default: 'DISCOVER OUR LATEST COLLECTION OF PREMIUM LUXURY ITEMS' }}
+    </p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "collection_hero_image",
+      "label": "Collection Hero Image",
+      "info": "Override the collection image. If not set, uses collection image or placeholder."
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "",
+      "info": "Leave empty to use collection title"
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "",
+      "info": "Leave empty to use collection description"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Hero"
+    }
+  ]
+}
+{% endschema %}
