@@ -1,0 +1,158 @@
+{% comment %}
+  Cart Template - Shopping cart page
+{% endcomment %}
+
+<div class="min-h-screen bg-white" style="width: 100%; max-width: 100vw; overflow-x: hidden;">
+  <div class="a17-grid__right">
+    <div class="home-main homepage">
+      <section class="o-cart cart-page">
+        <div class="o-cart__container">
+          {% if cart.item_count > 0 %}
+            <h1 class="o-cart__title f-body--em">SHOPPING BAG</h1>
+            
+            <form action="{{ routes.cart_url }}" method="post" id="cart-form" class="o-cart__form">
+              <div class="o-cart__items">
+                {% for item in cart.items %}
+                  <div class="o-cart__item" data-cart-item data-key="{{ item.key }}">
+                    <div class="o-cart__item-image">
+                      <a href="{{ item.url }}">
+                        {% if item.image %}
+                          <img 
+                            src="{{ item.image | image_url: width: 200 }}" 
+                            alt="{{ item.title | escape }}"
+                            loading="lazy"
+                            width="{{ item.image.width }}"
+                            height="{{ item.image.height }}"
+                          >
+                        {% else %}
+                          {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+                        {% endif %}
+                      </a>
+                    </div>
+                    
+                    <div class="o-cart__item-details">
+                      <h3 class="o-cart__item-title f-body">
+                        <a href="{{ item.url }}">{{ item.product.title }}</a>
+                      </h3>
+                      
+                      {% unless item.product.has_only_default_variant %}
+                        <p class="o-cart__item-variant f-body--em">
+                          {% for option in item.options_with_values %}
+                            {{ option.name }}: {{ option.value }}{% unless forloop.last %} / {% endunless %}
+                          {% endfor %}
+                        </p>
+                      {% endunless %}
+                      
+                      <div class="o-cart__item-price f-body--em">
+                        {{ item.final_line_price | money }}
+                      </div>
+                    </div>
+                    
+                    <div class="o-cart__item-quantity">
+                      <label for="quantity-{{ item.key }}" class="visually-hidden">Quantity</label>
+                      <input
+                        type="number"
+                        name="updates[]"
+                        id="quantity-{{ item.key }}"
+                        value="{{ item.quantity }}"
+                        min="0"
+                        data-quantity-input
+                        data-key="{{ item.key }}"
+                        class="o-cart__quantity-input"
+                      >
+                    </div>
+                    
+                    <div class="o-cart__item-remove">
+                      <a 
+                        href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0"
+                        class="o-cart__remove-link"
+                        data-remove-item
+                        aria-label="Remove {{ item.product.title }}"
+                      >
+                        Remove
+                      </a>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+              
+              <div class="o-cart__footer">
+                <div class="o-cart__totals">
+                  <div class="o-cart__subtotal">
+                    <span class="f-body--em">SUBTOTAL</span>
+                    <span class="f-body--em">{{ cart.total_price | money }}</span>
+                  </div>
+                  
+                  <p class="o-cart__note f-body">
+                    Shipping, taxes, and discount codes calculated at checkout.
+                  </p>
+                  
+                  <div class="o-cart__actions">
+                    <button 
+                      type="submit" 
+                      name="update" 
+                      class="a-btn o-cart__update-btn"
+                      data-update-cart
+                    >
+                      UPDATE CART
+                    </button>
+                    
+                    <a 
+                      href="{{ routes.cart_url }}?checkout" 
+                      class="a-btn o-cart__checkout-btn"
+                      data-checkout-link
+                    >
+                      CHECKOUT
+                    </a>
+                  </div>
+                  
+                  <a href="{{ routes.all_products_collection_url }}" class="o-cart__continue-link f-body">
+                    ← Continue shopping
+                  </a>
+                </div>
+              </div>
+            </form>
+          {% else %}
+            <div class="o-cart__empty">
+              <h1 class="o-cart__title f-body--em">YOUR CART IS EMPTY</h1>
+              <p class="o-cart__empty-text f-body">
+                Looks like you haven't added anything to your cart yet.
+              </p>
+              <a href="{{ routes.all_products_collection_url }}" class="a-btn o-cart__continue-link">
+                Continue shopping
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Handle quantity updates
+  document.addEventListener('DOMContentLoaded', function() {
+    const quantityInputs = document.querySelectorAll('[data-quantity-input]');
+    const updateBtn = document.querySelector('[data-update-cart]');
+    const form = document.getElementById('cart-form');
+    
+    // Auto-update on quantity change (optional - can be removed if you prefer manual update)
+    quantityInputs.forEach(input => {
+      input.addEventListener('change', function() {
+        if (this.value < 0) this.value = 0;
+        // Optionally auto-submit or wait for update button
+      });
+    });
+    
+    // Handle remove links
+    const removeLinks = document.querySelectorAll('[data-remove-item]');
+    removeLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        // Let the link work normally, or add confirmation
+        if (!confirm('Remove this item from cart?')) {
+          e.preventDefault();
+        }
+      });
+    });
+  });
+</script>

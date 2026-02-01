@@ -599,15 +599,16 @@
         count.setAttribute('aria-label', `${totalItems} items in cart`);
       });
       
-      // Show/hide cart link based on item count
+      // Update cart link visibility (always show, but update count)
       const cartLinks = document.querySelectorAll('.minicart, [data-cart-link]');
       cartLinks.forEach(link => {
-        if (totalItems > 0) {
-          link.style.display = 'flex';
-          link.classList.remove('hidden');
+        // Always show cart link, but update styling if empty
+        link.style.display = 'flex';
+        link.classList.remove('hidden');
+        if (totalItems === 0) {
+          link.classList.add('cart-empty');
         } else {
-          link.style.display = 'none';
-          link.classList.add('hidden');
+          link.classList.remove('cart-empty');
         }
       });
 

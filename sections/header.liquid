@@ -22,38 +22,34 @@
           <path d="m17 17-4-4"></path>
         </svg>
       </button>
-      {% if cart.item_count > 0 %}
-        <div class="minicart">
-          <a class="a-btn a-btn--as-link minicart-link a-cart" href="{{ routes.cart_url }}">
-            <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M5 7h10l-1 8H6L5 7z"></path>
-              <circle cx="7" cy="17" r="1"></circle>
-              <circle cx="13" cy="17" r="1"></circle>
-            </svg>
-            <span class="a-cart__infos">
-              SHOPPING BAG (<span class="minicart-quantity a-cart__quantity">{{ cart.item_count }}</span>)
-            </span>
-          </a>
-        </div>
-      {% endif %}
+      <div class="minicart" data-cart-link>
+        <a class="a-btn a-btn--as-link minicart-link a-cart" href="{{ routes.cart_url }}">
+          <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 7h10l-1 8H6L5 7z"></path>
+            <circle cx="7" cy="17" r="1"></circle>
+            <circle cx="13" cy="17" r="1"></circle>
+          </svg>
+          <span class="a-cart__infos">
+            SHOPPING BAG (<span class="minicart-quantity a-cart__quantity">{{ cart.item_count }}</span>)
+          </span>
+        </a>
+      </div>
     </div>
     
     {% comment %} Mobile Header Controls {% endcomment %}
     <div class="g-header-mobile">
-      {% if cart.item_count > 0 %}
-        <div class="minicart">
-          <a class="a-btn a-btn--as-link minicart-link a-cart" href="{{ routes.cart_url }}">
-            <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M5 7h10l-1 8H6L5 7z"></path>
-              <circle cx="7" cy="17" r="1"></circle>
-              <circle cx="13" cy="17" r="1"></circle>
-            </svg>
-            <span class="a-cart__infos a-cart__infos--mobile">
-              (<span class="minicart-quantity a-cart__quantity">{{ cart.item_count }}</span>)
-            </span>
-          </a>
-        </div>
-      {% endif %}
+      <div class="minicart" data-cart-link>
+        <a class="a-btn a-btn--as-link minicart-link a-cart" href="{{ routes.cart_url }}">
+          <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 7h10l-1 8H6L5 7z"></path>
+            <circle cx="7" cy="17" r="1"></circle>
+            <circle cx="13" cy="17" r="1"></circle>
+          </svg>
+          <span class="a-cart__infos a-cart__infos--mobile">
+            (<span class="minicart-quantity a-cart__quantity">{{ cart.item_count }}</span>)
+          </span>
+        </a>
+      </div>
       
       {% comment %} Search Icon - Show when scrolled {% endcomment %}
       <button type="button" class="a-search a-search--mobile-scrolled" aria-label="SEARCH" data-search-toggle style="display: none;">
