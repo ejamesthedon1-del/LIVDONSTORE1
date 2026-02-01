@@ -326,39 +326,84 @@
     const colorLinks = document.querySelectorAll('[data-color-value]');
     const form = document.querySelector('[data-product-form]');
 
-    if (!form) return;
+    if (!form || !variantIdInput) return;
+
+    // Helper function to update variant ID and UI
+    function updateVariantId(newVariantId) {
+      if (!variantIdInput) return;
+      
+      variantIdInput.value = newVariantId;
+      
+      // Find and check the matching size input
+      const matchingSizeInput = form.querySelector(`[data-variant-id="${newVariantId}"]`);
+      if (matchingSizeInput) {
+        matchingSizeInput.checked = true;
+        
+        // Update visual state of size labels
+        sizeInputs.forEach(input => {
+          const label = form.querySelector(`label[for="${input.id}"]`);
+          if (label) {
+            label.classList.toggle('s-selected', input.checked);
+            label.setAttribute('aria-selected', input.checked ? 'true' : 'false');
+          }
+        });
+      }
+    }
 
     // Update variant ID when size is selected
     sizeInputs.forEach(input => {
       input.addEventListener('change', () => {
         if (input.checked && variantIdInput) {
-          variantIdInput.value = input.value;
+          updateVariantId(input.value);
         }
       });
     });
 
-    // Handle color selection - navigate to variant URL to get correct variant
+    // Handle color selection - extract variant from URL
     colorLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const url = new URL(link.href, window.location.origin);
         const variantId = url.searchParams.get('variant');
-        if (variantId && variantIdInput) {
-          variantIdInput.value = variantId;
-          // Update size selector to match new variant if available
-          const matchingSizeInput = document.querySelector(`[data-variant-id="${variantId}"]`);
-          if (matchingSizeInput && !matchingSizeInput.disabled) {
-            matchingSizeInput.checked = true;
-            variantIdInput.value = variantId;
+        
+        if (variantId) {
+          updateVariantId(variantId);
+          
+          // Update color selector visual state
+          colorLinks.forEach(l => {
+            l.closest('li')?.setAttribute('aria-selected', 'false');
+            l.classList.remove('s-selected');
+          });
+          link.closest('li')?.setAttribute('aria-selected', 'true');
+          link.classList.add('s-selected');
+          
+          // Update color title if it exists
+          const colorTitle = document.querySelector('[data-color-title]');
+          if (colorTitle) {
+            colorTitle.textContent = link.getAttribute('data-color-value') || '';
           }
         }
       });
     });
 
-    // Set initial variant ID from checked size input
-    const checkedSize = form.querySelector('[data-size-input]:checked');
-    if (checkedSize && variantIdInput) {
-      variantIdInput.value = checkedSize.value;
+    // Set initial variant ID from checked size input or URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlVariantId = urlParams.get('variant');
+    
+    if (urlVariantId) {
+      updateVariantId(urlVariantId);
+    } else {
+      const checkedSize = form.querySelector('[data-size-input]:checked');
+      if (checkedSize && variantIdInput) {
+        updateVariantId(checkedSize.value);
+      } else if (sizeInputs.length > 0) {
+        // If no size is checked, check the first available one
+        const firstAvailable = Array.from(sizeInputs).find(input => !input.disabled);
+        if (firstAvailable) {
+          firstAvailable.checked = true;
+          updateVariantId(firstAvailable.value);
+        }
+      }
     }
   }
 
@@ -367,8 +412,117 @@
     const addToCartBtn = document.querySelector('[data-add-to-cart]');
     const buyNowBtn = document.querySelector('[data-buy-now]');
     const form = document.querySelector('[data-product-form]');
+    const liveRegion = document.getElementById('add-to-cart-live');
 
     if (!form) return;
+
+    let isSubmitting = false;
+
+    // Helper function to show error message
+    function showError(message) {
+      if (liveRegion) {
+        liveRegion.textContent = message;
+        liveRegion.setAttribute('role', 'alert');
+      } else {
+        alert(message);
+      }
+    }
+
+    // Helper function to add item to cart
+    async function addItemToCart(variantId, quantity = 1) {
+      if (isSubmitting) return false;
+
+      isSubmitting = true;
+
+      // Disable buttons and show loading state
+      if (addToCartBtn) {
+        addToCartBtn.disabled = true;
+        const originalText = addToCartBtn.textContent;
+        addToCartBtn.textContent = 'ADDING...';
+      }
+      if (buyNowBtn) {
+        buyNowBtn.disabled = true;
+      }
+
+      const formData = new FormData();
+      formData.append('id', variantId);
+      formData.append('quantity', quantity.toString());
+
+      try {
+        const response = await fetch(window.routes.cart_add_url, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        const contentType = response.headers.get('content-type');
+        let data;
+
+        // Check if response is JSON
+        if (contentType && contentType.includes('application/json')) {
+          data = await response.json();
+        } else {
+          // Try to parse as JSON anyway, fallback to text
+          const text = await response.text();
+          try {
+            data = JSON.parse(text);
+          } catch {
+            throw new Error('Invalid response format');
+          }
+        }
+
+        if (response.ok && !data.errors) {
+          // Success
+          if (addToCartBtn) {
+            const originalText = addToCartBtn.getAttribute('data-default-text') || 'ADD TO BAG';
+            const resultText = addToCartBtn.getAttribute('data-result-text') || 'ADDED';
+            addToCartBtn.textContent = resultText;
+            
+            setTimeout(() => {
+              addToCartBtn.textContent = originalText;
+              addToCartBtn.disabled = false;
+            }, 2000);
+          }
+          
+          // Update cart count
+          await updateCartCount();
+          
+          isSubmitting = false;
+          return true;
+        } else {
+          // Error from Shopify
+          const errorMessage = data.description || data.message || 'Error adding to cart. Please try again.';
+          showError(errorMessage);
+          
+          if (addToCartBtn) {
+            addToCartBtn.disabled = false;
+            addToCartBtn.textContent = addToCartBtn.getAttribute('data-default-text') || 'ADD TO BAG';
+          }
+          if (buyNowBtn) {
+            buyNowBtn.disabled = false;
+          }
+          
+          isSubmitting = false;
+          return false;
+        }
+      } catch (error) {
+        console.error('Add to cart error:', error);
+        showError('Error adding to cart. Please check your connection and try again.');
+        
+        if (addToCartBtn) {
+          addToCartBtn.disabled = false;
+          addToCartBtn.textContent = addToCartBtn.getAttribute('data-default-text') || 'ADD TO BAG';
+        }
+        if (buyNowBtn) {
+          buyNowBtn.disabled = false;
+        }
+        
+        isSubmitting = false;
+        return false;
+      }
+    }
 
     // Handle form submission for Add to Cart
     form.addEventListener('submit', async (e) => {
@@ -378,45 +532,18 @@
       const selectedVariantId = variantIdInput ? variantIdInput.value : null;
 
       if (!selectedVariantId) {
-        alert('Please select a size');
+        showError('Please select a size');
         return;
       }
 
-      const formData = new FormData();
-      formData.append('id', selectedVariantId);
-      formData.append('quantity', '1');
-
-      try {
-        const response = await fetch(window.routes.cart_add_url, {
-          method: 'POST',
-          body: formData
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          
-          // Update button text
-          if (addToCartBtn) {
-            const originalText = addToCartBtn.textContent;
-            addToCartBtn.textContent = addToCartBtn.getAttribute('data-result-text') || 'ADDED';
-            addToCartBtn.disabled = true;
-            
-            setTimeout(() => {
-              addToCartBtn.textContent = originalText;
-              addToCartBtn.disabled = false;
-            }, 2000);
-          }
-          
-          // Update cart count in header
-          updateCartCount();
-        } else {
-          const error = await response.json();
-          alert(error.description || 'Error adding to cart');
-        }
-      } catch (error) {
-        console.error('Add to cart error:', error);
-        alert('Error adding to cart. Please try again.');
+      // Check if variant is available (check disabled state of size input)
+      const selectedSizeInput = form.querySelector('[data-size-input]:checked');
+      if (selectedSizeInput && selectedSizeInput.disabled) {
+        showError('This size is currently unavailable');
+        return;
       }
+
+      await addItemToCart(selectedVariantId, 1);
     });
 
     // Handle Buy Now button (Pay button)
@@ -428,57 +555,70 @@
         const selectedVariantId = variantIdInput ? variantIdInput.value : null;
 
         if (!selectedVariantId) {
-          alert('Please select a size');
+          showError('Please select a size');
           return;
         }
 
-        const formData = new FormData();
-        formData.append('id', selectedVariantId);
-        formData.append('quantity', '1');
+        // Check if variant is available
+        const selectedSizeInput = form.querySelector('[data-size-input]:checked');
+        if (selectedSizeInput && selectedSizeInput.disabled) {
+          showError('This size is currently unavailable');
+          return;
+        }
 
-        try {
-          const response = await fetch(window.routes.cart_add_url, {
-            method: 'POST',
-            body: formData
-          });
-
-          if (response.ok) {
-            // Redirect to checkout
-            window.location.href = window.routes.cart_url + '?checkout';
-          } else {
-            const error = await response.json();
-            alert(error.description || 'Error adding to cart');
-          }
-        } catch (error) {
-          console.error('Buy now error:', error);
-          alert('Error adding to cart. Please try again.');
+        const success = await addItemToCart(selectedVariantId, 1);
+        
+        if (success) {
+          // Redirect to checkout
+          window.location.href = window.routes.cart_url + '?checkout';
         }
       });
     }
   }
 
   // Update cart count in header
-  function updateCartCount() {
-    fetch(window.routes.cart_url + '.js')
-      .then(res => res.json())
-      .then(data => {
-        const cartCounts = document.querySelectorAll('.minicart-quantity');
-        const totalItems = data.item_count || 0;
-        cartCounts.forEach(count => {
-          count.textContent = totalItems;
-        });
-        
-        // Show/hide cart link based on item count
-        const cartLinks = document.querySelectorAll('.minicart');
-        cartLinks.forEach(link => {
-          if (totalItems > 0) {
-            link.style.display = 'flex';
-          }
-        });
-      })
-      .catch(error => {
-        console.error('Error updating cart count:', error);
+  async function updateCartCount() {
+    try {
+      const response = await fetch(window.routes.cart_url + '.js', {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch cart');
+      }
+
+      const data = await response.json();
+      const totalItems = data.item_count || 0;
+      
+      // Update cart count displays
+      const cartCounts = document.querySelectorAll('.minicart-quantity, [data-cart-count]');
+      cartCounts.forEach(count => {
+        count.textContent = totalItems;
+        count.setAttribute('aria-label', `${totalItems} items in cart`);
+      });
+      
+      // Show/hide cart link based on item count
+      const cartLinks = document.querySelectorAll('.minicart, [data-cart-link]');
+      cartLinks.forEach(link => {
+        if (totalItems > 0) {
+          link.style.display = 'flex';
+          link.classList.remove('hidden');
+        } else {
+          link.style.display = 'none';
+          link.classList.add('hidden');
+        }
+      });
+
+      // Dispatch custom event for other scripts
+      document.dispatchEvent(new CustomEvent('cart:updated', {
+        detail: { itemCount: totalItems, cart: data }
+      }));
+    } catch (error) {
+      console.error('Error updating cart count:', error);
+      // Don't show error to user, just log it
+    }
   }
 
   // Initialize all functionality when DOM is ready
