@@ -1,0 +1,43 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo": "shopify://shop_images/Asset_1_png.webp"
+        }
+      },
+      "hero-section": {
+        "type": "hero-section",
+        "settings": {
+          "hero_image_1": "shopify://shop_images/CBB45F85-E245-4674-9FB4-3377E874CCEC.jpg",
+          "hero_link_1": "",
+          "hero_link_2": "",
+          "headline": "NEW COLLECTION \"PRINTEMPS 2026\"",
+          "button_text": "DISCOVER OUR NEW COLLECTION",
+          "button_link": ""
+        }
+      },
+      "image-slider": {
+        "type": "image-slider",
+        "settings": {
+          "title": "Explore the gifts selection"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {}
+      }
+    },
+    "content_for_index": []
+  }
+}
