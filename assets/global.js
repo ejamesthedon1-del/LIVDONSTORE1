@@ -874,6 +874,68 @@
     });
   }
 
+  // Filter Dynamic Checkout Buttons - Show only first 2 buttons (Shop Pay and Apple Pay)
+  function filterCheckoutButtons() {
+    const checkoutContainer = document.querySelector('[data-filter-checkout-buttons]');
+    if (!checkoutContainer) return;
+
+    // Function to limit buttons to first 2
+    function limitButtons() {
+      // Get all button containers and iframes
+      const allButtons = Array.from(checkoutContainer.children);
+      
+      // Hide all buttons beyond the first 2
+      allButtons.forEach((button, index) => {
+        if (index >= 2) {
+          button.style.display = 'none';
+        } else {
+          // Ensure first 2 are visible
+          button.style.display = 'block';
+        }
+      });
+      
+      // Also limit iframes directly
+      const iframes = Array.from(checkoutContainer.querySelectorAll('iframe'));
+      iframes.forEach((iframe, index) => {
+        if (index >= 2) {
+          iframe.style.display = 'none';
+          if (iframe.parentElement) {
+            iframe.parentElement.style.display = 'none';
+          }
+        }
+      });
+      
+      // Limit button containers
+      const containers = Array.from(checkoutContainer.querySelectorAll('[data-shopify-buttoncontainer]'));
+      containers.forEach((container, index) => {
+        if (index >= 2) {
+          container.style.display = 'none';
+        }
+      });
+    }
+
+    // Run immediately
+    limitButtons();
+
+    // Run after delays to catch dynamically loaded buttons
+    setTimeout(limitButtons, 500);
+    setTimeout(limitButtons, 1000);
+    setTimeout(limitButtons, 2000);
+    setTimeout(limitButtons, 3000);
+
+    // Watch for new buttons being added
+    const observer = new MutationObserver(() => {
+      limitButtons();
+    });
+
+    if (checkoutContainer) {
+      observer.observe(checkoutContainer, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
   // Initialize all functionality when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
@@ -887,6 +949,7 @@
       initVariantSelection();
       initAddToCart();
       initCartPage(); // Initialize cart page functionality
+      filterCheckoutButtons(); // Filter checkout buttons
       updateCartCount(); // Load initial cart count
     });
   } else {
@@ -900,6 +963,7 @@
     initVariantSelection();
     initAddToCart();
     initCartPage(); // Initialize cart page functionality
+    filterCheckoutButtons(); // Filter checkout buttons
     updateCartCount(); // Load initial cart count
   }
 })();
