@@ -1475,6 +1475,32 @@ body {
   font-weight: 700;
 }
 
+/* Placeholder Product Styles */
+.m-product-listing__meta:not([href]) {
+  cursor: default;
+  pointer-events: none;
+}
+
+.m-product-listing__meta:not([href]):hover {
+  opacity: 1;
+}
+
+.m-tile-slider__slide .placeholder-svg {
+  width: 100%;
+  height: 100%;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.m-tile-slider__slide .placeholder-svg svg {
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+  fill: #999;
+}
+
 .a11y {
   position: absolute;
   width: 1px;
