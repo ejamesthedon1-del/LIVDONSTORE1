@@ -919,42 +919,58 @@
     });
   }
 
-  // Filter Dynamic Checkout Buttons - Show only first 2 buttons (Shop Pay and Apple Pay)
+  // Filter Dynamic Checkout Buttons - Hide Shop Pay, show only Apple Pay
   function filterCheckoutButtons() {
     const checkoutContainer = document.querySelector('[data-filter-checkout-buttons]');
     if (!checkoutContainer) return;
 
-    // Function to limit buttons to first 2
+    // Function to hide Shop Pay and show only Apple Pay
     function limitButtons() {
-      // Get all button containers and iframes
+      // Get all button containers
       const allButtons = Array.from(checkoutContainer.children);
       
-      // Hide all buttons beyond the first 2
-      allButtons.forEach((button, index) => {
-        if (index >= 2) {
+      // Hide Shop Pay buttons and show only Apple Pay
+      allButtons.forEach((button) => {
+        // Check if this button contains Shop Pay
+        const shopPayIframe = button.querySelector('iframe[src*="shop_pay"], iframe[src*="shopify_pay"]');
+        if (shopPayIframe) {
           button.style.display = 'none';
-        } else {
-          // Ensure first 2 are visible - use flex for side-by-side layout
+          return;
+        }
+        
+        // Check if this button contains Apple Pay
+        const applePayIframe = button.querySelector('iframe[src*="apple_pay"]');
+        if (applePayIframe) {
           button.style.display = 'flex';
+          return;
+        }
+        
+        // Hide other payment methods (Google Pay, PayPal, etc.)
+        const otherPayments = button.querySelector('iframe[src*="google_pay"], iframe[src*="paypal"], iframe[src*="amazon_pay"], iframe[src*="venmo"]');
+        if (otherPayments) {
+          button.style.display = 'none';
+          return;
+        }
+        
+        // If we can't identify it, hide it to be safe (only show Apple Pay)
+        button.style.display = 'none';
+      });
+      
+      // Also hide Shop Pay iframes directly
+      const shopPayIframes = checkoutContainer.querySelectorAll('iframe[src*="shop_pay"], iframe[src*="shopify_pay"]');
+      shopPayIframes.forEach((iframe) => {
+        iframe.style.display = 'none';
+        if (iframe.parentElement) {
+          iframe.parentElement.style.display = 'none';
         }
       });
       
-      // Also limit iframes directly
-      const iframes = Array.from(checkoutContainer.querySelectorAll('iframe'));
-      iframes.forEach((iframe, index) => {
-        if (index >= 2) {
-          iframe.style.display = 'none';
-          if (iframe.parentElement) {
-            iframe.parentElement.style.display = 'none';
-          }
-        }
-      });
-      
-      // Limit button containers
-      const containers = Array.from(checkoutContainer.querySelectorAll('[data-shopify-buttoncontainer]'));
-      containers.forEach((container, index) => {
-        if (index >= 2) {
-          container.style.display = 'none';
+      // Hide other unwanted payment methods
+      const unwantedIframes = checkoutContainer.querySelectorAll('iframe[src*="google_pay"], iframe[src*="paypal"], iframe[src*="amazon_pay"], iframe[src*="venmo"]');
+      unwantedIframes.forEach((iframe) => {
+        iframe.style.display = 'none';
+        if (iframe.parentElement) {
+          iframe.parentElement.style.display = 'none';
         }
       });
     }

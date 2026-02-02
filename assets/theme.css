@@ -1899,7 +1899,7 @@ body {
 
 .prices-add-to-cart-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Side by side layout */
   gap: 0.375rem;
   width: 100%;
   max-width: 100%;
@@ -1908,21 +1908,20 @@ body {
 
 /* Shopify Dynamic Checkout Buttons Container */
 .product-dynamic-checkout-buttons {
-  width: 100%;
-  order: -1; /* Show checkout buttons first (on left/top) */
+  width: calc(50% - 0.1875rem); /* Half width minus half gap for side-by-side with Add to Bag */
+  order: -1; /* Show checkout buttons first (on left) */
   max-height: 70px; /* Limit height for side-by-side buttons */
   overflow: hidden;
   display: flex;
-  flex-direction: row; /* Side by side layout */
+  flex-direction: row;
   gap: 0.375rem;
   flex-wrap: nowrap;
 }
 
 .product-dynamic-checkout-buttons > * {
-  width: calc(50% - 0.1875rem) !important; /* Half width minus half gap */
+  width: 100% !important; /* Full width of container */
   margin-bottom: 0 !important;
   flex-shrink: 0;
-  flex: 0 0 calc(50% - 0.1875rem);
 }
 
 /* Hide anything beyond first 2 buttons */
@@ -1968,11 +1967,19 @@ body {
   display: none !important;
 }
 
-/* Hide Google Pay, PayPal, Amazon Pay, Venmo buttons if they appear */
+/* Hide Shop Pay, Google Pay, PayPal, Amazon Pay, Venmo buttons */
+.product-dynamic-checkout-buttons iframe[src*="shop_pay"],
+.product-dynamic-checkout-buttons iframe[src*="shopify_pay"],
 .product-dynamic-checkout-buttons iframe[src*="google_pay"],
 .product-dynamic-checkout-buttons iframe[src*="paypal"],
 .product-dynamic-checkout-buttons iframe[src*="amazon_pay"],
 .product-dynamic-checkout-buttons iframe[src*="venmo"] {
+  display: none !important;
+}
+
+/* Hide Shop Pay button containers */
+.product-dynamic-checkout-buttons [data-shopify-buttoncontainer]:has(iframe[src*="shop_pay"]),
+.product-dynamic-checkout-buttons [data-shopify-buttoncontainer]:has(iframe[src*="shopify_pay"]) {
   display: none !important;
 }
 
@@ -2357,24 +2364,26 @@ body {
     gap: 0.5rem;
     max-width: 100%;
     padding: 0;
+    flex-direction: row; /* Keep side by side on mobile */
   }
 
   .product-dynamic-checkout-buttons {
-    width: 100%;
+    width: calc(50% - 0.25rem); /* Half width minus half gap */
     flex-direction: row;
     gap: 0.375rem;
   }
 
   .product-dynamic-checkout-buttons > * {
-    width: calc(50% - 0.1875rem) !important;
+    width: 100% !important; /* Full width of container */
   }
 
   .add-to-cart {
     padding: 0.875rem 1rem;
     font-size: 0.75rem;
     min-width: 0;
-    width: 100%;
-    max-width: 100%;
+    width: calc(50% - 0.25rem);
+    max-width: calc(50% - 0.25rem);
+    flex: 0 0 calc(50% - 0.25rem);
   }
 
   .m-selector--color .m-selector__list {
