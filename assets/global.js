@@ -889,8 +889,8 @@
         if (index >= 2) {
           button.style.display = 'none';
         } else {
-          // Ensure first 2 are visible
-          button.style.display = 'block';
+          // Ensure first 2 are visible - use flex for side-by-side layout
+          button.style.display = 'flex';
         }
       });
       
