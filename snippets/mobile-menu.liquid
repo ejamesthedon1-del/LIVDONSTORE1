@@ -44,6 +44,17 @@
         </li>
       {% endfor %}
 
+      {% comment %} Accessories Collection Link {% endcomment %}
+      <li>
+        <a
+          href="{% if collections.accessories %}{{ collections.accessories.url }}{% else %}/collections/accessories{% endif %}"
+          class="a-btn a-btn--as-link o-sidebar-nav__link"
+          data-menu-close
+        >
+          ACCESSORIES
+        </a>
+      </li>
+
       {% comment %} Default menu items if no menu is set {% endcomment %}
       {% if linklists.main-menu.links.size == 0 %}
         <li>
