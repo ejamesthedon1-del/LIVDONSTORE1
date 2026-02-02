@@ -1039,7 +1039,10 @@
   // Filter Dynamic Checkout Buttons - Hide Shop Pay, show only Apple Pay
   function filterCheckoutButtons() {
     const checkoutContainer = document.querySelector('[data-filter-checkout-buttons]');
-    if (!checkoutContainer) return;
+    if (!checkoutContainer) {
+      console.log('[Apple Pay Filter] Container not found');
+      return;
+    }
 
     // Helper function to check if element is Shop Pay
     function isShopPay(element) {
@@ -1078,14 +1081,29 @@
       return false;
     }
 
-    // Helper function to check if element is Apple Pay
+    // Helper function to check if element is Apple Pay (enhanced detection)
     function isApplePay(element) {
-      // Check iframe src patterns
+      // Check iframe src patterns - expanded patterns
       const iframes = element.querySelectorAll('iframe');
       for (const iframe of iframes) {
         const src = (iframe.getAttribute('src') || '').toLowerCase();
+        // More comprehensive Apple Pay detection
         if (src.includes('apple_pay') || src.includes('apple-pay') || 
-            src.includes('applepay')) {
+            src.includes('applepay') || src.includes('apple_pay_button') ||
+            src.includes('payment-request-button') && src.includes('apple') ||
+            src.includes('checkout.shopify.com') && (src.includes('apple') || src.includes('payment_request'))) {
+          console.log('[Apple Pay Filter] Found Apple Pay iframe:', src);
+          return true;
+        }
+      }
+      
+      // Check parent container for Apple Pay indicators
+      const parent = element.closest('[data-shopify-buttoncontainer]');
+      if (parent) {
+        const parentId = (parent.getAttribute('id') || '').toLowerCase();
+        const parentClass = (parent.getAttribute('class') || '').toLowerCase();
+        if (parentId.includes('apple') || parentClass.includes('apple')) {
+          console.log('[Apple Pay Filter] Found Apple Pay container');
           return true;
         }
       }
@@ -1093,56 +1111,86 @@
       // Check aria-label
       const ariaLabel = (element.getAttribute('aria-label') || '').toLowerCase();
       if (ariaLabel.includes('apple pay') || ariaLabel.includes('applepay')) {
+        console.log('[Apple Pay Filter] Found Apple Pay via aria-label:', ariaLabel);
         return true;
       }
       
       // Check button text content
       const buttonText = (element.textContent || '').toLowerCase();
       if (buttonText.includes('apple pay') || buttonText.includes('applepay')) {
+        console.log('[Apple Pay Filter] Found Apple Pay via text:', buttonText);
         return true;
+      }
+      
+      // Check data attributes
+      const dataAttrs = Array.from(element.attributes).filter(attr => attr.name.startsWith('data-'));
+      for (const attr of dataAttrs) {
+        const value = attr.value.toLowerCase();
+        if (value.includes('apple')) {
+          console.log('[Apple Pay Filter] Found Apple Pay via data attribute:', attr.name, value);
+          return true;
+        }
       }
       
       return false;
     }
 
-    // Function to hide all buttons, then show only Apple Pay
+    // Function to filter buttons - LESS AGGRESSIVE: Only hide Shop Pay, show everything else
     function limitButtons() {
       // Get all button containers
       const allButtons = Array.from(checkoutContainer.children);
       
-      // Strategy: Hide all buttons first, then show only Apple Pay
-      allButtons.forEach((button) => {
-        // Hide by default
-        button.style.display = 'none';
-        
-        // Check if it's Shop Pay - keep it hidden
+      console.log('[Apple Pay Filter] Processing', allButtons.length, 'buttons');
+      
+      // Strategy: Only hide Shop Pay and other unwanted buttons, show Apple Pay and unknown buttons
+      allButtons.forEach((button, index) => {
+        // Check if it's Shop Pay - hide it
         if (isShopPay(button)) {
+          console.log('[Apple Pay Filter] Hiding Shop Pay button', index);
           button.style.display = 'none';
           return;
         }
         
-        // Check if it's Apple Pay - show it
+        // Check if it's Apple Pay - ensure it's visible
         if (isApplePay(button)) {
+          console.log('[Apple Pay Filter] Showing Apple Pay button', index);
           button.style.display = 'flex';
+          // Also ensure parent container is visible
+          const parent = button.closest('[data-shopify-buttoncontainer]');
+          if (parent) {
+            parent.style.display = 'flex';
+          }
           return;
         }
         
-        // Check for other unwanted payment methods
+        // Check for other unwanted payment methods - hide them
         const iframes = button.querySelectorAll('iframe');
+        let hasUnwantedPayment = false;
         for (const iframe of iframes) {
           const src = (iframe.getAttribute('src') || '').toLowerCase();
           if (src.includes('google_pay') || src.includes('paypal') || 
-              src.includes('amazon_pay') || src.includes('venmo')) {
-            button.style.display = 'none';
-            return;
+              src.includes('amazon_pay') || src.includes('venmo') ||
+              src.includes('shop_pay') || src.includes('shopify_pay')) {
+            hasUnwantedPayment = true;
+            break;
           }
         }
         
-        // If we can't identify it, keep it hidden (only show Apple Pay)
-        button.style.display = 'none';
+        if (hasUnwantedPayment) {
+          console.log('[Apple Pay Filter] Hiding unwanted payment button', index);
+          button.style.display = 'none';
+          return;
+        }
+        
+        // If we can't identify it, SHOW it by default (less aggressive)
+        // This ensures Apple Pay shows even if detection fails
+        if (button.style.display === 'none') {
+          console.log('[Apple Pay Filter] Showing unknown button', index, '(might be Apple Pay)');
+          button.style.display = 'flex';
+        }
       });
       
-      // Also hide Shop Pay iframes directly (aggressive hiding)
+      // Also hide Shop Pay iframes directly
       const allIframes = checkoutContainer.querySelectorAll('iframe');
       allIframes.forEach((iframe) => {
         const src = (iframe.getAttribute('src') || '').toLowerCase();
@@ -1153,6 +1201,13 @@
           const parent = iframe.closest('[data-shopify-buttoncontainer]');
           if (parent) {
             parent.style.display = 'none';
+          }
+        } else if (src.includes('apple')) {
+          // Ensure Apple Pay iframes are visible
+          iframe.style.display = 'block';
+          const parent = iframe.closest('[data-shopify-buttoncontainer]');
+          if (parent) {
+            parent.style.display = 'flex';
           }
         }
       });
@@ -1178,7 +1233,7 @@
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: ['src', 'aria-label', 'style', 'class']
+        attributeFilter: ['src', 'aria-label', 'style', 'class', 'id']
       });
     }
   }

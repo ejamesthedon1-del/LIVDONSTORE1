@@ -2046,14 +2046,10 @@ body {
   flex-shrink: 0;
 }
 
-/* Hide anything beyond first 2 buttons */
-.product-dynamic-checkout-buttons > *:nth-child(n+3) {
-  display: none !important;
-}
-
 /* Style Shopify's dynamic checkout buttons */
 .product-dynamic-checkout-buttons [data-shopify-buttoncontainer] {
   width: 100%;
+  display: flex !important; /* Ensure containers are visible by default */
 }
 
 .product-dynamic-checkout-buttons iframe {
@@ -2083,14 +2079,9 @@ body {
   display: none;
 }
 
-/* Limit to first 2 buttons only (Shop Pay and Apple Pay) */
-.product-dynamic-checkout-buttons [data-shopify-buttoncontainer]:nth-of-type(n+3),
-.product-dynamic-checkout-buttons iframe:nth-of-type(n+3) {
-  display: none !important;
-}
-
 /* Hide Shop Pay, Google Pay, PayPal, Amazon Pay, Venmo buttons - CSS fallback */
 /* Note: JavaScript handles the actual filtering, this is just a fallback */
+/* Only hide specific unwanted payment methods, not by position */
 .product-dynamic-checkout-buttons iframe[src*="shop_pay"],
 .product-dynamic-checkout-buttons iframe[src*="shopify_pay"],
 .product-dynamic-checkout-buttons iframe[src*="shop-pay"],
@@ -2099,6 +2090,14 @@ body {
 .product-dynamic-checkout-buttons iframe[src*="paypal"],
 .product-dynamic-checkout-buttons iframe[src*="amazon_pay"],
 .product-dynamic-checkout-buttons iframe[src*="venmo"] {
+  display: none !important;
+}
+
+/* Hide Shop Pay containers */
+.product-dynamic-checkout-buttons [data-shopify-buttoncontainer]:has(iframe[src*="shop_pay"]),
+.product-dynamic-checkout-buttons [data-shopify-buttoncontainer]:has(iframe[src*="shopify_pay"]),
+.product-dynamic-checkout-buttons [data-shopify-buttoncontainer]:has(iframe[src*="shop-pay"]),
+.product-dynamic-checkout-buttons [data-shopify-buttoncontainer]:has(iframe[src*="shopify-pay"]) {
   display: none !important;
 }
 
