@@ -1958,7 +1958,7 @@ body {
 .o-product__header-titles {
   display: flex;
   flex-direction: column;
-  gap: 0.125rem; /* Much closer on mobile */
+  gap: 0.0625rem; /* Very close on mobile - 2x closer */
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
