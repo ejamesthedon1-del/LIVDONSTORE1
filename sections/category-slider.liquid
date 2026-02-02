@@ -28,14 +28,14 @@
       
       {% comment %} Bottoms Category {% endcomment %}
       <li class="o-category-slider__item">
-        <a href="{{ collections.bottoms.url | default: '/collections/bottoms' }}" class="o-category-slider__link">
+        <a href="{% if collections.bottoms %}{{ collections.bottoms.url }}{% else %}/collections/bottoms{% endif %}" class="o-category-slider__link">
           <span class="o-category-slider__text">Bottoms</span>
         </a>
       </li>
       
       {% comment %} Accessories Category {% endcomment %}
       <li class="o-category-slider__item">
-        <a href="{{ collections.accessories.url | default: '/collections/accessories' }}" class="o-category-slider__link">
+        <a href="{% if collections.accessories %}{{ collections.accessories.url }}{% else %}/collections/accessories{% endif %}" class="o-category-slider__link">
           <span class="o-category-slider__text">Accessories</span>
         </a>
       </li>
