@@ -558,8 +558,11 @@ body {
   margin-bottom: 0; /* Ensure no extra spacing below */
   color: #666;
   font-weight: 400;
-  max-width: 24em; /* Match headline width - breaks after "2026" (after the "6") */
+  max-width: 24em; /* Match headline width */
   word-wrap: break-word;
+  text-align: center; /* Center the subtext */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (min-width: 768px) {
