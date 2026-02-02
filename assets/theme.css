@@ -2070,12 +2070,12 @@ body {
 }
 
 .m-selector--color .m-selector__list {
-  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
   max-width: 100%;
 }
 
 .m-selector--size .m-selector__list {
-  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); /* Same size as color */
   max-width: 100%;
   gap: 0.5rem;
 }
@@ -2103,13 +2103,14 @@ body {
   aspect-ratio: 1 / 1;
   border-radius: 0;
   padding: 0;
-  min-height: 40px;
+  min-height: 35px; /* Smaller, same as size */
+  min-width: 35px; /* Same as size */
 }
 
 .m-selector--size .m-selector__item {
   aspect-ratio: 1 / 1;
-  min-height: 50px;
-  min-width: 50px;
+  min-height: 35px; /* Same size as color */
+  min-width: 35px; /* Same size as color */
 }
 
 .m-selector__item:hover:not(.s-disabled) {
@@ -2647,19 +2648,24 @@ body {
 
   .m-selector--color .m-selector__list {
     max-width: 100%;
-    grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); /* Smaller on mobile */
   }
 
   .m-selector--size .m-selector__list {
     max-width: 100%;
-    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); /* Same size as color */
     gap: 0.5rem;
+  }
+  
+  .m-selector--color .m-selector__item {
+    min-height: 30px; /* Smaller on mobile, same as size */
+    min-width: 30px;
   }
   
   .m-selector--size .m-selector__item {
     aspect-ratio: 1 / 1;
-    min-height: 45px;
-    min-width: 45px;
+    min-height: 30px; /* Same size as color */
+    min-width: 30px; /* Same size as color */
   }
 }
 
