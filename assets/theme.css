@@ -1895,7 +1895,7 @@ body {
   max-width: 100%;
   height: auto;
   display: block;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 1 / 1; /* Perfect square */
   object-fit: cover;
 }
 
