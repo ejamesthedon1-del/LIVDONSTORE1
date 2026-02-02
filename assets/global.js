@@ -76,13 +76,8 @@
       window.closeMobileMenu();
     }
 
-    // Remove any existing listeners first
-    const newToggle = menuToggle.cloneNode(true);
-    menuToggle.parentNode.replaceChild(newToggle, menuToggle);
-    const newMenuToggle = document.querySelector('[data-menu-toggle]');
-
-    // Attach event listeners
-    newMenuToggle.addEventListener('click', openMenu);
+    // Attach event listeners directly
+    menuToggle.addEventListener('click', openMenu, { once: false, passive: false });
     
     if (menuClose) {
       menuClose.addEventListener('click', closeMenu);
