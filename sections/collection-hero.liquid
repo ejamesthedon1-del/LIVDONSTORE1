@@ -27,18 +27,10 @@
   {% comment %} Headline and Subtext - Always show {% endcomment %}
   <div class="a-rich-text a-rich-text--main">
     <h1 class="f-display--02 f-display--bold">
-      {% if section.settings.headline != blank %}
-        {{ section.settings.headline }}
-      {% else %}
-        {{ collection.title | default: 'NEW COLLECTION "PRINTEMPS 2026"' }}
-      {% endif %}
+      {{ section.settings.headline | default: collection.title | default: 'NEW COLLECTION "PRINTEMPS 2026"' }}
     </h1>
     <p class="f-body">
-      {% if section.settings.subtext != blank %}
-        {{ section.settings.subtext }}
-      {% else %}
-        {{ collection.description | default: 'DISCOVER OUR LATEST COLLECTION OF PREMIUM LUXURY ITEMS' }}
-      {% endif %}
+      {{ section.settings.subtext | default: collection.description | default: 'DISCOVER OUR LATEST COLLECTION OF PREMIUM LUXURY ITEMS' }}
     </p>
   </div>
 </div>
@@ -56,9 +48,9 @@
     {
       "type": "text",
       "id": "headline",
-      "label": "Collection Name",
+      "label": "Headline",
       "default": "",
-      "info": "Enter the collection name to display. Leave empty to use the collection's default title."
+      "info": "Leave empty to use collection title"
     },
     {
       "type": "textarea",
