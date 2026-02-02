@@ -1521,12 +1521,24 @@ body {
   color: #fff;
 }
 
-/* 1080x1080 square product images in 1-column gallery */
+/* Proportional square product images in 1-column gallery */
 .o-listing-grid--2-columns .m-tile-slider__visual {
   aspect-ratio: 1 / 1; /* Perfect square */
-  max-width: 1080px; /* 1080x1080 size */
+  max-width: 600px; /* Smaller, more proportional size */
   width: 100%;
   margin: 0 auto; /* Center the images */
+}
+
+@media (min-width: 768px) {
+  .o-listing-grid--2-columns .m-tile-slider__visual {
+    max-width: 700px; /* Slightly larger on tablet/desktop */
+  }
+}
+
+@media (min-width: 1024px) {
+  .o-listing-grid--2-columns .m-tile-slider__visual {
+    max-width: 800px; /* Larger on desktop but still proportional */
+  }
 }
 
 .m-tile-slider__controls {
