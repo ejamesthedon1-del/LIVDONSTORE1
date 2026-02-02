@@ -553,7 +553,7 @@ body {
   margin-bottom: 0; /* Ensure no extra spacing below */
   color: #666;
   font-weight: 400;
-  max-width: 22em; /* Match headline width up to "2026" - approximately 22 characters */
+  max-width: 24em; /* Match headline width - breaks after "2026" (after the "6") */
   word-wrap: break-word;
 }
 
@@ -561,7 +561,7 @@ body {
   .o-hero__subtext {
     font-size: 0.75rem;
     margin-top: 0.5rem; /* Half inch spacing (~8px) */
-    max-width: 18em; /* Adjusted for larger headline font */
+    max-width: 20em; /* Match headline width - breaks after "2026" (after the "6") */
   }
 }
 
