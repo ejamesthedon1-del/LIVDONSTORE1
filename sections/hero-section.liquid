@@ -38,6 +38,11 @@
     <h1 class="f-display--02 f-display--bold">
       {{ section.settings.headline | default: 'NEW COLLECTION "PRINTEMPS 2026"' }}
     </h1>
+    {% if section.settings.subtext != blank %}
+      <p class="o-hero__subtext f-body">
+        {{ section.settings.subtext }}
+      </p>
+    {% endif %}
   </div>
 </div>
 
@@ -70,6 +75,12 @@
       "id": "headline",
       "label": "Headline",
       "default": "NEW COLLECTION \"PRINTEMPS 2026\""
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "Items below are handpainted in our studio in small batches to ensure quality and delicacy of craftmanship"
     },
     {
       "type": "text",

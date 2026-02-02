@@ -539,6 +539,24 @@ body {
   }
 }
 
+/* Hero Subtext */
+.o-hero__subtext {
+  font-size: 0.625rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  margin-top: 0.75rem;
+  color: #666;
+  font-weight: 400;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .o-hero__subtext {
+    font-size: 0.75rem;
+    margin-top: 1rem;
+  }
+}
+
 /* Category Slider */
 .o-category-slider {
   width: 100%;
