@@ -8,107 +8,74 @@
 
   // Mobile Menu Toggle
   function initMobileMenu() {
-    try {
-      const menuToggle = document.querySelector('[data-menu-toggle]');
-      const menuClose = document.querySelector('[data-menu-close]');
-      const mobileMenu = document.querySelector('[data-mobile-menu]');
-      const menuMask = document.querySelector('[data-menu-mask]');
-      const menuLinks = document.querySelectorAll('[data-menu-close]');
+    const menuToggle = document.querySelector('[data-menu-toggle]');
+    const menuClose = document.querySelector('[data-menu-close]');
+    const mobileMenu = document.querySelector('[data-mobile-menu]');
+    const menuMask = document.querySelector('[data-menu-mask]');
+    const menuLinks = document.querySelectorAll('[data-menu-close]');
 
-      // Debug logging
-      console.log('Mobile menu initialization:', {
+    if (!menuToggle || !mobileMenu) {
+      console.warn('Mobile menu elements not found', {
         menuToggle: !!menuToggle,
-        menuClose: !!menuClose,
-        mobileMenu: !!mobileMenu,
-        menuMask: !!menuMask,
-        menuLinks: menuLinks.length
+        mobileMenu: !!mobileMenu
       });
-
-      if (!menuToggle) {
-        console.warn('Mobile menu toggle button not found');
-        return;
-      }
-
-      if (!mobileMenu) {
-        console.warn('Mobile menu element not found');
-        return;
-      }
-
-      function openMenu(e) {
-        if (e) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        
-        console.log('Opening mobile menu');
-        
-        try {
-          mobileMenu.classList.add('o-sidebar-nav--open');
-          if (menuMask) {
-            menuMask.style.display = 'block';
-            menuMask.style.opacity = '1';
-            menuMask.style.visibility = 'visible';
-          }
-          document.body.style.overflow = 'hidden';
-          menuToggle.setAttribute('aria-pressed', 'true');
-        } catch (error) {
-          console.error('Error opening menu:', error);
-        }
-      }
-
-      function closeMenu(e) {
-        if (e) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        
-        console.log('Closing mobile menu');
-        
-        try {
-          mobileMenu.classList.remove('o-sidebar-nav--open');
-          if (menuMask) {
-            menuMask.style.display = 'none';
-            menuMask.style.opacity = '0';
-            menuMask.style.visibility = 'hidden';
-          }
-          document.body.style.overflow = '';
-          menuToggle.setAttribute('aria-pressed', 'false');
-        } catch (error) {
-          console.error('Error closing menu:', error);
-        }
-      }
-
-      // Attach event listeners
-      menuToggle.addEventListener('click', openMenu);
-      
-      if (menuClose) {
-        menuClose.addEventListener('click', closeMenu);
-      } else {
-        console.warn('Menu close button not found');
-      }
-      
-      if (menuMask) {
-        menuMask.addEventListener('click', closeMenu);
-      } else {
-        console.warn('Menu mask not found');
-      }
-      
-      // Close menu when clicking menu links
-      menuLinks.forEach(link => {
-        link.addEventListener('click', closeMenu);
-      });
-
-      // Close menu on escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && mobileMenu.classList.contains('o-sidebar-nav--open')) {
-          closeMenu(e);
-        }
-      });
-
-      console.log('Mobile menu initialized successfully');
-    } catch (error) {
-      console.error('Error initializing mobile menu:', error);
+      return;
     }
+
+    function openMenu(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      mobileMenu.classList.add('o-sidebar-nav--open');
+      if (menuMask) {
+        menuMask.style.display = 'block';
+        menuMask.style.opacity = '1';
+        menuMask.style.visibility = 'visible';
+      }
+      document.body.style.overflow = 'hidden';
+      menuToggle.setAttribute('aria-pressed', 'true');
+    }
+
+    function closeMenu(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      mobileMenu.classList.remove('o-sidebar-nav--open');
+      if (menuMask) {
+        menuMask.style.display = 'none';
+        menuMask.style.opacity = '0';
+        menuMask.style.visibility = 'hidden';
+      }
+      document.body.style.overflow = '';
+      menuToggle.setAttribute('aria-pressed', 'false');
+    }
+
+    // Attach event listeners - use capture phase to ensure it fires
+    menuToggle.addEventListener('click', openMenu, true);
+    
+    if (menuClose) {
+      menuClose.addEventListener('click', closeMenu, true);
+    }
+    
+    if (menuMask) {
+      menuMask.addEventListener('click', closeMenu, true);
+    }
+    
+    // Close menu when clicking menu links
+    menuLinks.forEach(link => {
+      link.addEventListener('click', closeMenu, true);
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('o-sidebar-nav--open')) {
+        closeMenu(e);
+      }
+    });
   }
 
   // Search Toggle
@@ -1195,23 +1162,7 @@
   }
 
   // Initialize all functionality when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initMobileMenu();
-      initSearch();
-      initMenuSearch();
-      initProductTileSlider();
-      initProductGallery();
-      initProductInfoSections();
-      initSortDropdown();
-      initProductDrawer();
-      initVariantSelection();
-      initAddToCart();
-      initCartPage(); // Initialize cart page functionality
-      filterCheckoutButtons(); // Filter checkout buttons
-      updateCartCount(); // Load initial cart count
-    });
-  } else {
+  function initializeAll() {
     initMobileMenu();
     initSearch();
     initMenuSearch();
@@ -1226,4 +1177,15 @@
     filterCheckoutButtons(); // Filter checkout buttons
     updateCartCount(); // Load initial cart count
   }
+
+  // Try multiple initialization strategies to ensure it runs
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeAll);
+  } else {
+    // DOM already loaded, run immediately
+    initializeAll();
+  }
+
+  // Fallback: Also try after a short delay in case DOM isn't fully ready
+  setTimeout(initializeAll, 100);
 })();
