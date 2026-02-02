@@ -1415,17 +1415,18 @@ body {
   right: 0.5rem;
   width: 2.5rem;
   height: 2.5rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: #fff;
   border: 1px solid #000;
   border-radius: 0;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 100;
   transition: all 0.3s ease;
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 

@@ -1344,15 +1344,22 @@
       button.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
         
         const productHandle = button.getAttribute('data-product-handle');
         currentProductId = button.getAttribute('data-product-id');
         
-        if (!productHandle) return;
+        if (!productHandle) {
+          console.error('No product handle found');
+          return;
+        }
 
         // Fetch product data
         try {
           const response = await fetch(`/products/${productHandle}.js`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
           const product = await response.json();
           
           // Populate modal with product data
@@ -1365,7 +1372,7 @@
           console.error('Error loading product:', error);
           alert('Error loading product. Please try again.');
         }
-      });
+      }, true); // Use capture phase to ensure it fires first
     });
 
     // Close modal
