@@ -68,6 +68,22 @@
           </span>
         </p>
       {% endif %}
+      
+      {% comment %} Color Variants {% endcomment %}
+      {% assign color_option = product.options_with_values | where: 'name', 'Color' | first %}
+      {% if color_option != blank and color_option.values.size > 1 %}
+        <div class="m-product-listing__color-variants">
+          {% for value in color_option.values limit: 6 %}
+            <a 
+              href="{{ product.url }}?variant={{ product.variants[forloop.index0].id }}"
+              class="m-product-listing__color-variant"
+              style="background: linear-gradient(135deg, {{ value | handleize }} 50%, {{ value | handleize }} 50%);"
+              aria-label="Color: {{ value }}"
+              title="{{ value }}"
+            ></a>
+          {% endfor %}
+        </div>
+      {% endif %}
     </a>
   </div>
 </li>
