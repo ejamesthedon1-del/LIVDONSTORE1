@@ -1685,6 +1685,21 @@
   }
 
   // Initialize all functionality when DOM is ready
+  function initNotifyMe() {
+    const notifyLinks = document.querySelectorAll('[data-notify-me]');
+    notifyLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        // Get collection name from page title or breadcrumb
+        const collectionTitle = document.querySelector('.m-breadcrumb h1')?.textContent?.trim() || 'this collection';
+        const emailSubject = encodeURIComponent(`Notify me when ${collectionTitle} has new items`);
+        const emailBody = encodeURIComponent(`Hi,\n\nPlease notify me when ${collectionTitle} has new items available.\n\nThank you!`);
+        // Open email client or contact form
+        window.location.href = `mailto:${window.Shopify?.shop?.email || 'info@livdon.com'}?subject=${emailSubject}&body=${emailBody}`;
+      });
+    });
+  }
+
   function initializeAll() {
     initMobileMenu();
     initSearch();
@@ -1693,6 +1708,7 @@
     initProductGallery();
     initProductInfoSections();
     initSortDropdown();
+    initNotifyMe();
     // initProductDrawer(); // Disabled - sticky footer removed
     // enhanceProductDrawer(); // Disabled - sticky footer removed
     // initStickyFooterScroll(); // Disabled - sticky footer removed

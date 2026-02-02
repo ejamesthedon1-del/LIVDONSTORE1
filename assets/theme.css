@@ -1363,6 +1363,50 @@ body {
   position: relative;
 }
 
+/* Collection Empty State */
+.o-collection-empty {
+  text-align: center;
+  padding: 4rem 1rem;
+  margin: 2rem 0;
+}
+
+.o-collection-empty__message {
+  font-size: 0.625rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: #000;
+  margin-bottom: 1rem;
+}
+
+.o-collection-empty__notify-link {
+  font-size: 0.625rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: #000;
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+  transition: opacity 0.3s ease;
+  display: inline-block;
+}
+
+.o-collection-empty__notify-link:hover {
+  opacity: 0.6;
+}
+
+@media (min-width: 768px) {
+  .o-collection-empty {
+    padding: 6rem 2rem;
+  }
+  
+  .o-collection-empty__message {
+    font-size: 0.75rem;
+  }
+  
+  .o-collection-empty__notify-link {
+    font-size: 0.75rem;
+  }
+}
+
 /* Product Grid Section */
 .o-product-grid-section {
   padding: 2rem 1rem;

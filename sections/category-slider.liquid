@@ -11,6 +11,13 @@
         {% assign is_homepage = true %}
       {% endif %}
       
+      {% comment %} ALL Category {% endcomment %}
+      <li class="o-category-slider__item">
+        <a href="{{ collections.all.url | default: '/collections/all' }}" class="o-category-slider__link {% if collection.handle == 'all' or (is_homepage and collection.handle == blank) %}o-category-slider__link--active{% endif %}">
+          <span class="o-category-slider__text">ALL</span>
+        </a>
+      </li>
+      
       {% comment %} TOPS Category {% endcomment %}
       <li class="o-category-slider__item">
         <a href="{% if collections.tops %}{{ collections.tops.url }}{% else %}/collections/tops{% endif %}" class="o-category-slider__link {% if collection.handle == 'tops' or is_homepage %}o-category-slider__link--active{% endif %}">
