@@ -1422,10 +1422,11 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 20;
+  z-index: 100;
   transition: all 0.3s ease;
   opacity: 1;
   pointer-events: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .m-tile-slider__quick-add:hover {
@@ -1551,11 +1552,13 @@ body {
   opacity: 0;
   transition: opacity 0.3s ease;
   display: block;
+  z-index: 1;
 }
 
 .m-tile-slider__slide--active {
   opacity: 1;
   position: relative;
+  z-index: 1;
 }
 
 .m-tile-slider__slide img {
