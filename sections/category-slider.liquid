@@ -20,7 +20,7 @@
       
       {% comment %} TOPS Category {% endcomment %}
       <li class="o-category-slider__item">
-        <a href="{% if collections.tops %}{{ collections.tops.url }}{% else %}/collections/tops{% endif %}" class="o-category-slider__link {% if collection.handle == 'tops' or is_homepage %}o-category-slider__link--active{% endif %}">
+        <a href="{% if collections.tops %}{{ collections.tops.url }}{% else %}/collections/tops{% endif %}" class="o-category-slider__link {% if collection.handle == 'tops' %}o-category-slider__link--active{% endif %}">
           <span class="o-category-slider__text">TOPS</span>
         </a>
       </li>
