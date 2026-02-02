@@ -1803,8 +1803,9 @@ body {
 }
 
 .m-selector--size .m-selector__list {
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
   max-width: 100%;
+  gap: 0.5rem;
 }
 
 .m-selector__item {
@@ -1834,7 +1835,9 @@ body {
 }
 
 .m-selector--size .m-selector__item {
+  aspect-ratio: 1 / 1;
   min-height: 50px;
+  min-width: 50px;
 }
 
 .m-selector__item:hover:not(.s-disabled) {
@@ -2377,7 +2380,14 @@ body {
 
   .m-selector--size .m-selector__list {
     max-width: 100%;
-    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .m-selector--size .m-selector__item {
+    aspect-ratio: 1 / 1;
+    min-height: 45px;
+    min-width: 45px;
   }
 }
 
