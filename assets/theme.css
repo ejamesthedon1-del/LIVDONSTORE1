@@ -593,11 +593,22 @@ body {
   display: block;
   text-decoration: none;
   color: #000;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, border-bottom 0.3s ease;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 0.25rem;
 }
 
 .o-category-slider__link:hover {
   opacity: 0.6;
+}
+
+.o-category-slider__link--active {
+  border-bottom-color: #000;
+  opacity: 1;
+}
+
+.o-category-slider__link--active:hover {
+  opacity: 1;
 }
 
 .o-category-slider__text {

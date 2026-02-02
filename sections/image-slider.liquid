@@ -10,11 +10,7 @@
 
 {% if selected_collection.products.size > 0 %}
   <div class="o-product-gallery-section">
-    {% if section.settings.title != blank %}
-      <h3 class="o-product-gallery-section__title f-body--em">
-        {{ section.settings.title }}
-      </h3>
-    {% endif %}
+    {% comment %} Title removed - no headline displayed {% endcomment %}
     
     <ul class="o-listing-grid o-listing-grid--2-columns" data-behavior="oListingGrid">
       {% assign product_count = selected_collection.products.size %}
@@ -41,11 +37,7 @@
 {% else %}
   {% comment %} Fallback if no products - show 3 placeholders {% endcomment %}
   <div class="o-product-gallery-section">
-    {% if section.settings.title != blank %}
-      <h3 class="o-product-gallery-section__title f-body--em">
-        {{ section.settings.title }}
-      </h3>
-    {% endif %}
+    {% comment %} Title removed - no headline displayed {% endcomment %}
     
     <ul class="o-listing-grid o-listing-grid--2-columns" data-behavior="oListingGrid">
       {% for i in (1..3) %}
