@@ -16,9 +16,35 @@
       {% assign product_count = selected_collection.products.size %}
       {% assign display_limit = section.settings.product_limit %}
       
-      {% comment %} Show actual products {% endcomment %}
-      {% for product in selected_collection.products limit: display_limit %}
-        {% render 'product-tile', product: product %}
+      {% comment %} Find navy hoodie and display it first {% endcomment %}
+      {% assign navy_hoodie = null %}
+      {% for product in selected_collection.products %}
+        {% assign product_title_lower = product.title | downcase %}
+        {% if product_title_lower contains 'navy' and product_title_lower contains 'hoodie' %}
+          {% assign navy_hoodie = product %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+      
+      {% comment %} Show navy hoodie first if found {% endcomment %}
+      {% if navy_hoodie != null %}
+        {% render 'product-tile', product: navy_hoodie %}
+      {% endif %}
+      
+      {% comment %} Show remaining products (excluding navy hoodie if already shown) {% endcomment %}
+      {% assign products_shown = 0 %}
+      {% if navy_hoodie != null %}
+        {% assign products_shown = 1 %}
+      {% endif %}
+      {% for product in selected_collection.products %}
+        {% if products_shown >= display_limit %}
+          {% break %}
+        {% endif %}
+        {% assign product_title_lower = product.title | downcase %}
+        {% unless product_title_lower contains 'navy' and product_title_lower contains 'hoodie' %}
+          {% render 'product-tile', product: product %}
+          {% assign products_shown = products_shown | plus: 1 %}
+        {% endunless %}
       {% endfor %}
       
       {% comment %} Add 3 placeholder products if we have fewer products than the limit {% endcomment %}
