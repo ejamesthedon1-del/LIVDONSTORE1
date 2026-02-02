@@ -1240,7 +1240,7 @@
     initVariantSelection();
     initAddToCart();
     initCartPage(); // Initialize cart page functionality
-    filterCheckoutButtons(); // Filter checkout buttons
+    // filterCheckoutButtons(); // Disabled - show all payment options
     updateCartCount(); // Load initial cart count
   }
 
