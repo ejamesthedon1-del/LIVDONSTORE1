@@ -36,6 +36,37 @@
                 <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
                 {% render 'product-selectors', product: product %}
 
+                {% comment %} Payment Options and Add to Bag - After Size Selection {% endcomment %}
+                <div class="a11y" aria-live="polite" id="add-to-cart-live" role="status"></div>
+                
+                <div class="prices-add-to-cart-actions o-product__action-ctas">
+                  {% comment %} Shopify Dynamic Checkout Buttons {% endcomment %}
+                  {% if additional_checkout_buttons %}
+                    <div class="product-dynamic-checkout-buttons" data-filter-checkout-buttons>
+                      {{ content_for_additional_checkout_buttons }}
+                    </div>
+                  {% endif %}
+
+                  {% comment %} Add to Bag Button {% endcomment %}
+                  <button
+                    class="add-to-cart a-btn"
+                    type="submit"
+                    data-add-to-cart
+                    data-default-text="ADD TO BAG"
+                    data-result-text="ADDED"
+                  >
+                    ADD TO BAG
+                  </button>
+                </div>
+
+                {% comment %} Terms of Service {% endcomment %}
+                <p class="f-body a-text a-text--secondary a-text--apple-pay-notice">
+                  BY PLACING YOUR ORDER YOU AGREE TO THE
+                  <a href="/pages/terms-of-service" class="policy-link link--on-gray-bg" target="_blank" rel="noopener noreferrer">
+                    TERMS OF SERVICE
+                  </a>
+                </p>
+
                 {% comment %} Estimated Delivery Date {% endcomment %}
                 <div class="o-product__delivery-info">
                   <p class="f-body--em">
@@ -73,58 +104,6 @@
                     </div>
                   </div>
                 {% endif %}
-
-                {% comment %} CTA Actions {% endcomment %}
-                <div class="o-product__cta-actions" data-oproductscroll-actions="">
-                  <div class="o-product__cta-actions-inner">
-                    {% comment %} Puller Signal {% endcomment %}
-                    <div class="o-product__cta-puller" data-puller>
-                      <div class="o-product__cta-puller-handle"></div>
-                      <div class="o-product__header-titles">
-                        <h1 class="o-product__title f-body">
-                          <span class="o-product__title-truncate f-body">{{ product.title }}</span>
-                        </h1>
-                        <p class="f-body--em">
-                          <span class="prices">
-                            <strong data-description="value" class="f-body--em">
-                              {{ product.price | money }} {{ cart.currency.iso_code }}
-                            </strong>
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div class="a11y" aria-live="polite" id="add-to-cart-live" role="status"></div>
-                    
-                    <div class="prices-add-to-cart-actions o-product__action-ctas">
-                      {% comment %} Shopify Dynamic Checkout Buttons - Filtered to show only Apple Pay (Shop Pay hidden) {% endcomment %}
-                      {% if additional_checkout_buttons %}
-                        <div class="product-dynamic-checkout-buttons" data-filter-checkout-buttons>
-                          {{ content_for_additional_checkout_buttons }}
-                        </div>
-                      {% endif %}
-
-                      {% comment %} Add to Bag Button {% endcomment %}
-                      <button
-                        class="add-to-cart a-btn"
-                        type="submit"
-                        data-add-to-cart
-                        data-default-text="ADD TO BAG"
-                        data-result-text="ADDED"
-                      >
-                        ADD TO BAG
-                      </button>
-                    </div>
-
-                    {% comment %} Terms of Service {% endcomment %}
-                    <p class="f-body a-text a-text--secondary a-text--apple-pay-notice">
-                      BY PLACING YOUR ORDER YOU AGREE TO THE
-                      <a href="/pages/terms-of-service" class="policy-link link--on-gray-bg" target="_blank" rel="noopener noreferrer">
-                        TERMS OF SERVICE
-                      </a>
-                    </p>
-                  </div>
-                </div>
               </form>
             </div>
           </div>

@@ -1336,9 +1336,9 @@
     initProductGallery();
     initProductInfoSections();
     initSortDropdown();
-    initProductDrawer();
-    enhanceProductDrawer(); // Enhance drawer behavior
-    initStickyFooterScroll(); // Initialize scroll-based visibility
+    // initProductDrawer(); // Disabled - sticky footer removed
+    // enhanceProductDrawer(); // Disabled - sticky footer removed
+    // initStickyFooterScroll(); // Disabled - sticky footer removed
     initVariantSelection();
     initAddToCart();
     initCartPage(); // Initialize cart page functionality
