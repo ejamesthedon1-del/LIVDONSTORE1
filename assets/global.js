@@ -1327,6 +1327,326 @@
     }, { passive: true, capture: true });
   }
 
+  // Quick Add Modal Functionality
+  function initQuickAddModal() {
+    const quickAddButtons = document.querySelectorAll('[data-quick-add]');
+    const modal = document.getElementById('quick-add-modal');
+    const closeButtons = document.querySelectorAll('[data-quick-add-close]');
+    const submitButton = document.querySelector('[data-quick-add-submit]');
+    
+    if (!modal) return;
+
+    let currentProductId = null;
+    let isSubmitting = false;
+
+    // Open modal
+    quickAddButtons.forEach(button => {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const productHandle = button.getAttribute('data-product-handle');
+        currentProductId = button.getAttribute('data-product-id');
+        
+        if (!productHandle) return;
+
+        // Fetch product data
+        try {
+          const response = await fetch(`/products/${productHandle}.js`);
+          const product = await response.json();
+          
+          // Populate modal with product data
+          populateModal(product);
+          
+          // Show modal
+          modal.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+        } catch (error) {
+          console.error('Error loading product:', error);
+          alert('Error loading product. Please try again.');
+        }
+      });
+    });
+
+    // Close modal
+    closeButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        closeModal();
+      });
+    });
+
+    // Close on backdrop click
+    const backdrop = modal.querySelector('.o-quick-add-modal__backdrop');
+    if (backdrop) {
+      backdrop.addEventListener('click', () => {
+        closeModal();
+      });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') {
+        closeModal();
+      }
+    });
+
+    // Submit add to cart
+    if (submitButton) {
+      submitButton.addEventListener('click', async () => {
+        if (isSubmitting) return;
+        
+        const variantInput = modal.querySelector('[data-quick-add-variant-id]:checked');
+        if (!variantInput) {
+          alert('Please select a size');
+          return;
+        }
+
+        const variantId = variantInput.getAttribute('data-variant-id');
+        await addToCartFromModal(variantId);
+      });
+    }
+
+    function closeModal() {
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      currentProductId = null;
+    }
+
+    function populateModal(product) {
+      // Update product image
+      const imageContainer = modal.querySelector('.o-quick-add-modal__image');
+      if (imageContainer) {
+        const imageUrl = product.featured_image || (product.images && product.images[0]) || '';
+        if (imageUrl) {
+          imageContainer.innerHTML = `<img src="${imageUrl}" alt="${product.title || 'Product'}" loading="eager">`;
+        } else {
+          imageContainer.innerHTML = '<div style="width: 100%; aspect-ratio: 1/1; background: #f5f5f5; display: flex; align-items: center; justify-content: center;">{{ "product-1" | placeholder_svg_tag: "placeholder-svg" }}</div>';
+        }
+      }
+
+      // Update product title
+      const titleEl = modal.querySelector('[data-quick-add-title]');
+      if (titleEl) {
+        titleEl.textContent = product.title || 'Product';
+      }
+
+      // Update product price
+      const priceEl = modal.querySelector('[data-quick-add-price]');
+      if (priceEl && product.price) {
+        const price = (product.price / 100).toFixed(2);
+        const currency = product.price_currency || 'USD';
+        priceEl.textContent = `$${price} ${currency}`;
+      }
+
+      // Update view product link
+      const viewLink = modal.querySelector('[data-quick-add-view-link]');
+      if (viewLink && product.url) {
+        viewLink.href = product.url;
+      }
+
+      // Update size selector
+      const sizeSelector = modal.querySelector('.o-quick-add-modal__size-selector');
+      const sizeList = modal.querySelector('[data-quick-add-size-list]');
+      
+      if (product.variants && product.variants.length > 0) {
+        // Check if product has size option
+        const hasSizeOption = product.options && product.options.some(opt => 
+          opt.name === 'Size' || opt.name === 'size'
+        );
+        
+        if (hasSizeOption && sizeList) {
+          const sizeOption = product.options.find(opt => opt.name === 'Size' || opt.name === 'size');
+          
+          if (sizeOption && sizeOption.values) {
+            sizeSelector.style.display = 'flex';
+            sizeList.innerHTML = '';
+            
+            sizeOption.values.forEach((value, index) => {
+              // Find matching variant
+              let variant = product.variants.find(v => {
+                if (sizeOption.position === 1) return v.option1 === value;
+                if (sizeOption.position === 2) return v.option2 === value;
+                if (sizeOption.position === 3) return v.option3 === value;
+                return false;
+              });
+              
+              // Fallback to first variant if no match
+              if (!variant) {
+                variant = product.variants[0];
+              }
+              
+              const li = document.createElement('li');
+              li.setAttribute('data-mselector-listitem', '');
+              li.setAttribute('aria-selected', 'false');
+              
+              const inputId = `quick-add-size-${product.id}-${index}`;
+              const isChecked = index === 0;
+              const isDisabled = !variant.available;
+              
+              li.innerHTML = `
+                <input
+                  type="radio"
+                  name="quick-add-variant-id"
+                  id="${inputId}"
+                  value="${variant.id}"
+                  ${isDisabled ? 'disabled class="s-disabled"' : ''}
+                  data-quick-add-variant-id
+                  data-variant-id="${variant.id}"
+                  ${isChecked ? 'checked' : ''}
+                  required
+                >
+                <label
+                  class="m-selector__item ${isDisabled ? 's-disabled' : ''}"
+                  for="${inputId}"
+                  role="button"
+                  tabindex="0"
+                  data-mselector-label=""
+                >
+                  ${value}
+                </label>
+              `;
+              sizeList.appendChild(li);
+            });
+            
+            // Initialize selector behavior if function exists
+            if (typeof initVariantSelection === 'function') {
+              // Re-initialize for the modal
+              const modalSelectors = modal.querySelectorAll('[data-behavior="mSelector"]');
+              modalSelectors.forEach(selector => {
+                const labels = selector.querySelectorAll('[data-mselector-label]');
+                labels.forEach(label => {
+                  label.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const input = document.getElementById(label.getAttribute('for'));
+                    if (input && !input.disabled) {
+                      input.checked = true;
+                      // Update aria-selected
+                      const listItem = label.closest('[data-mselector-listitem]');
+                      const allItems = selector.querySelectorAll('[data-mselector-listitem]');
+                      allItems.forEach(item => item.setAttribute('aria-selected', 'false'));
+                      if (listItem) listItem.setAttribute('aria-selected', 'true');
+                    }
+                  });
+                });
+              });
+            }
+          } else {
+            sizeSelector.style.display = 'none';
+          }
+        } else {
+          // No size option - hide size selector
+          if (sizeSelector) {
+            sizeSelector.style.display = 'none';
+          }
+        }
+      } else {
+        if (sizeSelector) {
+          sizeSelector.style.display = 'none';
+        }
+      }
+
+      // Update submit button
+      const submitBtn = modal.querySelector('[data-quick-add-submit]');
+      if (submitBtn) {
+        submitBtn.setAttribute('data-product-id', product.id);
+        submitBtn.disabled = false;
+        const btnText = submitBtn.querySelector('[data-quick-add-btn-text]');
+        if (btnText) {
+          btnText.textContent = 'ADD TO BAG';
+        }
+      }
+    }
+
+    async function addToCartFromModal(variantId) {
+      if (isSubmitting) return false;
+
+      isSubmitting = true;
+      const submitBtn = modal.querySelector('[data-quick-add-submit]');
+      const btnText = submitBtn.querySelector('[data-quick-add-btn-text]');
+      
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        if (btnText) {
+          btnText.textContent = 'ADDING...';
+        }
+      }
+
+      const formData = new FormData();
+      formData.append('id', variantId);
+      formData.append('quantity', '1');
+
+      try {
+        const response = await fetch(window.routes.cart_add_url, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        const contentType = response.headers.get('content-type');
+        let data;
+
+        if (contentType && contentType.includes('application/json')) {
+          data = await response.json();
+        } else {
+          const text = await response.text();
+          try {
+            data = JSON.parse(text);
+          } catch {
+            throw new Error('Invalid response format');
+          }
+        }
+
+        if (response.ok && !data.errors) {
+          // Success
+          if (btnText) {
+            btnText.textContent = 'ADDED';
+          }
+          
+          await updateCartCount();
+          
+          setTimeout(() => {
+            closeModal();
+            if (btnText) {
+              btnText.textContent = 'ADD TO BAG';
+            }
+            if (submitBtn) {
+              submitBtn.disabled = false;
+            }
+            isSubmitting = false;
+          }, 1000);
+          
+          return true;
+        } else {
+          const errorMessage = data.description || data.message || 'Error adding to cart. Please try again.';
+          alert(errorMessage);
+          
+          if (submitBtn) {
+            submitBtn.disabled = false;
+          }
+          if (btnText) {
+            btnText.textContent = 'ADD TO BAG';
+          }
+          isSubmitting = false;
+          return false;
+        }
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('Error adding to cart. Please try again.');
+        
+        if (submitBtn) {
+          submitBtn.disabled = false;
+        }
+        if (btnText) {
+          btnText.textContent = 'ADD TO BAG';
+        }
+        isSubmitting = false;
+        return false;
+      }
+    }
+  }
+
   // Initialize all functionality when DOM is ready
   function initializeAll() {
     initMobileMenu();
@@ -1342,6 +1662,7 @@
     initVariantSelection();
     initAddToCart();
     initCartPage(); // Initialize cart page functionality
+    initQuickAddModal(); // Initialize quick add modal
     // filterCheckoutButtons(); // Disabled - show all payment options
     updateCartCount(); // Load initial cart count
   }

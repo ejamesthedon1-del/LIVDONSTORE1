@@ -1,0 +1,126 @@
+{% comment %}
+  Quick Add Modal - Shows product info and size selector for quick add to cart
+  Usage: {% render 'quick-add-modal', product: product %}
+{% endcomment %}
+
+<div class="o-quick-add-modal" id="quick-add-modal" data-quick-add-modal aria-hidden="true">
+  <div class="o-quick-add-modal__backdrop" data-quick-add-close></div>
+  <div class="o-quick-add-modal__content">
+    <button 
+      type="button" 
+      class="o-quick-add-modal__close" 
+      data-quick-add-close
+      aria-label="Close quick add modal"
+    >
+      ×
+    </button>
+    
+    <div class="o-quick-add-modal__inner">
+      {% comment %} Product Image {% endcomment %}
+      <div class="o-quick-add-modal__image">
+        {% if product.featured_image %}
+          <img
+            src="{{ product.featured_image | image_url: width: 400 }}"
+            alt="{{ product.featured_image.alt | default: product.title }}"
+            loading="eager"
+          >
+        {% else %}
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+      </div>
+      
+      {% comment %} Product Info {% endcomment %}
+      <div class="o-quick-add-modal__info">
+        <h2 class="o-quick-add-modal__title f-body">
+          {{ product.title }}
+        </h2>
+        
+        {% if product.price %}
+          <p class="o-quick-add-modal__price f-body--em">
+            <strong>{{ product.price | money }} {{ cart.currency.iso_code }}</strong>
+          </p>
+        {% endif %}
+        
+        {% comment %} Size Selector {% endcomment %}
+        {% assign size_option = product.options_with_values | where: 'name', 'Size' | first %}
+        {% if size_option != blank %}
+          <div class="o-quick-add-modal__size-selector">
+            <p class="o-quick-add-modal__size-label f-body">Size</p>
+            <div class="m-selector m-selector--grid m-selector--size" data-behavior="mSelector">
+              <div class="m-selector__content">
+                <ul class="m-selector__list">
+                  {% for value in size_option.values %}
+                    {% comment %} Find variant matching this size value {% endcomment %}
+                    {% assign matching_variant = null %}
+                    {% for variant in product.variants %}
+                      {% if size_option.position == 1 %}
+                        {% if variant.option1 == value %}
+                          {% assign matching_variant = variant %}
+                          {% break %}
+                        {% endif %}
+                      {% elsif size_option.position == 2 %}
+                        {% if variant.option2 == value %}
+                          {% assign matching_variant = variant %}
+                          {% break %}
+                        {% endif %}
+                      {% elsif size_option.position == 3 %}
+                        {% if variant.option3 == value %}
+                          {% assign matching_variant = variant %}
+                          {% break %}
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                    {% if matching_variant == null %}
+                      {% assign matching_variant = product.variants[forloop.index0] %}
+                    {% endif %}
+                    <li data-mselector-listitem="" aria-selected="false">
+                      <input
+                        type="radio"
+                        name="quick-add-variant-id"
+                        id="quick-add-size-{{ product.id }}-{{ forloop.index0 }}"
+                        value="{{ matching_variant.id }}"
+                        {% unless matching_variant.available %}disabled{% endunless %}
+                        class="{% unless matching_variant.available %}s-disabled{% endunless %}"
+                        data-quick-add-variant-id
+                        data-variant-id="{{ matching_variant.id }}"
+                        {% if forloop.first %}checked{% endif %}
+                        required
+                      >
+                      <label
+                        class="m-selector__item {% unless matching_variant.available %}s-disabled{% endunless %}"
+                        for="quick-add-size-{{ product.id }}-{{ forloop.index0 }}"
+                        role="button"
+                        tabindex="0"
+                        data-mselector-label=""
+                      >
+                        {{ value }}
+                      </label>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        
+        {% comment %} Add to Cart Button {% endcomment %}
+        <button
+          type="button"
+          class="o-quick-add-modal__add-btn a-btn"
+          data-quick-add-submit
+          data-product-id="{{ product.id }}"
+        >
+          <span data-quick-add-btn-text>ADD TO BAG</span>
+        </button>
+        
+        {% comment %} View Product Link {% endcomment %}
+        <a 
+          href="{{ product.url }}" 
+          class="o-quick-add-modal__view-link f-body"
+        >
+          View Product Details
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

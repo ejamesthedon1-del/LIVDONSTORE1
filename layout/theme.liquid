@@ -80,6 +80,71 @@
 
     {% section 'footer' %}
 
+    {% comment %} Quick Add Modal - Available on all pages {% endcomment %}
+    <div class="o-quick-add-modal" id="quick-add-modal" data-quick-add-modal aria-hidden="true">
+      <div class="o-quick-add-modal__backdrop" data-quick-add-close></div>
+      <div class="o-quick-add-modal__content">
+        <button 
+          type="button" 
+          class="o-quick-add-modal__close" 
+          data-quick-add-close
+          aria-label="Close quick add modal"
+        >
+          ×
+        </button>
+        
+        <div class="o-quick-add-modal__inner">
+          {% comment %} Product Image - Will be populated by JavaScript {% endcomment %}
+          <div class="o-quick-add-modal__image">
+            <div style="width: 100%; aspect-ratio: 1/1; background: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          </div>
+          
+          {% comment %} Product Info - Will be populated by JavaScript {% endcomment %}
+          <div class="o-quick-add-modal__info">
+            <h2 class="o-quick-add-modal__title f-body">
+              <span data-quick-add-title>Product Title</span>
+            </h2>
+            
+            <p class="o-quick-add-modal__price f-body--em">
+              <strong data-quick-add-price>$0.00 USD</strong>
+            </p>
+            
+            {% comment %} Size Selector - Will be populated by JavaScript {% endcomment %}
+            <div class="o-quick-add-modal__size-selector" data-quick-add-size-selector style="display: none;">
+              <p class="o-quick-add-modal__size-label f-body">Size</p>
+              <div class="m-selector m-selector--grid m-selector--size" data-behavior="mSelector">
+                <div class="m-selector__content">
+                  <ul class="m-selector__list" data-quick-add-size-list>
+                    {% comment %} Size options will be added dynamically {% endcomment %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            {% comment %} Add to Cart Button {% endcomment %}
+            <button
+              type="button"
+              class="o-quick-add-modal__add-btn a-btn"
+              data-quick-add-submit
+            >
+              <span data-quick-add-btn-text>ADD TO BAG</span>
+            </button>
+            
+            {% comment %} View Product Link {% endcomment %}
+            <a 
+              href="#" 
+              class="o-quick-add-modal__view-link f-body"
+              data-quick-add-view-link
+            >
+              View Product Details
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <ul hidden>
       <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
       <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>

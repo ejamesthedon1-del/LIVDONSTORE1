@@ -1408,6 +1408,49 @@ body {
   overflow: hidden;
 }
 
+/* Quick Add Button */
+.m-tile-slider__quick-add {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.m-tile-slider:hover .m-tile-slider__quick-add {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.m-tile-slider__quick-add:hover {
+  background: #000;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.m-tile-slider__quick-add-icon {
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+.m-tile-slider__quick-add:hover .m-tile-slider__quick-add-icon {
+  color: #fff;
+}
+
 /* Larger product images in 2-column gallery */
 .o-listing-grid--2-columns .m-tile-slider__visual {
   aspect-ratio: 4 / 5; /* Slightly taller for bigger appearance */
@@ -2988,5 +3031,182 @@ body {
 
   .o-cart__totals {
     max-width: 100%;
+  }
+}
+
+/* Quick Add Modal */
+.o-quick-add-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.o-quick-add-modal[aria-hidden="false"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.o-quick-add-modal__backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.o-quick-add-modal__content {
+  position: relative;
+  background: #fff;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 101;
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+}
+
+.o-quick-add-modal[aria-hidden="false"] .o-quick-add-modal__content {
+  transform: scale(1);
+}
+
+.o-quick-add-modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: transparent;
+  border: 1px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #000;
+  z-index: 102;
+  transition: all 0.3s ease;
+}
+
+.o-quick-add-modal__close:hover {
+  background: #000;
+  color: #fff;
+}
+
+.o-quick-add-modal__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.o-quick-add-modal__image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.o-quick-add-modal__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.o-quick-add-modal__info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.o-quick-add-modal__title {
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.o-quick-add-modal__price {
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.o-quick-add-modal__size-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.o-quick-add-modal__size-label {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.o-quick-add-modal__add-btn {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.o-quick-add-modal__add-btn:hover:not(:disabled) {
+  background: #fff;
+  color: #000;
+}
+
+.o-quick-add-modal__add-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.o-quick-add-modal__view-link {
+  text-align: center;
+  text-decoration: underline;
+  color: #000;
+  font-size: 0.8125rem;
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .o-quick-add-modal__inner {
+    flex-direction: row;
+    padding: 2.5rem;
+  }
+  
+  .o-quick-add-modal__image {
+    width: 40%;
+    flex-shrink: 0;
+  }
+  
+  .o-quick-add-modal__info {
+    flex: 1;
   }
 }

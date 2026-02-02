@@ -6,6 +6,18 @@
 <li class="o-listing-grid__item">
   <div class="m-tile-slider" data-behavior="mTileSlider">
     <div class="m-tile-slider__visual">
+      {% comment %} Quick Add Button {% endcomment %}
+      <button 
+        type="button" 
+        class="m-tile-slider__quick-add" 
+        data-quick-add
+        data-product-id="{{ product.id }}"
+        data-product-handle="{{ product.handle }}"
+        aria-label="Quick add {{ product.title }} to cart"
+      >
+        <span class="m-tile-slider__quick-add-icon">+</span>
+      </button>
+      
       <div class="m-tile-slider__controls">
         {% if product.images.size > 1 %}
           <div 
