@@ -31,6 +31,13 @@
           <span class="o-category-slider__text">1 OF 1 PIECES</span>
         </a>
       </li>
+      
+      {% comment %} ACCESSORIES Category {% endcomment %}
+      <li class="o-category-slider__item">
+        <a href="{% if collections.accessories %}{{ collections.accessories.url }}{% else %}/collections/accessories{% endif %}" class="o-category-slider__link {% if collection.handle == 'accessories' %}o-category-slider__link--active{% endif %}">
+          <span class="o-category-slider__text">ACCESSORIES</span>
+        </a>
+      </li>
     </ul>
   </div>
 </div>
