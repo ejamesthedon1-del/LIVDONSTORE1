@@ -1665,6 +1665,16 @@ body {
   color: #000;
 }
 
+/* Align product text with 1080px image box on homepage */
+.o-listing-grid--2-columns .m-product-listing__meta {
+  max-width: 1080px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .m-product-listing__meta-title {
   font-size: 0.625rem;
   letter-spacing: 0.01em;
