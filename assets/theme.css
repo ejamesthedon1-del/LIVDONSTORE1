@@ -1959,9 +1959,8 @@ body {
   display: none !important;
 }
 
-/* Ensure Shop Pay and Apple Pay are visible */
-.product-dynamic-checkout-buttons iframe[src*="shop_pay"],
-.product-dynamic-checkout-buttons iframe[src*="apple_pay"] {
+/* Ensure all buttons in visible containers are shown */
+.product-dynamic-checkout-buttons > *:not([style*="display: none"]) iframe {
   display: block !important;
   width: 100% !important;
 }
