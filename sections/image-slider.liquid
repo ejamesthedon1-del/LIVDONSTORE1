@@ -13,8 +13,7 @@
     {% comment %} Title removed - no headline displayed {% endcomment %}
     
     <ul class="o-listing-grid o-listing-grid--2-columns" data-behavior="oListingGrid">
-      {% assign product_count = selected_collection.products.size %}
-      {% assign display_limit = section.settings.product_limit %}
+      {% assign display_limit = 2 %}
       
       {% comment %} Find navy hoodie and display it first {% endcomment %}
       {% assign navy_hoodie = null %}
@@ -31,7 +30,7 @@
         {% render 'product-tile', product: navy_hoodie %}
       {% endif %}
       
-      {% comment %} Show remaining products (excluding navy hoodie if already shown) {% endcomment %}
+      {% comment %} Show remaining products (excluding navy hoodie if already shown) - limit to 2 total {% endcomment %}
       {% assign products_shown = 0 %}
       {% if navy_hoodie != null %}
         {% assign products_shown = 1 %}
@@ -46,30 +45,12 @@
           {% assign products_shown = products_shown | plus: 1 %}
         {% endunless %}
       {% endfor %}
-      
-      {% comment %} Add 3 placeholder products if we have fewer products than the limit {% endcomment %}
-      {% assign remaining_slots = display_limit | minus: product_count %}
-      {% if remaining_slots > 0 %}
-        {% assign placeholder_count = remaining_slots %}
-        {% if placeholder_count > 3 %}
-          {% assign placeholder_count = 3 %}
-        {% endif %}
-        {% for i in (1..placeholder_count) %}
-          {% render 'product-tile-placeholder' %}
-        {% endfor %}
-      {% endif %}
     </ul>
   </div>
 {% else %}
-  {% comment %} Fallback if no products - show 3 placeholders {% endcomment %}
+  {% comment %} Fallback if no products - show nothing {% endcomment %}
   <div class="o-product-gallery-section">
-    {% comment %} Title removed - no headline displayed {% endcomment %}
-    
-    <ul class="o-listing-grid o-listing-grid--2-columns" data-behavior="oListingGrid">
-      {% for i in (1..3) %}
-        {% render 'product-tile-placeholder' %}
-      {% endfor %}
-    </ul>
+    {% comment %} No products available {% endcomment %}
   </div>
 {% endif %}
 
