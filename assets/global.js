@@ -924,53 +924,119 @@
     const checkoutContainer = document.querySelector('[data-filter-checkout-buttons]');
     if (!checkoutContainer) return;
 
-    // Function to hide Shop Pay and show only Apple Pay
+    // Helper function to check if element is Shop Pay
+    function isShopPay(element) {
+      // Check iframe src patterns
+      const iframes = element.querySelectorAll('iframe');
+      for (const iframe of iframes) {
+        const src = (iframe.getAttribute('src') || '').toLowerCase();
+        if (src.includes('shop_pay') || src.includes('shopify_pay') || 
+            src.includes('shop-pay') || src.includes('shopify-pay') ||
+            (src.includes('shop') && !src.includes('apple'))) {
+          return true;
+        }
+      }
+      
+      // Check aria-label
+      const ariaLabel = (element.getAttribute('aria-label') || '').toLowerCase();
+      if (ariaLabel.includes('shop pay') || ariaLabel.includes('shoppay')) {
+        return true;
+      }
+      
+      // Check button text content
+      const buttonText = (element.textContent || '').toLowerCase();
+      if (buttonText.includes('shop pay') || buttonText.includes('shoppay')) {
+        return true;
+      }
+      
+      // Check data attributes
+      const dataAttrs = Array.from(element.attributes).filter(attr => attr.name.startsWith('data-'));
+      for (const attr of dataAttrs) {
+        const value = attr.value.toLowerCase();
+        if (value.includes('shop') && !value.includes('apple')) {
+          return true;
+        }
+      }
+      
+      return false;
+    }
+
+    // Helper function to check if element is Apple Pay
+    function isApplePay(element) {
+      // Check iframe src patterns
+      const iframes = element.querySelectorAll('iframe');
+      for (const iframe of iframes) {
+        const src = (iframe.getAttribute('src') || '').toLowerCase();
+        if (src.includes('apple_pay') || src.includes('apple-pay') || 
+            src.includes('applepay')) {
+          return true;
+        }
+      }
+      
+      // Check aria-label
+      const ariaLabel = (element.getAttribute('aria-label') || '').toLowerCase();
+      if (ariaLabel.includes('apple pay') || ariaLabel.includes('applepay')) {
+        return true;
+      }
+      
+      // Check button text content
+      const buttonText = (element.textContent || '').toLowerCase();
+      if (buttonText.includes('apple pay') || buttonText.includes('applepay')) {
+        return true;
+      }
+      
+      return false;
+    }
+
+    // Function to hide all buttons, then show only Apple Pay
     function limitButtons() {
       // Get all button containers
       const allButtons = Array.from(checkoutContainer.children);
       
-      // Hide Shop Pay buttons and show only Apple Pay
+      // Strategy: Hide all buttons first, then show only Apple Pay
       allButtons.forEach((button) => {
-        // Check if this button contains Shop Pay
-        const shopPayIframe = button.querySelector('iframe[src*="shop_pay"], iframe[src*="shopify_pay"]');
-        if (shopPayIframe) {
+        // Hide by default
+        button.style.display = 'none';
+        
+        // Check if it's Shop Pay - keep it hidden
+        if (isShopPay(button)) {
           button.style.display = 'none';
           return;
         }
         
-        // Check if this button contains Apple Pay
-        const applePayIframe = button.querySelector('iframe[src*="apple_pay"]');
-        if (applePayIframe) {
+        // Check if it's Apple Pay - show it
+        if (isApplePay(button)) {
           button.style.display = 'flex';
           return;
         }
         
-        // Hide other payment methods (Google Pay, PayPal, etc.)
-        const otherPayments = button.querySelector('iframe[src*="google_pay"], iframe[src*="paypal"], iframe[src*="amazon_pay"], iframe[src*="venmo"]');
-        if (otherPayments) {
-          button.style.display = 'none';
-          return;
+        // Check for other unwanted payment methods
+        const iframes = button.querySelectorAll('iframe');
+        for (const iframe of iframes) {
+          const src = (iframe.getAttribute('src') || '').toLowerCase();
+          if (src.includes('google_pay') || src.includes('paypal') || 
+              src.includes('amazon_pay') || src.includes('venmo')) {
+            button.style.display = 'none';
+            return;
+          }
         }
         
-        // If we can't identify it, hide it to be safe (only show Apple Pay)
+        // If we can't identify it, keep it hidden (only show Apple Pay)
         button.style.display = 'none';
       });
       
-      // Also hide Shop Pay iframes directly
-      const shopPayIframes = checkoutContainer.querySelectorAll('iframe[src*="shop_pay"], iframe[src*="shopify_pay"]');
-      shopPayIframes.forEach((iframe) => {
-        iframe.style.display = 'none';
-        if (iframe.parentElement) {
-          iframe.parentElement.style.display = 'none';
-        }
-      });
-      
-      // Hide other unwanted payment methods
-      const unwantedIframes = checkoutContainer.querySelectorAll('iframe[src*="google_pay"], iframe[src*="paypal"], iframe[src*="amazon_pay"], iframe[src*="venmo"]');
-      unwantedIframes.forEach((iframe) => {
-        iframe.style.display = 'none';
-        if (iframe.parentElement) {
-          iframe.parentElement.style.display = 'none';
+      // Also hide Shop Pay iframes directly (aggressive hiding)
+      const allIframes = checkoutContainer.querySelectorAll('iframe');
+      allIframes.forEach((iframe) => {
+        const src = (iframe.getAttribute('src') || '').toLowerCase();
+        if (src.includes('shop_pay') || src.includes('shopify_pay') || 
+            src.includes('shop-pay') || src.includes('shopify-pay') ||
+            (src.includes('shop') && !src.includes('apple'))) {
+          iframe.style.display = 'none';
+          const parent = iframe.closest('[data-shopify-buttoncontainer]');
+          if (parent) {
+            parent.style.display = 'none';
+          }
         }
       });
     }
@@ -983,6 +1049,7 @@
     setTimeout(limitButtons, 1000);
     setTimeout(limitButtons, 2000);
     setTimeout(limitButtons, 3000);
+    setTimeout(limitButtons, 5000);
 
     // Watch for new buttons being added
     const observer = new MutationObserver(() => {
@@ -992,7 +1059,9 @@
     if (checkoutContainer) {
       observer.observe(checkoutContainer, {
         childList: true,
-        subtree: true
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['src', 'aria-label', 'style', 'class']
       });
     }
   }
