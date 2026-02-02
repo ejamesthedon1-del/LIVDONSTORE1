@@ -6,8 +6,12 @@
   <div class="o-category-slider__container">
     <ul class="o-category-slider__list">
       {% comment %} Hoodies Category {% endcomment %}
+      {% assign is_homepage = false %}
+      {% if template.name == 'index' %}
+        {% assign is_homepage = true %}
+      {% endif %}
       <li class="o-category-slider__item">
-        <a href="{{ collections.hoodies.url | default: '/collections/hoodies' }}" class="o-category-slider__link {% if collection.handle == 'hoodies' or template.name == 'index' and forloop.first %}o-category-slider__link--active{% endif %}">
+        <a href="{{ collections.hoodies.url | default: '/collections/hoodies' }}" class="o-category-slider__link {% if collection.handle == 'hoodies' or is_homepage %}o-category-slider__link--active{% endif %}">
           <span class="o-category-slider__text">Hoodies</span>
         </a>
       </li>
