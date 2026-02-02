@@ -1218,9 +1218,11 @@ body {
   margin: 0;
 }
 
-/* 2-column layout for product gallery on homepage */
+/* 2-column layout for product gallery on homepage - larger images */
 .o-listing-grid--2-columns {
   grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem; /* Smaller gap for bigger images */
+  padding: 2rem 0.5rem; /* Reduced padding */
 }
 
 @media (min-width: 768px) {
@@ -1231,6 +1233,8 @@ body {
   
   .o-listing-grid--2-columns {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem; /* Slightly larger gap on tablet */
+    padding: 3rem 1rem; /* Reduced padding for bigger images */
   }
 }
 
@@ -1241,6 +1245,8 @@ body {
   
   .o-listing-grid--2-columns {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1rem; /* Standard gap on desktop */
+    padding: 3rem 1.5rem; /* Reduced padding for bigger images */
   }
 }
 
@@ -1279,14 +1285,14 @@ body {
 
 /* Product Gallery Section (Homepage) */
 .o-product-gallery-section {
-  padding: 2rem 1rem;
+  padding: 2rem 0.5rem; /* Reduced padding for bigger images */
   width: 100%;
   max-width: 100%;
 }
 
 @media (min-width: 768px) {
   .o-product-gallery-section {
-    padding: 3rem 2rem;
+    padding: 3rem 1rem; /* Reduced padding for bigger images */
   }
 }
 
@@ -1296,6 +1302,13 @@ body {
   text-transform: uppercase;
   margin-bottom: 1.5rem;
   font-weight: 700;
+  padding: 0 0.5rem; /* Match reduced padding */
+}
+
+@media (min-width: 768px) {
+  .o-product-gallery-section__title {
+    padding: 0 1rem; /* Match reduced padding */
+  }
 }
 
 /* Product Tile Slider */
@@ -1309,6 +1322,11 @@ body {
   width: 100%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
+}
+
+/* Larger product images in 2-column gallery */
+.o-listing-grid--2-columns .m-tile-slider__visual {
+  aspect-ratio: 4 / 5; /* Slightly taller for bigger appearance */
 }
 
 .m-tile-slider__controls {
