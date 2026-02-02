@@ -1222,7 +1222,8 @@ body {
 .o-listing-grid--2-columns {
   grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem; /* Smaller gap for bigger images */
-  padding: 2rem 0.5rem; /* Reduced padding */
+  padding: 0 0.5rem; /* Removed top padding to bring closer to headline */
+  margin-top: 0;
 }
 
 @media (min-width: 768px) {
@@ -1285,14 +1286,14 @@ body {
 
 /* Product Gallery Section (Homepage) */
 .o-product-gallery-section {
-  padding: 2rem 0.5rem; /* Reduced padding for bigger images */
+  padding: 0.5rem 0.5rem 2rem 0.5rem; /* Reduced top padding to bring closer to headline */
   width: 100%;
   max-width: 100%;
 }
 
 @media (min-width: 768px) {
   .o-product-gallery-section {
-    padding: 3rem 1rem; /* Reduced padding for bigger images */
+    padding: 0.75rem 1rem 3rem 1rem; /* Reduced top padding */
   }
 }
 
@@ -1300,7 +1301,8 @@ body {
   font-size: 0.625rem;
   letter-spacing: 0.01em;
   text-transform: uppercase;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem; /* Reduced margin to bring products closer */
+  margin-top: 0;
   font-weight: 700;
   padding: 0 0.5rem; /* Match reduced padding */
 }
@@ -1308,6 +1310,7 @@ body {
 @media (min-width: 768px) {
   .o-product-gallery-section__title {
     padding: 0 1rem; /* Match reduced padding */
+    margin-bottom: 1rem; /* Slightly more space on tablet/desktop */
   }
 }
 
