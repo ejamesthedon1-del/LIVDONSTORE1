@@ -558,11 +558,18 @@ body {
 .o-category-slider__container {
   width: 100%;
   padding: 0 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 @media (min-width: 768px) {
   .o-category-slider__container {
     padding: 0 2rem;
+  }
+  
+  .o-category-slider__list {
+    width: 100%;
+    justify-content: flex-start;
   }
 }
 
@@ -575,6 +582,7 @@ body {
   padding: 0;
   width: max-content;
   min-width: 100%;
+  flex-wrap: nowrap;
 }
 
 .o-category-slider__item {
