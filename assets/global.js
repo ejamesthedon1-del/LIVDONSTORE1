@@ -879,48 +879,37 @@
     const checkoutContainer = document.querySelector('[data-filter-checkout-buttons]');
     if (!checkoutContainer) return;
 
-    // Function to limit buttons to first 2 and hide unwanted ones
+    // Function to limit buttons to first 2
     function limitButtons() {
-      // Get all direct children (button containers)
-      const allChildren = Array.from(checkoutContainer.children);
+      // Get all button containers and iframes
+      const allButtons = Array.from(checkoutContainer.children);
       
-      // Hide unwanted payment methods first
-      const unwantedSelectors = [
-        'iframe[src*="google_pay"]',
-        'iframe[src*="paypal"]',
-        'iframe[src*="amazon_pay"]',
-        'iframe[src*="venmo"]'
-      ];
-      
-      unwantedSelectors.forEach(selector => {
-        const unwanted = checkoutContainer.querySelectorAll(selector);
-        unwanted.forEach(el => {
-          el.style.display = 'none';
-          if (el.parentElement && el.parentElement !== checkoutContainer) {
-            el.parentElement.style.display = 'none';
-          }
-        });
+      // Hide all buttons beyond the first 2
+      allButtons.forEach((button, index) => {
+        if (index >= 2) {
+          button.style.display = 'none';
+        } else {
+          // Ensure first 2 are visible
+          button.style.display = 'block';
+        }
       });
       
-      // Show first 2 visible buttons, hide the rest
-      let visibleCount = 0;
-      allChildren.forEach((child, index) => {
-        // Skip if already hidden by unwanted selector
-        const hasUnwanted = child.querySelector('iframe[src*="google_pay"], iframe[src*="paypal"], iframe[src*="amazon_pay"], iframe[src*="venmo"]');
-        if (hasUnwanted) {
-          child.style.display = 'none';
-          return;
+      // Also limit iframes directly
+      const iframes = Array.from(checkoutContainer.querySelectorAll('iframe'));
+      iframes.forEach((iframe, index) => {
+        if (index >= 2) {
+          iframe.style.display = 'none';
+          if (iframe.parentElement) {
+            iframe.parentElement.style.display = 'none';
+          }
         }
-        
-        // Show first 2 buttons
-        if (visibleCount < 2) {
-          child.style.display = 'flex';
-          child.style.width = 'calc(50% - 0.1875rem)';
-          child.style.flexShrink = '0';
-          visibleCount++;
-        } else {
-          // Hide buttons beyond the first 2
-          child.style.display = 'none';
+      });
+      
+      // Limit button containers
+      const containers = Array.from(checkoutContainer.querySelectorAll('[data-shopify-buttoncontainer]'));
+      containers.forEach((container, index) => {
+        if (index >= 2) {
+          container.style.display = 'none';
         }
       });
     }
