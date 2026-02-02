@@ -364,21 +364,22 @@
       }, 300);
     }
 
-    // Touch events
+    // Touch events - passive: false needed to prevent scroll during drag
     puller.addEventListener('touchstart', (e) => {
       isDragging = true;
       dragStartY = e.touches[0].clientY;
       drawerOverlay.style.transition = 'none';
-    });
+    }, { passive: false });
 
     puller.addEventListener('touchmove', (e) => {
       if (!isDragging) return;
+      e.preventDefault(); // Prevent scrolling while dragging
       dragCurrentY = e.touches[0].clientY;
       const dragDistance = dragStartY - dragCurrentY;
       const maxDrag = 300;
       const position = Math.max(0, Math.min(dragDistance / maxDrag, 1));
       updateDrawerPosition(position);
-    });
+    }, { passive: false });
 
     puller.addEventListener('touchend', () => {
       if (!isDragging) return;
