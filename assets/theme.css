@@ -1218,16 +1218,29 @@ body {
   margin: 0;
 }
 
+/* 2-column layout for product gallery on homepage */
+.o-listing-grid--2-columns {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 @media (min-width: 768px) {
   .o-listing-grid {
     grid-template-columns: repeat(3, 1fr);
     padding: 3rem 2rem;
+  }
+  
+  .o-listing-grid--2-columns {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
   .o-listing-grid {
     grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .o-listing-grid--2-columns {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -1262,6 +1275,27 @@ body {
   .o-product-grid-section__view-all {
     margin-top: 3rem;
   }
+}
+
+/* Product Gallery Section (Homepage) */
+.o-product-gallery-section {
+  padding: 2rem 1rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .o-product-gallery-section {
+    padding: 3rem 2rem;
+  }
+}
+
+.o-product-gallery-section__title {
+  font-size: 0.625rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
 }
 
 /* Product Tile Slider */
