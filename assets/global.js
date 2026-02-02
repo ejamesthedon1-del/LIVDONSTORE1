@@ -46,26 +46,48 @@
     const searchInput = document.querySelector('[data-search-input]');
     let isScrolled = false;
 
-    if (!searchToggle) return;
-
-    // Handle scroll for mobile search visibility
-    window.addEventListener('scroll', () => {
-      isScrolled = window.scrollY > 50;
-      const mobileSearchBtn = document.querySelector('.a-search--mobile-scrolled');
-      if (mobileSearchBtn) {
-        mobileSearchBtn.style.display = isScrolled ? 'flex' : 'none';
-        if (searchMobile) {
-          searchMobile.classList.toggle('g-header-search-mobile--hidden', isScrolled);
+    // Handle scroll for mobile search visibility - only on homepage where search exists
+    if (searchMobile) {
+      window.addEventListener('scroll', () => {
+        isScrolled = window.scrollY > 50;
+        const mobileSearchBtn = document.querySelector('.a-search--mobile-scrolled');
+        if (mobileSearchBtn) {
+          if (isScrolled) {
+            mobileSearchBtn.style.display = 'flex';
+            // Add visible class for smooth fade-in
+            requestAnimationFrame(() => {
+              mobileSearchBtn.classList.add('visible');
+            });
+          } else {
+            mobileSearchBtn.classList.remove('visible');
+            // Hide after transition completes
+            setTimeout(() => {
+              if (window.scrollY <= 50) {
+                mobileSearchBtn.style.display = 'none';
+              }
+            }, 400); // Match transition duration
+          }
         }
-      }
-    });
+        // Fade search bar into header on scroll
+        searchMobile.classList.toggle('g-header-search-mobile--hidden', isScrolled);
+      }, { passive: true });
+    }
 
-    searchToggle.addEventListener('click', () => {
-      // Implement search functionality
-      if (searchInput) {
-        searchInput.focus();
-      }
-    });
+    // Handle search toggle click
+    if (searchToggle) {
+      searchToggle.addEventListener('click', () => {
+        // Implement search functionality
+        if (searchInput) {
+          searchInput.focus();
+        }
+        // If scrolled, show search bar again
+        if (searchMobile && isScrolled) {
+          searchMobile.classList.remove('g-header-search-mobile--hidden');
+          // Scroll to top to show search bar
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    }
   }
 
   // Menu Search Toggle - Redirect to homepage for search
