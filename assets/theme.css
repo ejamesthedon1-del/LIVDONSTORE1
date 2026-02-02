@@ -2043,10 +2043,10 @@ body {
 .o-product__delivery-info {
   width: 100%;
   max-width: 100%;
-  padding: 1.5rem 0;
+  padding: 0.75rem 0;
   border-top: 1px solid #e5e5e5;
   border-bottom: 1px solid #e5e5e5;
-  margin: 1.5rem 0;
+  margin: 0.75rem 0;
 }
 
 .o-product__delivery-info p {
@@ -2075,7 +2075,7 @@ body {
 .o-product__info-section-header {
   width: 100%;
   max-width: 100%;
-  padding: 1.5rem 0;
+  padding: 0.75rem 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -2106,7 +2106,7 @@ body {
 .o-product__info-section-content {
   width: 100%;
   max-width: 100%;
-  padding: 0 0 1.5rem 0;
+  padding: 0 0 0.75rem 0;
   overflow-x: hidden;
 }
 
@@ -2125,14 +2125,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: 1.5rem 0;
+  padding: 0.75rem 0;
   border-top: 1px solid #e5e5e5;
   border-bottom: 1px solid #e5e5e5;
 }
 
 .o-product__info-link {
   display: block;
-  padding: 1.5rem 0;
+  padding: 0.75rem 0;
   font-size: 0.8125rem;
   font-weight: 400;
   letter-spacing: 0.01em;
