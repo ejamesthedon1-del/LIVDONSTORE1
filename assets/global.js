@@ -649,13 +649,24 @@
   // Cart Page Functionality
   function initCartPage() {
     const cartForm = document.getElementById('cart-form');
-    if (!cartForm) return;
+    if (!cartForm) {
+      console.log('Cart form not found');
+      return;
+    }
 
     const updateBtn = cartForm.querySelector('[data-update-cart]');
     const checkoutBtn = cartForm.querySelector('[data-checkout-btn]');
     const quantityInputs = cartForm.querySelectorAll('[data-quantity-input]');
     const removeLinks = cartForm.querySelectorAll('[data-remove-item]');
     let isUpdating = false;
+
+    console.log('Cart page initialized', {
+      form: cartForm,
+      updateBtn,
+      checkoutBtn,
+      quantityInputs: quantityInputs.length,
+      removeLinks: removeLinks.length
+    });
 
     // Helper function to show message
     function showCartMessage(message, type = 'success') {
@@ -716,8 +727,13 @@
 
     // AJAX Cart Update
     async function updateCartAjax() {
-      if (isUpdating) return;
+      if (isUpdating) {
+        console.log('Cart update already in progress');
+        return;
+      }
       isUpdating = true;
+
+      console.log('Starting cart update...');
 
       // Disable buttons and show loading
       if (updateBtn) {
@@ -733,23 +749,34 @@
       const formData = new FormData();
       const cartItems = Array.from(cartForm.querySelectorAll('[data-cart-item]'));
       
+      console.log('Cart items found:', cartItems.length);
+      
       cartItems.forEach((itemEl, index) => {
         const input = itemEl.querySelector('[data-quantity-input]');
         if (input) {
           const quantity = parseInt(input.value) || 0;
-          // Shopify uses 1-based line indexing
-          formData.append(`updates[${index + 1}]`, quantity.toString());
+          // Shopify uses 1-based line indexing - use square brackets format
+          const lineNumber = index + 1;
+          formData.append(`updates[${lineNumber}]`, quantity.toString());
+          console.log(`Added update: updates[${lineNumber}] = ${quantity}`);
         }
       });
 
       try {
-        const response = await fetch(window.routes.cart_update_url + '.js', {
+        // Use the correct Shopify cart update API endpoint
+        const updateUrl = window.routes.cart_update_url + '.js';
+        console.log('Updating cart via:', updateUrl);
+        console.log('FormData entries:', Array.from(formData.entries()));
+        
+        const response = await fetch(updateUrl, {
           method: 'POST',
           body: formData,
           headers: {
             'X-Requested-With': 'XMLHttpRequest'
           }
         });
+        
+        console.log('Cart update response:', response.status, response.statusText);
 
         const contentType = response.headers.get('content-type');
         let data;
@@ -821,12 +848,19 @@
       }
 
       try {
-        const response = await fetch(`${window.routes.cart_change_url}?line=${lineIndex}&quantity=0`, {
+        // Use the correct Shopify cart change API endpoint
+        const changeUrl = `${window.routes.cart_change_url}?line=${lineIndex}&quantity=0`;
+        console.log('Removing item via:', changeUrl);
+        
+        const response = await fetch(changeUrl, {
           method: 'POST',
           headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded'
           }
         });
+        
+        console.log('Remove item response:', response.status, response.statusText);
 
         const contentType = response.headers.get('content-type');
         let data;
@@ -883,39 +917,61 @@
 
     // Handle form submission for update
     cartForm.addEventListener('submit', async (e) => {
-      const submitBtn = e.submitter;
+      e.preventDefault(); // Always prevent default to handle with AJAX
+      e.stopPropagation();
       
-      // If checkout button clicked, let form submit normally
+      const submitBtn = e.submitter;
+      console.log('Cart form submitted', { submitBtn, name: submitBtn?.name });
+      
+      // If checkout button clicked, redirect to checkout
       if (submitBtn && submitBtn.name === 'checkout') {
-        return; // Let Shopify handle checkout redirect
+        // Update cart first, then redirect
+        await updateCartAjax();
+        // Redirect to checkout after update completes
+        window.location.href = window.routes.cart_url + '?checkout';
+        return;
       }
 
       // If update button clicked, use AJAX
       if (submitBtn && submitBtn.name === 'update') {
-        e.preventDefault();
+        console.log('Update button clicked, calling updateCartAjax');
         await updateCartAjax();
       }
     });
 
-    // Handle remove links
-    removeLinks.forEach((link) => {
-      link.addEventListener('click', async (e) => {
-        e.preventDefault();
-        
-        if (!confirm('Remove this item from cart?')) {
-          return;
-        }
+    // Handle remove links - use event delegation for dynamically added items
+    cartForm.addEventListener('click', async (e) => {
+      const removeLink = e.target.closest('[data-remove-item]');
+      if (!removeLink) return;
+      
+      e.preventDefault();
+      e.stopPropagation();
+      
+      console.log('Remove link clicked', removeLink);
+      
+      if (!confirm('Remove this item from cart?')) {
+        return;
+      }
 
-        const itemEl = link.closest('[data-cart-item]');
-        const itemKey = itemEl ? itemEl.getAttribute('data-key') : null;
-        // Get line index from data attribute (Shopify uses 1-based indexing)
-        const lineIndex = link.getAttribute('data-line-index') || 
-                         (Array.from(removeLinks).indexOf(link) + 1);
+      const itemEl = removeLink.closest('[data-cart-item]');
+      const itemKey = itemEl ? itemEl.getAttribute('data-key') : null;
+      // Get line index from data attribute (Shopify uses 1-based indexing)
+      const lineIndex = removeLink.getAttribute('data-line-index');
+      
+      console.log('Removing item', { itemEl, itemKey, lineIndex });
+      
+      if (!lineIndex) {
+        console.error('Line index not found for remove link');
+        showCartMessage('Error: Could not determine item to remove', 'error');
+        return;
+      }
 
-        if (itemKey) {
-          await removeItemAjax(parseInt(lineIndex), itemKey);
-        }
-      });
+      if (itemKey) {
+        await removeItemAjax(parseInt(lineIndex), itemKey);
+      } else {
+        console.error('Item key not found for remove link');
+        showCartMessage('Error: Could not find item to remove', 'error');
+      }
     });
   }
 
