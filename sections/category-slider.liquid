@@ -1,0 +1,42 @@
+{% comment %}
+  Category Slider Section - Horizontal scrolling category menu
+{% endcomment %}
+
+<div class="o-category-slider" data-behavior="categorySlider">
+  <div class="o-category-slider__container">
+    <ul class="o-category-slider__list">
+      {% comment %} Hoodies Category {% endcomment %}
+      <li class="o-category-slider__item">
+        <a href="{{ collections.hoodies.url | default: '/collections/hoodies' }}" class="o-category-slider__link">
+          <span class="o-category-slider__text">Hoodies</span>
+        </a>
+      </li>
+      
+      {% comment %} Tees Category {% endcomment %}
+      <li class="o-category-slider__item">
+        <a href="{{ collections.tees.url | default: '/collections/tees' }}" class="o-category-slider__link">
+          <span class="o-category-slider__text">Tees</span>
+        </a>
+      </li>
+      
+      {% comment %} 1 of 1s Category {% endcomment %}
+      <li class="o-category-slider__item">
+        <a href="{{ collections['1-of-1s'].url | default: '/collections/1-of-1s' }}" class="o-category-slider__link">
+          <span class="o-category-slider__text">1 of 1s</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Category Slider",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Category Slider"
+    }
+  ]
+}
+{% endschema %}
