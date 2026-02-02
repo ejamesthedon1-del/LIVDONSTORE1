@@ -1299,11 +1299,11 @@ body {
   margin: 0;
 }
 
-/* 2-column layout for product gallery on homepage - larger images */
+/* 1-column layout for product gallery on homepage - 1 product per row */
 .o-listing-grid--2-columns {
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem; /* Smaller gap for bigger images */
-  padding: 0 0.5rem; /* Removed top padding to bring closer to headline */
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+  padding: 0 0.5rem;
   margin-top: 0;
 }
 
@@ -1314,9 +1314,9 @@ body {
   }
   
   .o-listing-grid--2-columns {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem; /* Slightly larger gap on tablet */
-    padding: 3rem 1rem; /* Reduced padding for bigger images */
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    padding: 3rem 1rem;
   }
 }
 
@@ -1326,9 +1326,9 @@ body {
   }
   
   .o-listing-grid--2-columns {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem; /* Standard gap on desktop */
-    padding: 3rem 1.5rem; /* Reduced padding for bigger images */
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2rem;
+    padding: 3rem 1.5rem;
   }
 }
 
@@ -1448,9 +1448,9 @@ body {
   color: #fff;
 }
 
-/* Larger product images in 2-column gallery */
+/* Full-width product images in 1-column gallery */
 .o-listing-grid--2-columns .m-tile-slider__visual {
-  aspect-ratio: 4 / 5; /* Slightly taller for bigger appearance */
+  aspect-ratio: 3 / 4; /* Taller aspect ratio for single column */
 }
 
 .m-tile-slider__controls {
