@@ -1913,10 +1913,7 @@ body {
   flex: 0 0 calc(50% - 0.1875rem);
 }
 
-/* Hide anything beyond first 2 buttons */
-.product-dynamic-checkout-buttons > *:nth-child(n+3) {
-  display: none !important;
-}
+/* Hide unwanted buttons - JavaScript will handle filtering to Shop Pay and Apple Pay */
 
 /* Style Shopify's dynamic checkout buttons */
 .product-dynamic-checkout-buttons [data-shopify-buttoncontainer] {
@@ -1954,18 +1951,19 @@ body {
   display: none;
 }
 
-/* Limit to first 2 buttons only (Shop Pay and Apple Pay) */
-.product-dynamic-checkout-buttons [data-shopify-buttoncontainer]:nth-of-type(n+3),
-.product-dynamic-checkout-buttons iframe:nth-of-type(n+3) {
-  display: none !important;
-}
-
-/* Hide Google Pay, PayPal, Amazon Pay, Venmo buttons if they appear */
+/* Hide unwanted payment buttons - JavaScript will handle showing Shop Pay and Apple Pay */
 .product-dynamic-checkout-buttons iframe[src*="google_pay"],
 .product-dynamic-checkout-buttons iframe[src*="paypal"],
 .product-dynamic-checkout-buttons iframe[src*="amazon_pay"],
 .product-dynamic-checkout-buttons iframe[src*="venmo"] {
   display: none !important;
+}
+
+/* Ensure Shop Pay and Apple Pay are visible */
+.product-dynamic-checkout-buttons iframe[src*="shop_pay"],
+.product-dynamic-checkout-buttons iframe[src*="apple_pay"] {
+  display: block !important;
+  width: 100% !important;
 }
 
 /* Add to Cart Button */

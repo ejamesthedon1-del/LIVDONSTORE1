@@ -874,42 +874,105 @@
     });
   }
 
-  // Filter Dynamic Checkout Buttons - Show only first 2 buttons (Shop Pay and Apple Pay)
+  // Filter Dynamic Checkout Buttons - Show only Shop Pay and Apple Pay
   function filterCheckoutButtons() {
     const checkoutContainer = document.querySelector('[data-filter-checkout-buttons]');
     if (!checkoutContainer) return;
 
-    // Function to limit buttons to first 2
+    // Function to show only Shop Pay and Apple Pay buttons
     function limitButtons() {
       // Get all button containers and iframes
-      const allButtons = Array.from(checkoutContainer.children);
-      
-      // Hide all buttons beyond the first 2
-      allButtons.forEach((button, index) => {
-        if (index >= 2) {
-          button.style.display = 'none';
-        } else {
-          // Ensure first 2 are visible
-          button.style.display = 'block';
-        }
-      });
-      
-      // Also limit iframes directly
+      const allElements = Array.from(checkoutContainer.children);
       const iframes = Array.from(checkoutContainer.querySelectorAll('iframe'));
-      iframes.forEach((iframe, index) => {
-        if (index >= 2) {
+      const containers = Array.from(checkoutContainer.querySelectorAll('[data-shopify-buttoncontainer]'));
+      
+      // Function to check if element is Shop Pay or Apple Pay
+      function isShopPayOrApplePay(element) {
+        if (!element) return false;
+        
+        const src = element.src || element.getAttribute('src') || '';
+        const dataAttr = element.getAttribute('data-shopify-buttoncontainer') || '';
+        const className = element.className || '';
+        const text = element.textContent?.toLowerCase() || '';
+        const ariaLabel = element.getAttribute('aria-label')?.toLowerCase() || '';
+        const id = element.id || '';
+        
+        // Check for Shop Pay
+        const isShopPay = src.includes('shop_pay') || 
+                         src.includes('shopify_pay') ||
+                         dataAttr.includes('shop_pay') ||
+                         dataAttr.includes('shopify_pay') ||
+                         className.includes('shop-pay') ||
+                         className.includes('shopify-pay') ||
+                         text.includes('shop pay') ||
+                         ariaLabel.includes('shop pay') ||
+                         id.includes('shop_pay');
+        
+        // Check for Apple Pay
+        const isApplePay = src.includes('apple_pay') ||
+                          dataAttr.includes('apple_pay') ||
+                          className.includes('apple-pay') ||
+                          text.includes('apple pay') ||
+                          ariaLabel.includes('apple pay') ||
+                          id.includes('apple_pay');
+        
+        return isShopPay || isApplePay;
+      }
+      
+      // First, handle iframes (most common for Shopify buttons)
+      iframes.forEach(iframe => {
+        const parent = iframe.parentElement;
+        if (isShopPayOrApplePay(iframe)) {
+          iframe.style.display = 'block';
+          if (parent && parent !== checkoutContainer) {
+            parent.style.display = 'flex';
+            parent.style.width = 'calc(50% - 0.1875rem)';
+            parent.style.flexShrink = '0';
+          }
+        } else {
           iframe.style.display = 'none';
-          if (iframe.parentElement) {
-            iframe.parentElement.style.display = 'none';
+          if (parent && parent !== checkoutContainer) {
+            parent.style.display = 'none';
           }
         }
       });
       
-      // Limit button containers
-      const containers = Array.from(checkoutContainer.querySelectorAll('[data-shopify-buttoncontainer]'));
-      containers.forEach((container, index) => {
-        if (index >= 2) {
+      // Then handle containers
+      containers.forEach(container => {
+        if (isShopPayOrApplePay(container)) {
+          container.style.display = 'flex';
+          container.style.width = 'calc(50% - 0.1875rem)';
+          container.style.flexShrink = '0';
+        } else {
           container.style.display = 'none';
+        }
+      });
+      
+      // Finally, handle direct children
+      allElements.forEach(element => {
+        // Skip if already handled as iframe or container
+        if (element.tagName === 'IFRAME' || element.hasAttribute('data-shopify-buttoncontainer')) {
+          return;
+        }
+        
+        // Check if this element contains Shop Pay or Apple Pay
+        const containsShopPayOrApplePay = isShopPayOrApplePay(element) ||
+                                         element.querySelector('iframe[src*="shop_pay"]') ||
+                                         element.querySelector('iframe[src*="apple_pay"]');
+        
+        if (containsShopPayOrApplePay) {
+          element.style.display = 'flex';
+          element.style.width = 'calc(50% - 0.1875rem)';
+          element.style.flexShrink = '0';
+        } else {
+          // Check if it contains unwanted buttons
+          const hasUnwantedButton = element.querySelector('iframe[src*="google_pay"]') ||
+                                    element.querySelector('iframe[src*="paypal"]') ||
+                                    element.querySelector('iframe[src*="amazon_pay"]') ||
+                                    element.querySelector('iframe[src*="venmo"]');
+          if (hasUnwantedButton) {
+            element.style.display = 'none';
+          }
         }
       });
     }
