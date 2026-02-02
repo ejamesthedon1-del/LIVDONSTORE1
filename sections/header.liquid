@@ -11,6 +11,8 @@
         {% else %}
           <span class="a-logo__text">{{ shop.name }}</span>
         {% endif %}
+        {% comment %} Frog mascot image next to logo {% endcomment %}
+        <img src="{{ 'potzypot-frog.png' | asset_url }}" alt="" class="a-logo__frog" loading="eager" aria-hidden="true">
       </a>
     </h1>
     
