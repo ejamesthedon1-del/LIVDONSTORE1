@@ -68,6 +68,29 @@
     });
   }
 
+  // Menu Search Toggle - Redirect to homepage for search
+  function initMenuSearch() {
+    const menuSearchToggle = document.querySelector('[data-menu-search-toggle]');
+    if (!menuSearchToggle) return;
+
+    menuSearchToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      // Close menu first
+      const mobileMenu = document.querySelector('[data-mobile-menu]');
+      const menuMask = document.querySelector('[data-menu-mask]');
+      if (mobileMenu) {
+        mobileMenu.classList.remove('o-sidebar-nav--open');
+      }
+      if (menuMask) {
+        menuMask.style.display = 'none';
+      }
+      document.body.style.overflow = '';
+      
+      // Redirect to homepage for search
+      window.location.href = '/';
+    });
+  }
+
   // Product Tile Slider
   function initProductTileSlider() {
     const tileSliders = document.querySelectorAll('[data-tile-slider]');
@@ -941,6 +964,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       initMobileMenu();
       initSearch();
+      initMenuSearch();
       initProductTileSlider();
       initProductGallery();
       initProductInfoSections();
@@ -955,6 +979,7 @@
   } else {
     initMobileMenu();
     initSearch();
+    initMenuSearch();
     initProductTileSlider();
     initProductGallery();
     initProductInfoSections();

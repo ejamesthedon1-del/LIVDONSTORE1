@@ -16,12 +16,15 @@
     
     {% comment %} Desktop Header Controls {% endcomment %}
     <div class="g-header-desktop">
-      <button type="button" class="a-search a-search--desktop" aria-label="SEARCH" data-search-toggle>
-        <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
-          <circle cx="9" cy="9" r="6"></circle>
-          <path d="m17 17-4-4"></path>
-        </svg>
-      </button>
+      {% comment %} Only show search on homepage {% endcomment %}
+      {% if template.name == 'index' %}
+        <button type="button" class="a-search a-search--desktop" aria-label="SEARCH" data-search-toggle>
+          <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="9" cy="9" r="6"></circle>
+            <path d="m17 17-4-4"></path>
+          </svg>
+        </button>
+      {% endif %}
       <div class="minicart" data-cart-link>
         <a class="a-btn a-btn--as-link minicart-link a-cart" href="{{ routes.cart_url }}">
           <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -51,13 +54,15 @@
         </a>
       </div>
       
-      {% comment %} Search Icon - Show when scrolled {% endcomment %}
-      <button type="button" class="a-search a-search--mobile-scrolled" aria-label="SEARCH" data-search-toggle style="display: none;">
-        <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
-          <circle cx="9" cy="9" r="6"></circle>
-          <path d="m17 17-4-4"></path>
-        </svg>
-      </button>
+      {% comment %} Search Icon - Show when scrolled, only on homepage {% endcomment %}
+      {% if template.name == 'index' %}
+        <button type="button" class="a-search a-search--mobile-scrolled" aria-label="SEARCH" data-search-toggle style="display: none;">
+          <svg class="w-5 h-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="9" cy="9" r="6"></circle>
+            <path d="m17 17-4-4"></path>
+          </svg>
+        </button>
+      {% endif %}
       
       {% comment %} Hamburger Menu - Mobile Only {% endcomment %}
       <button
@@ -74,16 +79,18 @@
     </div>
   </div>
   
-  {% comment %} Mobile Search Input - Below Header {% endcomment %}
-  <div class="g-header-search-mobile" data-search-mobile>
-    <input
-      type="text"
-      placeholder="SEARCH"
-      class="g-header-search-input"
-      aria-label="Search"
-      data-search-input
-    >
-  </div>
+  {% comment %} Mobile Search Input - Below Header, only on homepage {% endcomment %}
+  {% if template.name == 'index' %}
+    <div class="g-header-search-mobile" data-search-mobile>
+      <input
+        type="text"
+        placeholder="SEARCH"
+        class="g-header-search-input"
+        aria-label="Search"
+        data-search-input
+      >
+    </div>
+  {% endif %}
 </header>
 
 {% comment %} Mobile Backdrop Mask {% endcomment %}
