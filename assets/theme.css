@@ -1417,18 +1417,13 @@ body {
   height: 2.5rem;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid #000;
-  border-radius: 50%;
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 20;
   transition: all 0.3s ease;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.m-tile-slider:hover .m-tile-slider__quick-add {
   opacity: 1;
   pointer-events: auto;
 }
@@ -1436,7 +1431,7 @@ body {
 .m-tile-slider__quick-add:hover {
   background: #000;
   color: #fff;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .m-tile-slider__quick-add-icon {
