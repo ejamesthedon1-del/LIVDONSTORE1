@@ -36,17 +36,10 @@
                 <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
                 {% render 'product-selectors', product: product %}
 
-                {% comment %} Payment Options and Add to Bag - After Size Selection {% endcomment %}
+                {% comment %} Add to Bag Button - After Size Selection {% endcomment %}
                 <div class="a11y" aria-live="polite" id="add-to-cart-live" role="status"></div>
                 
                 <div class="prices-add-to-cart-actions o-product__action-ctas">
-                  {% comment %} Shopify Dynamic Checkout Buttons {% endcomment %}
-                  {% if additional_checkout_buttons %}
-                    <div class="product-dynamic-checkout-buttons" data-filter-checkout-buttons>
-                      {{ content_for_additional_checkout_buttons }}
-                    </div>
-                  {% endif %}
-
                   {% comment %} Add to Bag Button {% endcomment %}
                   <button
                     class="add-to-cart a-btn"
