@@ -1,0 +1,30 @@
+{% comment %}
+  Placeholder Product Tile - Shows when no product is available
+{% endcomment %}
+
+<li class="o-listing-grid__item">
+  <div class="m-tile-slider" data-behavior="mTileSlider">
+    <div class="m-tile-slider__visual">
+      <div class="m-tile-slider__wrapper" role="group" data-tile-slider>
+        <div class="m-tile-slider__slide m-tile-slider__slide--active">
+          <div class="a-ratio-box a-ratio-box--4:5" style="background: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="m-product-listing__meta">
+      <h2 class="m-product-listing__meta-title f-body">
+        Product Name
+      </h2>
+      <p class="m-product-listing__meta-price f-body--em">
+        <span class="prices">
+          <strong data-description="value" class="f-body--em">
+            $0.00 USD
+          </strong>
+        </span>
+      </p>
+    </div>
+  </div>
+</li>

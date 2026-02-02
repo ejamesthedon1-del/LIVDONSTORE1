@@ -17,20 +17,41 @@
     {% endif %}
     
     <ul class="o-listing-grid o-listing-grid--2-columns" data-behavior="oListingGrid">
-      {% for product in selected_collection.products limit: section.settings.product_limit %}
+      {% assign product_count = selected_collection.products.size %}
+      {% assign display_limit = section.settings.product_limit %}
+      
+      {% comment %} Show actual products {% endcomment %}
+      {% for product in selected_collection.products limit: display_limit %}
         {% render 'product-tile', product: product %}
       {% endfor %}
+      
+      {% comment %} Add 3 placeholder products if we have fewer products than the limit {% endcomment %}
+      {% assign remaining_slots = display_limit | minus: product_count %}
+      {% if remaining_slots > 0 %}
+        {% assign placeholder_count = remaining_slots %}
+        {% if placeholder_count > 3 %}
+          {% assign placeholder_count = 3 %}
+        {% endif %}
+        {% for i in (1..placeholder_count) %}
+          {% render 'product-tile-placeholder' %}
+        {% endfor %}
+      {% endif %}
     </ul>
   </div>
 {% else %}
-  {% comment %} Fallback if no products {% endcomment %}
+  {% comment %} Fallback if no products - show 3 placeholders {% endcomment %}
   <div class="o-product-gallery-section">
     {% if section.settings.title != blank %}
       <h3 class="o-product-gallery-section__title f-body--em">
         {{ section.settings.title }}
       </h3>
     {% endif %}
-    <p class="f-body">No products available.</p>
+    
+    <ul class="o-listing-grid o-listing-grid--2-columns" data-behavior="oListingGrid">
+      {% for i in (1..3) %}
+        {% render 'product-tile-placeholder' %}
+      {% endfor %}
+    </ul>
   </div>
 {% endif %}
 
