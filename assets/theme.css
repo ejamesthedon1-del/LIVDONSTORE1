@@ -1223,6 +1223,35 @@ body {
   position: relative;
 }
 
+/* Product Grid Section */
+.o-product-grid-section {
+  padding: 2rem 1rem;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .o-product-grid-section {
+    padding: 3rem 2rem;
+  }
+}
+
+.o-product-grid-section__title {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.o-product-grid-section__view-all {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .o-product-grid-section__view-all {
+    margin-top: 3rem;
+  }
+}
+
 /* Product Tile Slider */
 .m-tile-slider {
   position: relative;

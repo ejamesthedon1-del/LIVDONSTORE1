@@ -1,0 +1,98 @@
+{% comment %}
+  Product Grid Section - Display products on homepage
+{% endcomment %}
+
+{% if section.settings.collection != blank %}
+  {% assign collection = collections[section.settings.collection] %}
+  
+  {% if collection.products.size > 0 %}
+    <div class="o-product-grid-section">
+      {% if section.settings.title != blank %}
+        <h2 class="o-product-grid-section__title f-body--em">
+          {{ section.settings.title }}
+        </h2>
+      {% endif %}
+      
+      <ul class="o-listing-grid" data-behavior="oListingGrid">
+        {% for product in collection.products limit: section.settings.product_limit %}
+          {% render 'product-tile', product: product %}
+        {% endfor %}
+      </ul>
+      
+      {% if section.settings.show_view_all and collection.products.size > section.settings.product_limit %}
+        <div class="o-product-grid-section__view-all">
+          <a href="{{ collection.url }}" class="a-btn a-btn--outline">
+            VIEW ALL PRODUCTS
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+{% else %}
+  {% comment %} Show all products if no collection selected {% endcomment %}
+  {% assign all_products = collections.all.products %}
+  
+  {% if all_products.size > 0 %}
+    <div class="o-product-grid-section">
+      {% if section.settings.title != blank %}
+        <h2 class="o-product-grid-section__title f-body--em">
+          {{ section.settings.title | default: 'FEATURED PRODUCTS' }}
+        </h2>
+      {% endif %}
+      
+      <ul class="o-listing-grid" data-behavior="oListingGrid">
+        {% for product in all_products limit: section.settings.product_limit %}
+          {% render 'product-tile', product: product %}
+        {% endfor %}
+      </ul>
+      
+      {% if section.settings.show_view_all and all_products.size > section.settings.product_limit %}
+        <div class="o-product-grid-section__view-all">
+          <a href="{{ routes.all_products_collection_url }}" class="a-btn a-btn--outline">
+            VIEW ALL PRODUCTS
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Product Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "FEATURED PRODUCTS"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Select a collection to display products from. Leave empty to show all products."
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "label": "Number of products to show",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View All' button",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Grid"
+    }
+  ]
+}
+{% endschema %}
