@@ -1396,12 +1396,42 @@
         if (isSubmitting) return;
         
         const variantInput = modal.querySelector('[data-quick-add-variant-id]:checked');
-        if (!variantInput) {
+        const sizeSelector = modal.querySelector('.o-quick-add-modal__size-selector');
+        const isSizeSelectorVisible = sizeSelector && sizeSelector.style.display !== 'none';
+        
+        if (isSizeSelectorVisible && !variantInput) {
           alert('Please select a size');
           return;
         }
 
-        const variantId = variantInput.getAttribute('data-variant-id');
+        // If no size selector, use first available variant
+        let variantId;
+        if (variantInput) {
+          variantId = variantInput.getAttribute('data-variant-id');
+        } else if (currentProductId) {
+          // Fetch product to get first variant
+          try {
+            const productHandle = document.querySelector(`[data-product-id="${currentProductId}"]`)?.getAttribute('data-product-handle');
+            if (productHandle) {
+              const response = await fetch(`/products/${productHandle}.js`);
+              const product = await response.json();
+              if (product.variants && product.variants.length > 0) {
+                variantId = product.variants[0].id;
+              } else {
+                alert('Product is not available');
+                return;
+              }
+            }
+          } catch (error) {
+            console.error('Error getting variant:', error);
+            alert('Error adding to cart. Please try again.');
+            return;
+          }
+        } else {
+          alert('Please select a size');
+          return;
+        }
+
         await addToCartFromModal(variantId);
       });
     }
@@ -1420,7 +1450,7 @@
         if (imageUrl) {
           imageContainer.innerHTML = `<img src="${imageUrl}" alt="${product.title || 'Product'}" loading="eager">`;
         } else {
-          imageContainer.innerHTML = '<div style="width: 100%; aspect-ratio: 1/1; background: #f5f5f5; display: flex; align-items: center; justify-content: center;">{{ "product-1" | placeholder_svg_tag: "placeholder-svg" }}</div>';
+          imageContainer.innerHTML = '<div style="width: 100%; aspect-ratio: 1/1; background: #f5f5f5; display: flex; align-items: center; justify-content: center; color: #999;">No Image</div>';
         }
       }
 
