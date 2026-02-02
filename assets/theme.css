@@ -539,7 +539,12 @@ body {
   }
 }
 
-/* Hero Subtext */
+/* Hero Subtext - matches headline width */
+.title-and-link-and-desc .f-display--02 {
+  display: inline-block;
+  max-width: 100%;
+}
+
 .o-hero__subtext {
   font-size: 0.625rem;
   line-height: 1.5;
@@ -547,13 +552,15 @@ body {
   margin-top: 0.75rem;
   color: #666;
   font-weight: 400;
-  max-width: 100%;
+  max-width: 22em; /* Match headline width up to "2026" - approximately 22 characters */
+  word-wrap: break-word;
 }
 
 @media (min-width: 768px) {
   .o-hero__subtext {
     font-size: 0.75rem;
     margin-top: 1rem;
+    max-width: 18em; /* Adjusted for larger headline font */
   }
 }
 
