@@ -1458,7 +1458,7 @@ body {
   font-size: 0.625rem;
   letter-spacing: 0.01em;
   line-height: 1.5;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.125rem 0; /* Reduced margin to bring price closer */
   font-weight: 400;
   text-transform: uppercase;
 }
