@@ -1981,6 +1981,18 @@ body {
     overflow-x: hidden;
     word-wrap: break-word;
     text-align: left;
+    /* Smooth transitions for show/hide */
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, max-height 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
+    will-change: opacity, transform, max-height;
+  }
+
+  /* When title/price is hidden (header visible) */
+  .o-product__cta-puller.puller-title-hidden .o-product__header-titles {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+    margin-bottom: 0;
+    pointer-events: none;
   }
 
   .o-product__cta-puller .o-product__title {

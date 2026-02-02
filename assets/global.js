@@ -1227,6 +1227,106 @@
     }
   }
 
+  // Enhanced sticky footer scroll behavior - Celine-style
+  function initStickyFooterScroll() {
+    const productHeader = document.querySelector('[data-oproductscroll-header]');
+    const pullerTitlePrice = document.querySelector('[data-puller] .o-product__header-titles');
+    
+    if (!productHeader || !pullerTitlePrice) return;
+
+    // Get the puller wrapper (the element containing title/price)
+    const pullerWrapper = document.querySelector('[data-puller]');
+    if (!pullerWrapper) return;
+
+    // Find the title/price section within puller
+    const titlePriceSection = pullerWrapper.querySelector('.o-product__header-titles');
+    if (!titlePriceSection) return;
+
+    // Add smooth transition styles
+    titlePriceSection.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out, max-height 0.3s ease-in-out, margin-bottom 0.3s ease-in-out';
+    titlePriceSection.style.overflow = 'hidden';
+    
+    // Store initial height for smooth transitions
+    const initialHeight = titlePriceSection.offsetHeight;
+    titlePriceSection.style.maxHeight = initialHeight + 'px';
+
+    let isHeaderVisible = false;
+
+    // IntersectionObserver to detect when product header enters viewport
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const wasVisible = isHeaderVisible;
+        isHeaderVisible = entry.isIntersecting;
+
+        // Only update if state changed to avoid unnecessary DOM updates
+        if (wasVisible !== isHeaderVisible) {
+          if (isHeaderVisible) {
+            // Header is visible - hide title/price in sticky footer smoothly
+            titlePriceSection.style.opacity = '0';
+            titlePriceSection.style.transform = 'translateY(-10px)';
+            titlePriceSection.style.maxHeight = '0';
+            titlePriceSection.style.marginBottom = '0';
+            titlePriceSection.style.pointerEvents = 'none';
+            pullerWrapper.classList.add('puller-title-hidden');
+          } else {
+            // Header is not visible - show title/price in sticky footer smoothly
+            titlePriceSection.style.opacity = '1';
+            titlePriceSection.style.transform = 'translateY(0)';
+            titlePriceSection.style.maxHeight = initialHeight + 'px';
+            titlePriceSection.style.marginBottom = '';
+            titlePriceSection.style.pointerEvents = 'auto';
+            pullerWrapper.classList.remove('puller-title-hidden');
+          }
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '-10% 0px -10% 0px', // Trigger when header is in middle 80% of viewport
+      threshold: [0, 0.1, 0.5, 1] // Multiple thresholds for smoother transitions
+    });
+
+    observer.observe(productHeader);
+  }
+
+  // Enhanced drawer behavior - scroll to product content when pulled up significantly
+  // This works alongside the existing drawer functionality
+  function enhanceProductDrawer() {
+    const puller = document.querySelector('[data-puller]');
+    const productContent = document.querySelector('[data-oproductscroll-content]');
+    
+    if (!puller || !productContent) return;
+
+    // Track if user is doing a quick swipe (not dragging drawer)
+    let quickSwipeStartY = 0;
+    let quickSwipeStartTime = 0;
+    const QUICK_SWIPE_THRESHOLD = 150; // pixels
+    const QUICK_SWIPE_TIME = 300; // milliseconds
+
+    // Listen for quick upward swipes on the puller
+    puller.addEventListener('touchstart', (e) => {
+      quickSwipeStartY = e.touches[0].clientY;
+      quickSwipeStartTime = Date.now();
+    }, { passive: true, capture: true });
+
+    puller.addEventListener('touchend', (e) => {
+      const swipeEndY = e.changedTouches[0].clientY;
+      const swipeDistance = quickSwipeStartY - swipeEndY;
+      const swipeTime = Date.now() - quickSwipeStartTime;
+      
+      // Detect quick upward swipe (not slow drag for drawer)
+      if (swipeDistance > QUICK_SWIPE_THRESHOLD && swipeTime < QUICK_SWIPE_TIME) {
+        // Scroll to product content, bypassing gallery
+        e.stopPropagation(); // Prevent drawer from opening
+        requestAnimationFrame(() => {
+          productContent.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start'
+          });
+        });
+      }
+    }, { passive: true, capture: true });
+  }
+
   // Initialize all functionality when DOM is ready
   function initializeAll() {
     initMobileMenu();
@@ -1237,6 +1337,8 @@
     initProductInfoSections();
     initSortDropdown();
     initProductDrawer();
+    enhanceProductDrawer(); // Enhance drawer behavior
+    initStickyFooterScroll(); // Initialize scroll-based visibility
     initVariantSelection();
     initAddToCart();
     initCartPage(); // Initialize cart page functionality
