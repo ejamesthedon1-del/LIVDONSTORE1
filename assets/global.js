@@ -942,7 +942,7 @@
           if (itemEl) {
             itemEl.style.transition = 'opacity 0.3s';
             itemEl.style.opacity = '0';
-            setTimeout(() => {
+            setTimeout(async () => {
               itemEl.remove();
               
               // Check if cart is empty
