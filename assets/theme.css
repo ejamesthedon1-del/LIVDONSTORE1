@@ -356,9 +356,7 @@ body {
 }
 
 .a-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
+  display: inline-block;
   text-decoration: none;
   color: #000;
   font-size: 1.5rem;
@@ -373,32 +371,9 @@ body {
   width: auto;
 }
 
-.a-logo__frog {
-  display: block;
-  height: auto;
-  max-height: 50px;
-  width: auto;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
 @media (max-width: 1023px) {
   .a-logo__img {
     max-height: 50px;
-  }
-  
-  .a-logo__frog {
-    max-height: 40px;
-  }
-}
-
-@media (max-width: 767px) {
-  .a-logo {
-    gap: 0.5rem;
-  }
-  
-  .a-logo__frog {
-    max-height: 35px;
   }
 }
 
