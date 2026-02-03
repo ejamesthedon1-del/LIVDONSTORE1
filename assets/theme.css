@@ -530,12 +530,12 @@ body {
 
 /* Rich Text Styles */
 .a-rich-text {
-  padding: 0.5rem 0 1rem 0;
+  padding: 0.5rem 0 0.5rem 0; /* Reduced padding to move to top */
 }
 
 @media (min-width: 768px) {
   .a-rich-text {
-    padding: 1rem 0 2rem 0;
+    padding: 0.75rem 0 0.75rem 0; /* Reduced padding to move to top */
   }
 }
 
@@ -788,12 +788,12 @@ body {
 
 /* CELINE Blocks and Tetris Layout */
 .o-blocks {
-  padding: 1rem 1rem; /* Reduced padding to move sections up */
+  padding: 0.5rem 1rem; /* Minimal padding to move sections to top */
 }
 
 @media (min-width: 768px) {
   .o-blocks {
-    padding: 1.5rem 2rem; /* Reduced padding to move sections up */
+    padding: 0.75rem 2rem; /* Minimal padding to move sections to top */
   }
 }
 
@@ -1496,14 +1496,14 @@ body {
 
 /* Product Gallery Section (Homepage) */
 .o-product-gallery-section {
-  padding: 0.5rem 0.5rem 2rem 0.5rem; /* Reduced top padding to bring closer to headline */
+  padding: 0.25rem 0.5rem 2rem 0.5rem; /* Minimal top padding to move to top */
   width: 100%;
   max-width: 100%;
 }
 
 @media (min-width: 768px) {
   .o-product-gallery-section {
-    padding: 0.75rem 1rem 3rem 1rem; /* Reduced top padding */
+    padding: 0.5rem 1rem 3rem 1rem; /* Minimal top padding to move to top */
   }
 }
 
