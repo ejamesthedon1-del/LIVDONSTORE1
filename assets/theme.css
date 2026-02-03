@@ -1549,6 +1549,11 @@ body {
   }
 }
 
+/* First product (navy hoodie) - use image dimensions 1920x2296 */
+.o-listing-grid--2-columns .o-listing-grid__item:first-child .m-tile-slider__visual {
+  aspect-ratio: 1920 / 2296;
+}
+
 .m-tile-slider__controls {
   position: absolute;
   top: 0;
