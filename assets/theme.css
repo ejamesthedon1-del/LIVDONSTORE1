@@ -788,12 +788,12 @@ body {
 
 /* CELINE Blocks and Tetris Layout */
 .o-blocks {
-  padding: 2rem 1rem;
+  padding: 1rem 1rem; /* Reduced padding to move sections up */
 }
 
 @media (min-width: 768px) {
   .o-blocks {
-    padding: 3rem 2rem;
+    padding: 1.5rem 2rem; /* Reduced padding to move sections up */
   }
 }
 
@@ -1057,16 +1057,16 @@ body {
 }
 
 .homepage {
-  padding-top: 70px;
+  padding-top: 1rem; /* Reduced padding to move sections up */
 }
 
 @media (max-width: 1023px) {
   .homepage {
-    padding-top: 75px; /* Adjusted for search input position */
+    padding-top: 1rem; /* Reduced padding to move sections up */
   }
   
   .main--scrolled .homepage {
-    padding-top: 70px;
+    padding-top: 1rem; /* Reduced padding to move sections up */
   }
 }
 
