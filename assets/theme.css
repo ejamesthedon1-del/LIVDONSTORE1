@@ -1532,26 +1532,21 @@ body {
 /* Proportional square product images in 1-column gallery */
 .o-listing-grid--2-columns .m-tile-slider__visual {
   aspect-ratio: 1 / 1; /* Perfect square */
-  max-width: 600px; /* Smaller, more proportional size */
+  max-width: 400px; /* Smaller size to match image resolution and improve quality */
   width: 100%;
   margin: 0 auto; /* Center the images */
 }
 
 @media (min-width: 768px) {
   .o-listing-grid--2-columns .m-tile-slider__visual {
-    max-width: 700px; /* Slightly larger on tablet/desktop */
+    max-width: 450px; /* Slightly larger on tablet but still within image resolution */
   }
 }
 
 @media (min-width: 1024px) {
   .o-listing-grid--2-columns .m-tile-slider__visual {
-    max-width: 800px; /* Larger on desktop but still proportional */
+    max-width: 500px; /* Matches image_url width: 500 for optimal quality */
   }
-}
-
-/* First product (navy hoodie) - use image dimensions 1920x2296 */
-.o-listing-grid--2-columns .o-listing-grid__item:first-child .m-tile-slider__visual {
-  aspect-ratio: 1920 / 2296;
 }
 
 .m-tile-slider__controls {
