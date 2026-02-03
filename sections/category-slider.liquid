@@ -2,6 +2,14 @@
   Category Slider Section - Horizontal scrolling category menu
 {% endcomment %}
 
+{% comment %} Timer above categories menu {% endcomment %}
+{% if template.name == 'index' %}
+  <div class="o-category-timer" data-category-timer>
+    <span class="o-category-timer__text f-body">ENDS IN:</span>
+    <span class="o-category-timer__countdown f-body--em" data-timer-display>00:00:00</span>
+  </div>
+{% endif %}
+
 <div class="o-category-slider" data-behavior="categorySlider">
   <div class="o-category-slider__container">
     <ul class="o-category-slider__list">

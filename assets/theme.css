@@ -573,6 +573,43 @@ body {
   }
 }
 
+/* Category Timer */
+.o-category-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.o-category-timer__text {
+  font-size: 0.625rem;
+  letter-spacing: 0.01em;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.o-category-timer__countdown {
+  font-size: 0.625rem;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .o-category-timer {
+    padding: 0.75rem 2rem;
+  }
+  
+  .o-category-timer__text,
+  .o-category-timer__countdown {
+    font-size: 0.75rem;
+  }
+}
+
 /* Category Slider */
 .o-category-slider {
   width: 100%;

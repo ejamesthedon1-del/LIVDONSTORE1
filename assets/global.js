@@ -1700,6 +1700,36 @@
     });
   }
 
+  function initCategoryTimer() {
+    const timerElement = document.querySelector('[data-timer-display]');
+    if (!timerElement) return;
+
+    // Set target time (24 hours from now as example - can be customized)
+    const targetTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
+
+    function updateTimer() {
+      const now = new Date().getTime();
+      const distance = targetTime - now;
+
+      if (distance < 0) {
+        timerElement.textContent = '00:00:00';
+        return;
+      }
+
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      const formatTime = (num) => String(num).padStart(2, '0');
+      timerElement.textContent = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+    }
+
+    // Update immediately
+    updateTimer();
+    // Update every second
+    setInterval(updateTimer, 1000);
+  }
+
   function initializeAll() {
     initMobileMenu();
     initSearch();
@@ -1709,6 +1739,7 @@
     initProductInfoSections();
     initSortDropdown();
     initNotifyMe();
+    initCategoryTimer();
     // initProductDrawer(); // Disabled - sticky footer removed
     // enhanceProductDrawer(); // Disabled - sticky footer removed
     // initStickyFooterScroll(); // Disabled - sticky footer removed
