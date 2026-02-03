@@ -21,7 +21,8 @@
         "settings": {
           "hero_link_1": "",
           "hero_link_2": "",
-          "headline": "NEW COLLECTION \"PRINTEMPS 2026\"",
+          "headline": "NEW COLLECTION \"ARCHIVE STUDIO 2026\"",
+          "subtext": "Items below are handpainted in our studio in small batches to ensure quality and delicacy of craftmanship",
           "button_text": "DISCOVER OUR NEW COLLECTION",
           "button_link": ""
         }
@@ -29,11 +30,17 @@
       "image-slider": {
         "type": "image-slider",
         "settings": {
-          "title": "Explore the gifts selection"
+          "title": "Explore the gifts selection",
+          "collection": "",
+          "product_limit": 8
         }
       },
       "footer": {
         "type": "footer",
+        "settings": {}
+      },
+      "category-slider": {
+        "type": "category-slider",
         "settings": {}
       }
     },
