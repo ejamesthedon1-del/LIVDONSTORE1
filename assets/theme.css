@@ -1362,7 +1362,7 @@ body {
   
   .o-listing-grid--2-columns {
     grid-template-columns: repeat(1, 1fr);
-    gap: 2rem;
+    gap: 3rem; /* Increased spacing between items */
     padding: 3rem 1.5rem;
   }
 }
