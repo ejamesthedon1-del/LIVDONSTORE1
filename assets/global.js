@@ -1701,9 +1701,24 @@
   }
 
   function initCategoryTimer() {
-    const timerElement = document.querySelector('[data-timer-display]');
-    if (!timerElement) return;
+    // Try multiple times to find the element (in case DOM isn't ready)
+    let timerElement = document.querySelector('[data-timer-display]');
+    
+    if (!timerElement) {
+      // Try again after a short delay
+      setTimeout(function() {
+        timerElement = document.querySelector('[data-timer-display]');
+        if (timerElement) {
+          startTimer(timerElement);
+        }
+      }, 500);
+      return;
+    }
 
+    startTimer(timerElement);
+  }
+
+  function startTimer(timerElement) {
     // Set target time (24 hours from now as example - can be customized)
     const targetTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 hours
 

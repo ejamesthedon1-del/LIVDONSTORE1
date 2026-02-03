@@ -575,13 +575,18 @@ body {
 
 /* Category Timer */
 .o-category-timer {
-  display: flex;
+  display: flex !important; /* Force visibility */
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   margin-bottom: 0.5rem;
+  margin-top: 0;
   text-align: center;
+  width: 100%;
+  max-width: 100%;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .o-category-timer__text {
@@ -589,6 +594,9 @@ body {
   letter-spacing: 0.01em;
   color: #000;
   text-transform: uppercase;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .o-category-timer__countdown {
@@ -597,6 +605,9 @@ body {
   font-weight: 700;
   color: #000;
   text-transform: uppercase;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 @media (min-width: 768px) {
