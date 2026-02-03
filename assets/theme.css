@@ -1337,7 +1337,7 @@ body {
 /* 1-column layout for product gallery on homepage - 1 product per row */
 .o-listing-grid--2-columns {
   grid-template-columns: repeat(1, 1fr);
-  gap: 1rem;
+  gap: 2rem; /* Increased spacing between items */
   padding: 0 0.5rem;
   margin-top: 0;
 }
@@ -1350,7 +1350,7 @@ body {
   
   .o-listing-grid--2-columns {
     grid-template-columns: repeat(1, 1fr);
-    gap: 1.5rem;
+    gap: 2.5rem; /* Increased spacing between items */
     padding: 3rem 1rem;
   }
 }
