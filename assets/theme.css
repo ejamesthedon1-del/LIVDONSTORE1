@@ -1710,14 +1710,26 @@ body {
   color: #000;
 }
 
-/* Align product text with 1080px image box on homepage */
+/* Align product text with actual product image width on homepage */
 .o-listing-grid--2-columns .m-product-listing__meta {
-  max-width: 1080px;
+  max-width: 400px; /* Match mobile image width */
   width: 100%;
   margin-left: auto;
   margin-right: auto;
   padding-left: 0;
   padding-right: 0;
+}
+
+@media (min-width: 768px) {
+  .o-listing-grid--2-columns .m-product-listing__meta {
+    max-width: 450px; /* Match tablet image width */
+  }
+}
+
+@media (min-width: 1024px) {
+  .o-listing-grid--2-columns .m-product-listing__meta {
+    max-width: 500px; /* Match desktop image width */
+  }
 }
 
 .m-product-listing__meta-title {
