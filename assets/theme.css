@@ -791,9 +791,20 @@ body {
   padding: 2rem 1rem;
 }
 
+/* Hero section - headline at top, minimal top padding under search */
+.o-blocks--hero {
+  padding-top: 0.75rem;
+  padding-bottom: 1rem;
+}
+
 @media (min-width: 768px) {
   .o-blocks {
     padding: 3rem 2rem;
+  }
+  
+  .o-blocks--hero {
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
   }
 }
 
@@ -1051,22 +1062,22 @@ body {
   color: #000;
 }
 
-/* Homepage Container */
+/* Homepage Container - Headline sits directly under search */
 .home-main {
   width: 100%;
 }
 
 .homepage {
-  padding-top: 70px;
+  padding-top: 86px; /* Clear fixed header (84px) */
 }
 
 @media (max-width: 1023px) {
   .homepage {
-    padding-top: 75px; /* Adjusted for search input position */
+    padding-top: 90px; /* Clear header + mobile search */
   }
   
   .main--scrolled .homepage {
-    padding-top: 70px;
+    padding-top: 86px;
   }
 }
 
