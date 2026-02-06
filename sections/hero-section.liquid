@@ -3,6 +3,37 @@
 {% endcomment %}
 
 <div class="o-blocks o-blocks--40">
+  <div class="o-tetris o-tetris--o small-mt">
+    <div class="m-media m-media--has-media">
+      <div class="m-media__media a-ratio-box a-ratio-box--1:1" data-row-number="1" data-picture-number="1">
+        {% if section.settings.hero_image_1 != blank %}
+          <a href="{{ section.settings.hero_link_1 | default: collections.all.url }}" class="m-media__media-cta">
+            <img
+              src="{{ section.settings.hero_image_1 | image_url: width: 1000 }}"
+              alt="{{ section.settings.hero_image_1.alt | default: 'Hero image' }}"
+              data-sizes="auto"
+              loading="eager"
+            >
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="m-media m-media--has-media o-tetris__second-image">
+      <div class="m-media__media a-ratio-box a-ratio-box--1:1" data-row-number="1" data-picture-number="2">
+        {% if section.settings.hero_image_2 != blank %}
+          <a href="{{ section.settings.hero_link_2 | default: collections.all.url }}" class="m-media__media-cta">
+            <img
+              src="{{ section.settings.hero_image_2 | image_url: width: 1000 }}"
+              alt="{{ section.settings.hero_image_2.alt | default: 'Hero image' }}"
+              data-sizes="auto"
+              loading="lazy"
+            >
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
   <div class="a-rich-text a-rich-text--main title-and-link-and-desc">
     <h1 class="f-display--02 f-display--bold">
       {{ section.settings.headline | default: 'NEW COLLECTION "Archive Studio"' }}
