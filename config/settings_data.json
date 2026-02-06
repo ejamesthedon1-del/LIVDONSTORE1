@@ -12,7 +12,9 @@
     "sections": {
       "header": {
         "type": "header",
-        "settings": {}
+        "settings": {
+          "logo": "shopify://shop_images/Asset_1_png.webp"
+        }
       },
       "hero-section": {
         "type": "hero-section",
@@ -40,6 +42,12 @@
       "category-slider": {
         "type": "category-slider",
         "settings": {}
+      },
+      "project-grid": {
+        "type": "project-grid",
+        "settings": {
+          "title": "Explore the gifts selection"
+        }
       }
     },
     "content_for_index": []
