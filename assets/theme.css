@@ -1816,6 +1816,18 @@ body {
   flex-wrap: wrap;
 }
 
+/* Homepage product grid: color variant right under price, minimal spacing */
+.o-listing-grid--2-columns .m-product-listing__meta {
+  padding-top: 0.5rem;
+  padding-bottom: 0;
+}
+.o-listing-grid--2-columns .m-product-listing__meta-price {
+  margin-bottom: 0;
+}
+.o-listing-grid--2-columns .m-product-listing__color-variants {
+  margin-top: 0.25rem;
+}
+
 .m-product-listing__color-variant {
   width: 0.875rem;
   height: 0.875rem;
