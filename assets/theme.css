@@ -1081,6 +1081,27 @@ body {
   }
 }
 
+/* Hero: On mobile, hide button and show category menu (TOPS, BOTTOMS, 1 OF 1) */
+.o-hero__category-menu--mobile-only {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .o-hero__button--desktop-only {
+    display: none !important;
+  }
+  .o-hero__category-menu--mobile-only {
+    display: block;
+    margin-top: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .o-hero__category-menu--mobile-only {
+    display: none;
+  }
+}
+
 .small-mt {
   margin-top: 0.5rem;
 }

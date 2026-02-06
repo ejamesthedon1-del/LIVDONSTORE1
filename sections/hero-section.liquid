@@ -2,7 +2,38 @@
   Hero Section - Original Vercel format: 2 images + headline + button
 {% endcomment %}
 
-<div class="o-blocks o-blocks--hero">
+<div class="o-blocks o-blocks--40">
+  <div class="o-tetris o-tetris--o small-mt">
+    <div class="m-media m-media--has-media">
+      <div class="m-media__media a-ratio-box a-ratio-box--1:1" data-row-number="1" data-picture-number="1">
+        {% if section.settings.hero_image_1 != blank %}
+          <a href="{{ section.settings.hero_link_1 | default: collections.all.url }}" class="m-media__media-cta">
+            <img
+              src="{{ section.settings.hero_image_1 | image_url: width: 1000 }}"
+              alt="{{ section.settings.hero_image_1.alt | default: 'Hero image' }}"
+              data-sizes="auto"
+              loading="eager"
+            >
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="m-media m-media--has-media o-tetris__second-image">
+      <div class="m-media__media a-ratio-box a-ratio-box--1:1" data-row-number="1" data-picture-number="2">
+        {% if section.settings.hero_image_2 != blank %}
+          <a href="{{ section.settings.hero_link_2 | default: collections.all.url }}" class="m-media__media-cta">
+            <img
+              src="{{ section.settings.hero_image_2 | image_url: width: 1000 }}"
+              alt="{{ section.settings.hero_image_2.alt | default: 'Hero image' }}"
+              data-sizes="auto"
+              loading="lazy"
+            >
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
   <div class="a-rich-text a-rich-text--main title-and-link-and-desc">
     <h1 class="f-display--02 f-display--bold">
       {{ section.settings.headline | default: 'NEW COLLECTION "Archive Studio"' }}
@@ -12,10 +43,34 @@
         {{ section.settings.subtext }}
       </p>
     {% endif %}
-    <div class="a-rich-text__button">
+    {% comment %} Desktop: button. Mobile: category menu (TOPS, BOTTOMS, 1 OF 1) {% endcomment %}
+    <div class="a-rich-text__button o-hero__button--desktop-only">
       <a href="{{ section.settings.button_link | default: collections.all.url }}" class="a-btn a-btn--outline">
         {{ section.settings.button_text | default: 'DISCOVER OUR NEW COLLECTION' }}
       </a>
+    </div>
+    <div class="o-hero__category-menu--mobile-only">
+      <div class="o-category-slider" data-behavior="categorySlider">
+        <div class="o-category-slider__container">
+          <ul class="o-category-slider__list">
+            <li class="o-category-slider__item">
+              <a href="{% if collections.tops %}{{ collections.tops.url }}{% else %}/collections/tops{% endif %}" class="o-category-slider__link o-category-slider__link--active">
+                <span class="o-category-slider__text">TOPS</span>
+              </a>
+            </li>
+            <li class="o-category-slider__item">
+              <a href="{% if collections.bottoms %}{{ collections.bottoms.url }}{% else %}/collections/bottoms{% endif %}" class="o-category-slider__link">
+                <span class="o-category-slider__text">BOTTOMS</span>
+              </a>
+            </li>
+            <li class="o-category-slider__item">
+              <a href="{% if collections['1-of-1s'] %}{{ collections['1-of-1s'].url }}{% else %}/collections/1-of-1s{% endif %}" class="o-category-slider__link">
+                <span class="o-category-slider__text">1 OF 1 PIECES</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
