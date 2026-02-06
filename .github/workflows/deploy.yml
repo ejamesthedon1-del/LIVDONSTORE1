@@ -24,5 +24,6 @@ jobs:
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_THEME_TOKEN }}
+          SHOPIFY_FLAG_FORCE: "1"
         run: |
-          shopify theme push --store=$SHOPIFY_FLAG_STORE --theme=livdon
+          shopify theme push --store=$SHOPIFY_FLAG_STORE --theme=138509811808 --password=$SHOPIFY_CLI_THEME_TOKEN

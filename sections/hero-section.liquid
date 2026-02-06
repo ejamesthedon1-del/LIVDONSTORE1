@@ -1,5 +1,5 @@
 {% comment %}
-  Hero Section - Converted from HeroSection.jsx
+  Hero Section - Original Vercel format: 2 images + headline + button
 {% endcomment %}
 
 <div class="o-blocks o-blocks--hero">
@@ -12,6 +12,11 @@
         {{ section.settings.subtext }}
       </p>
     {% endif %}
+    <div class="a-rich-text__button">
+      <a href="{{ section.settings.button_link | default: collections.all.url }}" class="a-btn a-btn--outline">
+        {{ section.settings.button_text | default: 'DISCOVER OUR NEW COLLECTION' }}
+      </a>
+    </div>
   </div>
 </div>
 

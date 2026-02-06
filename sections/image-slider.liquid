@@ -13,7 +13,7 @@
     {% comment %} Title removed - no headline displayed {% endcomment %}
     
     <ul class="o-listing-grid o-listing-grid--2-columns" data-behavior="oListingGrid">
-      {% assign display_limit = 2 %}
+      {% assign display_limit = section.settings.product_limit | default: 4 %}
       
       {% comment %} Find navy hoodie and display it first {% endcomment %}
       {% assign navy_hoodie = null %}

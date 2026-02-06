@@ -1393,10 +1393,10 @@ body {
   margin: 0;
 }
 
-/* 1-column layout for product gallery on homepage - 1 product per row */
+/* 2-column layout for product gallery on homepage */
 .o-listing-grid--2-columns {
-  grid-template-columns: repeat(1, 1fr);
-  gap: 2rem; /* Increased spacing between items */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
   padding: 0 0.5rem;
   margin-top: 0;
 }
@@ -1408,8 +1408,8 @@ body {
   }
   
   .o-listing-grid--2-columns {
-    grid-template-columns: repeat(1, 1fr);
-    gap: 2.5rem; /* Increased spacing between items */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
     padding: 3rem 1rem;
   }
 }
@@ -1420,8 +1420,8 @@ body {
   }
   
   .o-listing-grid--2-columns {
-    grid-template-columns: repeat(1, 1fr);
-    gap: 3rem; /* Increased spacing between items */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
     padding: 3rem 1.5rem;
   }
 }

@@ -1,0 +1,89 @@
+{% comment %}
+  Project Grid - Original Vercel "Explore the gifts selection" format
+  Collection cards linking to Shopify collections
+{% endcomment %}
+
+<div class="o-project-grid" data-behavior="oProjectGrid">
+  <h3 class="f-body--em">{{ section.settings.title | default: 'Explore the gifts selection' }}</h3>
+  <ul class="o-project-grid__inner">
+    {% if collections.tops != blank %}
+      <li class="o-project-grid__item">
+        <a href="{{ collections.tops.url }}">
+          <div class="o-project-grid__img-wrapper">
+            <figure>
+              <div class="a-ratio-box a-ratio-box--1:1">
+                {% if collections.tops.image != blank %}
+                  <img src="{{ collections.tops.image | image_url: width: 600 }}" alt="{{ collections.tops.title }}">
+                {% elsif collections.tops.products.first != blank and collections.tops.products.first.featured_image != blank %}
+                  <img src="{{ collections.tops.products.first.featured_image | image_url: width: 600 }}" alt="{{ collections.tops.title }}">
+                {% else %}
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+              </div>
+              <figcaption class="f-body--em">{{ collections.tops.title | upcase }}</figcaption>
+            </figure>
+          </div>
+        </a>
+      </li>
+    {% endif %}
+    {% if collections.bottoms != blank %}
+      <li class="o-project-grid__item">
+        <a href="{{ collections.bottoms.url }}">
+          <div class="o-project-grid__img-wrapper">
+            <figure>
+              <div class="a-ratio-box a-ratio-box--1:1">
+                {% if collections.bottoms.image != blank %}
+                  <img src="{{ collections.bottoms.image | image_url: width: 600 }}" alt="{{ collections.bottoms.title }}">
+                {% elsif collections.bottoms.products.first != blank and collections.bottoms.products.first.featured_image != blank %}
+                  <img src="{{ collections.bottoms.products.first.featured_image | image_url: width: 600 }}" alt="{{ collections.bottoms.title }}">
+                {% else %}
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+              </div>
+              <figcaption class="f-body--em">{{ collections.bottoms.title | upcase }}</figcaption>
+            </figure>
+          </div>
+        </a>
+      </li>
+    {% endif %}
+    {% if collections['1-of-1s'] != blank %}
+      <li class="o-project-grid__item">
+        <a href="{{ collections['1-of-1s'].url }}">
+          <div class="o-project-grid__img-wrapper">
+            <figure>
+              <div class="a-ratio-box a-ratio-box--1:1">
+                {% if collections['1-of-1s'].image != blank %}
+                  <img src="{{ collections['1-of-1s'].image | image_url: width: 600 }}" alt="{{ collections['1-of-1s'].title }}">
+                {% elsif collections['1-of-1s'].products.first != blank and collections['1-of-1s'].products.first.featured_image != blank %}
+                  <img src="{{ collections['1-of-1s'].products.first.featured_image | image_url: width: 600 }}" alt="{{ collections['1-of-1s'].title }}">
+                {% else %}
+                  {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+              </div>
+              <figcaption class="f-body--em">{{ collections['1-of-1s'].title | upcase }}</figcaption>
+            </figure>
+          </div>
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Project Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Explore the gifts selection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Project Grid"
+    }
+  ]
+}
+{% endschema %}
