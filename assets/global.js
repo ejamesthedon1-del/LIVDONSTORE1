@@ -815,55 +815,42 @@
         checkoutBtn.disabled = true;
       }
 
-      // Collect quantity updates - Shopify expects updates[] array indexed by item key
-      // Use item keys from data-key attribute (more reliable than calculated line numbers)
-      const formData = new FormData();
+      // Collect quantity updates using item keys from data-key attribute
       const cartItems = Array.from(cartForm.querySelectorAll('[data-cart-item]'));
+      const updates = {};
       
       console.log('Cart items found:', cartItems.length);
       
       cartItems.forEach((itemEl) => {
         const input = itemEl.querySelector('[data-quantity-input]');
-        const itemKey = itemEl.getAttribute('data-key'); // Get key from attribute
+        const itemKey = itemEl.getAttribute('data-key');
         if (input && itemKey) {
           const quantity = parseInt(input.value) || 0;
-          // Use item key instead of line number for more reliable updates
-          formData.append(`updates[${itemKey}]`, quantity.toString());
-          console.log(`Added update: updates[${itemKey}] = ${quantity}`);
+          updates[itemKey] = quantity;
+          console.log(`Added update: ${itemKey} = ${quantity}`);
         } else if (!itemKey) {
           console.warn('Cart item missing data-key attribute:', itemEl);
         }
       });
 
       try {
-        // Use the correct Shopify cart update API endpoint
+        // Use /cart/update.js with JSON body per Shopify docs
         const updateUrl = window.routes.cart_update_url + '.js';
         console.log('Updating cart via:', updateUrl);
-        console.log('FormData entries:', Array.from(formData.entries()));
+        console.log('Updates:', updates);
         
         const response = await fetch(updateUrl, {
           method: 'POST',
-          body: formData,
           headers: {
+            'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest'
-          }
+          },
+          body: JSON.stringify({ updates })
         });
         
         console.log('Cart update response:', response.status, response.statusText);
 
-        const contentType = response.headers.get('content-type');
-        let data;
-
-        if (contentType && contentType.includes('application/json')) {
-          data = await response.json();
-        } else {
-          const text = await response.text();
-          try {
-            data = JSON.parse(text);
-          } catch {
-            throw new Error('Invalid response format');
-          }
-        }
+        const data = await response.json();
 
         if (response.ok && !data.errors) {
           // Success - update cart display
@@ -892,6 +879,7 @@
           });
         } else {
           // Error
+          console.error('Cart update error:', data);
           const errorMsg = data.description || data.message || 'Error updating cart';
           showCartMessage(errorMsg, 'error');
         }
@@ -939,49 +927,26 @@
       itemEl.style.opacity = '0.5';
 
       try {
-        // Use update endpoint with item key - set quantity to 0 to remove item
-        const formData = new FormData();
-        formData.append(`updates[${finalItemKey}]`, '0');
+        // Use /cart/change.js with JSON body per Shopify docs
+        const changeUrl = window.routes.cart_change_url + '.js';
+        console.log('Removing item via:', changeUrl, 'itemKey:', finalItemKey);
         
-        const updateUrl = window.routes.cart_update_url + '.js';
-        console.log('Removing item via:', updateUrl, 'itemKey:', finalItemKey);
-        console.log('FormData entries:', Array.from(formData.entries()));
-        
-        const response = await fetch(updateUrl, {
+        const response = await fetch(changeUrl, {
           method: 'POST',
-          body: formData,
           headers: {
+            'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest'
-          }
+          },
+          body: JSON.stringify({
+            id: finalItemKey,
+            quantity: 0
+          })
         });
         
         console.log('Remove item response:', response.status, response.statusText);
 
-        const contentType = response.headers.get('content-type');
-        let data;
+        const data = await response.json();
 
-        // Handle response based on content type
-        if (contentType && contentType.includes('application/json')) {
-          data = await response.json();
-        } else {
-          // Try to parse as JSON anyway
-          const text = await response.text();
-          console.log('Response text:', text.substring(0, 500)); // Log first 500 chars for debugging
-          try {
-            data = JSON.parse(text);
-          } catch {
-            // If not JSON, might be HTML error page
-            if (!response.ok) {
-              const errorMatch = text.match(/<title[^>]*>([^<]+)<\/title>/i) || 
-                                text.match(/error[^>]*>([^<]+)/i);
-              const errorMsg = errorMatch ? errorMatch[1] : `Error ${response.status}: ${response.statusText}`;
-              throw new Error(errorMsg);
-            }
-            throw new Error('Invalid response format');
-          }
-        }
-
-        // Check for success
         if (response.ok && !data.errors && !data.description) {
           // Success - remove item from DOM
           if (itemEl) {
@@ -1007,16 +972,8 @@
           if (itemEl) {
             itemEl.style.opacity = '1';
           }
-          
-          // Log full error details for debugging, especially 422 errors
-          if (response.status === 422) {
-            console.error('422 Error - Full response data:', data);
-            console.error('Request FormData:', Array.from(formData.entries()));
-          }
-          
-          const errorMsg = data.description || data.message || 
-                          (data.errors ? (Array.isArray(data.errors) ? data.errors.join(', ') : JSON.stringify(data.errors)) : null) ||
-                          `Error ${response.status}: ${response.statusText}`;
+          console.error('Remove error:', data);
+          const errorMsg = data.description || data.message || 'Error removing item';
           showCartMessage(errorMsg, 'error');
         }
       } catch (error) {
