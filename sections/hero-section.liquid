@@ -54,17 +54,17 @@
         <div class="o-category-slider__container">
           <ul class="o-category-slider__list">
             <li class="o-category-slider__item">
-              <a href="{% if collections.tops %}{{ collections.tops.url }}{% else %}/collections/tops{% endif %}" class="o-category-slider__link o-category-slider__link--active">
+              <a href="#" class="o-category-slider__link o-category-slider__link--active" data-category-filter data-collection="tops" data-collection-title="Tops">
                 <span class="o-category-slider__text">TOPS</span>
               </a>
             </li>
             <li class="o-category-slider__item">
-              <a href="{% if collections.bottoms %}{{ collections.bottoms.url }}{% else %}/collections/bottoms{% endif %}" class="o-category-slider__link">
+              <a href="#" class="o-category-slider__link" data-category-filter data-collection="bottoms" data-collection-title="Bottoms">
                 <span class="o-category-slider__text">BOTTOMS</span>
               </a>
             </li>
             <li class="o-category-slider__item">
-              <a href="{% if collections['1-of-1s'] %}{{ collections['1-of-1s'].url }}{% else %}/collections/1-of-1s{% endif %}" class="o-category-slider__link">
+              <a href="#" class="o-category-slider__link" data-category-filter data-collection="1-of-1s" data-collection-title="1 of 1 Pieces">
                 <span class="o-category-slider__text">1 OF 1 PIECES</span>
               </a>
             </li>

@@ -179,9 +179,10 @@
 
   // Product Tile Slider
   function initProductTileSlider() {
-    const tileSliders = document.querySelectorAll('[data-tile-slider]');
+    const tileSliders = document.querySelectorAll('[data-tile-slider]:not([data-slider-init])');
     
     tileSliders.forEach(slider => {
+      slider.setAttribute('data-slider-init', 'true');
       const slides = slider.querySelectorAll('[data-tile-slide]');
       const indicator = slider.closest('.m-tile-slider').querySelector('[data-tile-indicator-bar]');
       let currentIndex = 0;
@@ -1342,7 +1343,7 @@
 
   // Quick Add Modal Functionality
   function initQuickAddModal() {
-    const quickAddButtons = document.querySelectorAll('[data-quick-add]');
+    const quickAddButtons = document.querySelectorAll('[data-quick-add]:not([data-quick-add-init])');
     const modal = document.getElementById('quick-add-modal');
     const closeButtons = document.querySelectorAll('[data-quick-add-close]');
     const submitButton = document.querySelector('[data-quick-add-submit]');
@@ -1355,6 +1356,7 @@
 
     // Open modal
     quickAddButtons.forEach(button => {
+      button.setAttribute('data-quick-add-init', 'true');
       button.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -1888,6 +1890,179 @@
     setInterval(updateTimer, 1000);
   }
 
+  // Category Filter - Filter product grid by collection
+  function initCategoryFilter() {
+    const categoryLinks = document.querySelectorAll('[data-category-filter]');
+    const productGridSection = document.querySelector('[data-product-grid-section]');
+    let productGrid = document.querySelector('[data-product-grid]');
+    
+    if (!categoryLinks.length || !productGridSection) return;
+
+    // If no product grid ul exists yet (empty state), create one
+    if (!productGrid) {
+      productGrid = document.createElement('ul');
+      productGrid.className = 'o-listing-grid o-listing-grid--2-columns';
+      productGrid.setAttribute('data-behavior', 'oListingGrid');
+      productGrid.setAttribute('data-product-grid', '');
+      productGridSection.appendChild(productGrid);
+    }
+
+    let isLoading = false;
+
+    categoryLinks.forEach(link => {
+      link.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (isLoading) return;
+        
+        const collectionHandle = link.getAttribute('data-collection');
+        const collectionTitle = link.getAttribute('data-collection-title') || collectionHandle;
+        
+        if (!collectionHandle) return;
+
+        // Update active state on all category links (both mobile and desktop)
+        document.querySelectorAll('[data-category-filter]').forEach(l => {
+          l.classList.remove('o-category-slider__link--active');
+        });
+        // Activate all links with same collection handle
+        document.querySelectorAll(`[data-category-filter][data-collection="${collectionHandle}"]`).forEach(l => {
+          l.classList.add('o-category-slider__link--active');
+        });
+
+        isLoading = true;
+        productGrid.style.opacity = '0.5';
+        productGrid.style.transition = 'opacity 0.2s';
+
+        // Scroll to product grid section so user sees results
+        productGridSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        try {
+          // Fetch collection products via Shopify AJAX API
+          const response = await fetch(`/collections/${collectionHandle}/products.json?limit=20`);
+          
+          if (!response.ok) {
+            throw new Error(`Collection not found: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          const products = data.products || [];
+
+          // Clear current grid
+          productGrid.innerHTML = '';
+
+          if (products.length === 0) {
+            // Show empty state message
+            productGrid.innerHTML = `
+              <li class="o-listing-grid__empty" style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;">
+                <p class="f-body" style="font-size: 1rem; color: #666;">
+                  Sorry, there are no <strong>${collectionTitle}</strong> items at this time. Check back soon!
+                </p>
+              </li>
+            `;
+          } else {
+            // Build product tiles from API data
+            products.forEach(product => {
+              const li = document.createElement('li');
+              li.className = 'o-listing-grid__item';
+              
+              // Build image slides
+              const images = product.images || [];
+              let slidesHtml = '';
+              images.forEach((img, i) => {
+                // Use image src directly - API returns full CDN URL
+                const imgUrl = img.src;
+                slidesHtml += `
+                  <a
+                    class="m-tile-slider__slide ${i === 0 ? 'm-tile-slider__slide--active' : ''}"
+                    data-i="${i + 1}"
+                    aria-roledescription="slide"
+                    aria-label="${i + 1} OF ${images.length}"
+                    href="/products/${product.handle}"
+                    data-tile-slide
+                  >
+                    <img
+                      src="${imgUrl}"
+                      alt="${img.alt || product.title}"
+                      loading="${i === 0 ? 'eager' : 'lazy'}"
+                      sizes="(min-width: 1680px) 15vw, (min-width: 1024px) 20vw, (min-width: 768px) 33.33vw, 50vw"
+                    >
+                  </a>
+                `;
+              });
+
+              // Image indicator
+              let indicatorHtml = '';
+              if (images.length > 1) {
+                indicatorHtml = `
+                  <div class="m-tile-slider__indicator" style="--i-width: ${100 / images.length}%" data-tile-indicator>
+                    <span style="left: 0%" data-tile-indicator-bar></span>
+                  </div>
+                `;
+              }
+
+              // Price
+              const variant = product.variants[0];
+              const price = variant ? (parseFloat(variant.price) / 1).toFixed(2) : '0.00';
+              const priceFormatted = `$${price}`;
+
+              // Quick add button
+              const quickAddHtml = `
+                <button 
+                  type="button" 
+                  class="m-tile-slider__quick-add" 
+                  data-quick-add
+                  data-product-id="${product.id}"
+                  data-product-handle="${product.handle}"
+                  aria-label="Quick add ${product.title} to cart"
+                >
+                  <span class="m-tile-slider__quick-add-icon">+</span>
+                </button>
+              `;
+
+              li.innerHTML = `
+                <div class="m-tile-slider" data-behavior="mTileSlider">
+                  <div class="m-tile-slider__visual">
+                    ${quickAddHtml}
+                    <div class="m-tile-slider__controls">
+                      ${indicatorHtml}
+                    </div>
+                    <div class="m-tile-slider__wrapper" role="group" data-tile-slider>
+                      ${slidesHtml}
+                    </div>
+                  </div>
+                  <a href="/products/${product.handle}" class="m-product-listing__meta">
+                    <h2 class="m-product-listing__meta-title f-body">${product.title}</h2>
+                    <p class="m-product-listing__meta-price f-body--em">
+                      <span class="prices">
+                        <strong data-description="value" class="f-body--em">${priceFormatted} USD</strong>
+                      </span>
+                    </p>
+                  </a>
+                </div>
+              `;
+              productGrid.appendChild(li);
+            });
+
+            // Re-initialize tile sliders and quick add for new tiles
+            initProductTileSlider();
+            initQuickAddModal();
+          }
+        } catch (error) {
+          console.error('Error loading collection:', error);
+          productGrid.innerHTML = `
+            <li class="o-listing-grid__empty" style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;">
+              <p class="f-body" style="font-size: 1rem; color: #666;">
+                Sorry, there are no <strong>${collectionTitle}</strong> items at this time. Check back soon!
+              </p>
+            </li>
+          `;
+        } finally {
+          isLoading = false;
+          productGrid.style.opacity = '1';
+        }
+      });
+    });
+  }
+
   function initializeAll() {
     initMobileMenu();
     initSearch();
@@ -1898,6 +2073,7 @@
     initSortDropdown();
     initNotifyMe();
     initCategoryTimer();
+    initCategoryFilter(); // Initialize category menu filtering on product grid
     // initProductDrawer(); // Disabled - sticky footer removed
     // enhanceProductDrawer(); // Disabled - sticky footer removed
     // initStickyFooterScroll(); // Disabled - sticky footer removed

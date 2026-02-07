@@ -9,10 +9,10 @@
 {% endif %}
 
 {% if selected_collection.products.size > 0 %}
-  <div class="o-product-gallery-section">
+  <div class="o-product-gallery-section" data-product-grid-section>
     {% comment %} Title removed - no headline displayed {% endcomment %}
     
-    <ul class="o-listing-grid o-listing-grid--2-columns" data-behavior="oListingGrid">
+    <ul class="o-listing-grid o-listing-grid--2-columns" data-behavior="oListingGrid" data-product-grid>
       {% assign display_limit = section.settings.product_limit | default: 4 %}
       
       {% comment %} Find navy hoodie and display it first {% endcomment %}
@@ -49,7 +49,7 @@
   </div>
 {% else %}
   {% comment %} Fallback if no products - show nothing {% endcomment %}
-  <div class="o-product-gallery-section">
+  <div class="o-product-gallery-section" data-product-grid-section>
     {% comment %} No products available {% endcomment %}
   </div>
 {% endif %}
