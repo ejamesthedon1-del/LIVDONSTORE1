@@ -1337,6 +1337,7 @@
     if (!modal) return;
 
     let currentProductId = null;
+    let currentProduct = null; // Store product data for variant lookups
     let isSubmitting = false;
 
     // Open modal
@@ -1361,6 +1362,9 @@
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const product = await response.json();
+          
+          // Store product data for variant lookups
+          currentProduct = product;
           
           // Populate modal with product data
           populateModal(product);
@@ -1447,6 +1451,22 @@
       modal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
       currentProductId = null;
+      currentProduct = null;
+    }
+
+    // Helper function to update price when variant changes
+    function updatePriceForVariant(variantId) {
+      if (!currentProduct || !variantId) return;
+      
+      const variant = currentProduct.variants.find(v => v.id == variantId);
+      if (!variant) return;
+      
+      const priceEl = modal.querySelector('[data-quick-add-price]');
+      if (priceEl && variant.price) {
+        const price = (variant.price / 100).toFixed(2);
+        const currency = variant.price_currency || currentProduct.price_currency || 'USD';
+        priceEl.textContent = `$${price} ${currency}`;
+      }
     }
 
     function populateModal(product) {
@@ -1467,12 +1487,25 @@
         titleEl.textContent = product.title || 'Product';
       }
 
-      // Update product price
+      // Update product price - use first available variant price if available
       const priceEl = modal.querySelector('[data-quick-add-price]');
-      if (priceEl && product.price) {
-        const price = (product.price / 100).toFixed(2);
-        const currency = product.price_currency || 'USD';
-        priceEl.textContent = `$${price} ${currency}`;
+      if (priceEl) {
+        let priceValue = product.price;
+        let currency = product.price_currency || 'USD';
+        
+        // If product has variants, use first available variant price
+        if (product.variants && product.variants.length > 0) {
+          const firstAvailableVariant = product.variants.find(v => v.available) || product.variants[0];
+          if (firstAvailableVariant && firstAvailableVariant.price) {
+            priceValue = firstAvailableVariant.price;
+            currency = firstAvailableVariant.price_currency || currency;
+          }
+        }
+        
+        if (priceValue) {
+          const price = (priceValue / 100).toFixed(2);
+          priceEl.textContent = `$${price} ${currency}`;
+        }
       }
 
       // Update view product link
@@ -1533,7 +1566,7 @@
                   required
                 >
                 <label
-                  class="m-selector__item ${isDisabled ? 's-disabled' : ''}"
+                  class="m-selector__item ${isChecked ? 's-selected' : ''} ${isDisabled ? 's-disabled' : ''}"
                   for="${inputId}"
                   role="button"
                   tabindex="0"
@@ -1545,28 +1578,70 @@
               sizeList.appendChild(li);
             });
             
-            // Initialize selector behavior if function exists
-            if (typeof initVariantSelection === 'function') {
-              // Re-initialize for the modal
-              const modalSelectors = modal.querySelectorAll('[data-behavior="mSelector"]');
-              modalSelectors.forEach(selector => {
-                const labels = selector.querySelectorAll('[data-mselector-label]');
-                labels.forEach(label => {
-                  label.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const input = document.getElementById(label.getAttribute('for'));
-                    if (input && !input.disabled) {
-                      input.checked = true;
-                      // Update aria-selected
-                      const listItem = label.closest('[data-mselector-listitem]');
-                      const allItems = selector.querySelectorAll('[data-mselector-listitem]');
-                      allItems.forEach(item => item.setAttribute('aria-selected', 'false'));
-                      if (listItem) listItem.setAttribute('aria-selected', 'true');
+            // Initialize size selector behavior
+            const modalSelectors = modal.querySelectorAll('[data-behavior="mSelector"]');
+            modalSelectors.forEach(selector => {
+              const labels = selector.querySelectorAll('[data-mselector-label]');
+              const allInputs = selector.querySelectorAll('input[type="radio"][name="quick-add-variant-id"]');
+              
+              labels.forEach(label => {
+                label.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  const input = document.getElementById(label.getAttribute('for'));
+                  if (input && !input.disabled) {
+                    // Uncheck all radio inputs in the group
+                    allInputs.forEach(inp => {
+                      inp.checked = false;
+                    });
+                    
+                    // Check the selected input
+                    input.checked = true;
+                    
+                    // Update visual state: remove s-selected from all labels
+                    const allLabels = selector.querySelectorAll('label.m-selector__item');
+                    allLabels.forEach(lbl => {
+                      lbl.classList.remove('s-selected');
+                    });
+                    
+                    // Add s-selected to clicked label
+                    label.classList.add('s-selected');
+                    
+                    // Update aria-selected attributes
+                    const listItem = label.closest('[data-mselector-listitem]');
+                    const allItems = selector.querySelectorAll('[data-mselector-listitem]');
+                    allItems.forEach(item => item.setAttribute('aria-selected', 'false'));
+                    if (listItem) listItem.setAttribute('aria-selected', 'true');
+                    
+                    // Update price for selected variant
+                    const variantId = input.getAttribute('data-variant-id');
+                    if (variantId) {
+                      updatePriceForVariant(variantId);
                     }
-                  });
+                    
+                    // Dispatch change event for any listeners
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                  }
                 });
               });
-            }
+              
+              // Set initial selected state for first checked input
+              const firstChecked = selector.querySelector('input[type="radio"]:checked');
+              if (firstChecked) {
+                const firstLabel = selector.querySelector(`label[for="${firstChecked.id}"]`);
+                if (firstLabel) {
+                  firstLabel.classList.add('s-selected');
+                  const firstListItem = firstLabel.closest('[data-mselector-listitem]');
+                  if (firstListItem) {
+                    firstListItem.setAttribute('aria-selected', 'true');
+                  }
+                }
+                // Update price for initial variant
+                const initialVariantId = firstChecked.getAttribute('data-variant-id');
+                if (initialVariantId) {
+                  updatePriceForVariant(initialVariantId);
+                }
+              }
+            });
           } else {
             sizeSelector.style.display = 'none';
           }
