@@ -1531,7 +1531,7 @@ body {
 
 /* Product Gallery Section (Homepage) */
 .o-product-gallery-section {
-  padding: 0.5rem 0.5rem 2rem 0.5rem; /* Reduced top padding to bring closer to headline */
+  padding: 1.5rem 0.5rem 2rem 0.5rem;
   width: 100%;
   max-width: 100%;
 }
@@ -1625,22 +1625,22 @@ body {
 /* Product images - larger and more zoomed view */
 .o-listing-grid--2-columns .m-tile-slider__visual {
   aspect-ratio: 1 / 1;
-  width: 95%; /* Increased from 90% - use more of column width */
-  max-width: 750px; /* Increased from 600px - much larger on mobile/tablet */
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto; /* Center the images */
 }
 
 @media (min-width: 768px) {
   .o-listing-grid--2-columns .m-tile-slider__visual {
-    width: 95%;
-    max-width: 900px; /* Increased from 700px - better use of tablet space */
+    width: 100%;
+    max-width: 100%;
   }
 }
 
 @media (min-width: 1024px) {
   .o-listing-grid--2-columns .m-tile-slider__visual {
-    width: 95%;
-    max-width: 1000px; /* Increased from 850px - much larger on desktop */
+    width: 100%;
+    max-width: 100%;
   }
 }
 
@@ -1777,13 +1777,13 @@ body {
 .o-listing-grid--2-columns .m-tile-slider {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center both image and text */
+  align-items: stretch;
   width: 100%;
 }
 
 .o-listing-grid--2-columns .m-product-listing__meta {
-  width: 95%; /* Match image width */
-  max-width: 750px !important; /* Match mobile image width */
+  width: 100%;
+  max-width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
   padding-left: 0 !important;
@@ -1793,13 +1793,13 @@ body {
 
 @media (min-width: 768px) {
   .o-listing-grid--2-columns .m-product-listing__meta {
-    max-width: 900px !important; /* Match tablet image width */
+    max-width: 100% !important;
   }
 }
 
 @media (min-width: 1024px) {
   .o-listing-grid--2-columns .m-product-listing__meta {
-    max-width: 1000px !important; /* Match desktop image width */
+    max-width: 100% !important;
   }
 }
 
