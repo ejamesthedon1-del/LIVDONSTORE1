@@ -815,21 +815,23 @@
         checkoutBtn.disabled = true;
       }
 
-      // Collect quantity updates - Shopify expects updates[] array indexed by line number (1-based)
-      // Match line numbers with cart items order
+      // Collect quantity updates - Shopify expects updates[] array indexed by item key
+      // Use item keys from data-key attribute (more reliable than calculated line numbers)
       const formData = new FormData();
       const cartItems = Array.from(cartForm.querySelectorAll('[data-cart-item]'));
       
       console.log('Cart items found:', cartItems.length);
       
-      cartItems.forEach((itemEl, index) => {
+      cartItems.forEach((itemEl) => {
         const input = itemEl.querySelector('[data-quantity-input]');
-        if (input) {
+        const itemKey = itemEl.getAttribute('data-key'); // Get key from attribute
+        if (input && itemKey) {
           const quantity = parseInt(input.value) || 0;
-          // Shopify uses 1-based line indexing - use square brackets format
-          const lineNumber = index + 1;
-          formData.append(`updates[${lineNumber}]`, quantity.toString());
-          console.log(`Added update: updates[${lineNumber}] = ${quantity}`);
+          // Use item key instead of line number for more reliable updates
+          formData.append(`updates[${itemKey}]`, quantity.toString());
+          console.log(`Added update: updates[${itemKey}] = ${quantity}`);
+        } else if (!itemKey) {
+          console.warn('Cart item missing data-key attribute:', itemEl);
         }
       });
 
@@ -924,13 +926,12 @@
         return;
       }
 
-      // Calculate current line index dynamically from DOM position
-      const cartItems = Array.from(cartForm.querySelectorAll('[data-cart-item]'));
-      const currentLineIndex = cartItems.indexOf(itemEl) + 1; // 1-based indexing
+      // Get item key from data-key attribute if not provided as parameter (more reliable than calculating line index)
+      const finalItemKey = itemKey || itemEl.getAttribute('data-key');
       
-      if (currentLineIndex === 0) {
-        console.error('Could not determine line index for item');
-        showCartMessage('Error: Could not determine item position', 'error');
+      if (!finalItemKey) {
+        console.error('Item key not found for remove link');
+        showCartMessage('Error: Could not find item to remove', 'error');
         isUpdating = false;
         return;
       }
@@ -938,28 +939,12 @@
       itemEl.style.opacity = '0.5';
 
       try {
-        // Use update endpoint with updates[] format (same as updateCartAjax)
+        // Use update endpoint with item key - set quantity to 0 to remove item
         const formData = new FormData();
-        
-        // Include all cart items in the update
-        cartItems.forEach((item, index) => {
-          const lineNumber = index + 1;
-          const quantityInput = item.querySelector('[data-quantity-input]');
-          let quantity;
-          
-          if (lineNumber === currentLineIndex) {
-            // Set target item quantity to 0 to remove it
-            quantity = '0';
-          } else {
-            // Keep other items' quantities as-is
-            quantity = quantityInput ? (quantityInput.value || '0') : '0';
-          }
-          
-          formData.append(`updates[${lineNumber}]`, quantity);
-        });
+        formData.append(`updates[${finalItemKey}]`, '0');
         
         const updateUrl = window.routes.cart_update_url + '.js';
-        console.log('Removing item via:', updateUrl, 'line:', currentLineIndex);
+        console.log('Removing item via:', updateUrl, 'itemKey:', finalItemKey);
         console.log('FormData entries:', Array.from(formData.entries()));
         
         const response = await fetch(updateUrl, {
