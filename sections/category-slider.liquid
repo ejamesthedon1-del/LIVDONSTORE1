@@ -11,9 +11,16 @@
         {% assign is_homepage = true %}
       {% endif %}
       
+      {% comment %} ALL Category {% endcomment %}
+      <li class="o-category-slider__item">
+        <a href="#" class="o-category-slider__link {% if is_homepage %}o-category-slider__link--active{% endif %}" data-category-filter data-collection="all" data-collection-title="All">
+          <span class="o-category-slider__text">ALL</span>
+        </a>
+      </li>
+      
       {% comment %} TOPS Category {% endcomment %}
       <li class="o-category-slider__item">
-        <a href="#" class="o-category-slider__link {% if collection.handle == 'tops' or is_homepage %}o-category-slider__link--active{% endif %}" data-category-filter data-collection="tops" data-collection-title="Tops">
+        <a href="#" class="o-category-slider__link {% if collection.handle == 'tops' %}o-category-slider__link--active{% endif %}" data-category-filter data-collection="tops" data-collection-title="Tops">
           <span class="o-category-slider__text">TOPS</span>
         </a>
       </li>
