@@ -1624,7 +1624,7 @@ body {
 
 /* Product images - larger and more visible, responsive sizing */
 .o-listing-grid--2-columns .m-tile-slider__visual {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
   width: 90%; /* Use 90% of column width for better visibility */
   max-width: 600px; /* Increased from 440px - much larger on mobile/tablet */
   margin: 0 auto; /* Center the images */
