@@ -788,7 +788,7 @@ body {
 
 /* CELINE Blocks and Tetris Layout */
 .o-blocks {
-  padding: 2rem 1rem;
+  padding: 1rem 1rem;
 }
 
 /* Hero section - headline at top, minimal top padding under search */
@@ -799,7 +799,7 @@ body {
 
 @media (min-width: 768px) {
   .o-blocks {
-    padding: 3rem 2rem;
+    padding: 2rem 2rem;
   }
   
   .o-blocks--hero {
@@ -1106,12 +1106,12 @@ body {
 }
 
 .small-mt {
-  margin-top: 0.5rem;
+  margin-top: 0;
 }
 
 @media (min-width: 768px) {
   .small-mt {
-    margin-top: 0.75rem;
+    margin-top: 0.25rem;
   }
 }
 
