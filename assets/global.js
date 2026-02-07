@@ -1418,7 +1418,12 @@
         // If no size selector, use first available variant
         let variantId;
         if (variantInput) {
-          variantId = variantInput.getAttribute('data-variant-id');
+          // Get variant ID from value attribute (more reliable than data attribute)
+          variantId = variantInput.value || variantInput.getAttribute('data-variant-id');
+        } else if (currentProduct && currentProduct.variants && currentProduct.variants.length > 0) {
+          // Use stored product data if available
+          const firstAvailableVariant = currentProduct.variants.find(v => v.available) || currentProduct.variants[0];
+          variantId = firstAvailableVariant.id;
         } else if (currentProductId) {
           // Fetch product to get first variant
           try {
@@ -1532,7 +1537,7 @@
             sizeList.innerHTML = '';
             
             sizeOption.values.forEach((value, index) => {
-              // Find matching variant
+              // Find matching variant for this size value
               let variant = product.variants.find(v => {
                 if (sizeOption.position === 1) return v.option1 === value;
                 if (sizeOption.position === 2) return v.option2 === value;
@@ -1540,9 +1545,19 @@
                 return false;
               });
               
-              // Fallback to first variant if no match
+              // If no exact match, try to find first available variant with this size
               if (!variant) {
-                variant = product.variants[0];
+                variant = product.variants.find(v => {
+                  if (sizeOption.position === 1) return v.option1 === value && v.available;
+                  if (sizeOption.position === 2) return v.option2 === value && v.available;
+                  if (sizeOption.position === 3) return v.option3 === value && v.available;
+                  return false;
+                });
+              }
+              
+              // Final fallback: use first available variant, or first variant if none available
+              if (!variant) {
+                variant = product.variants.find(v => v.available) || product.variants[0];
               }
               
               const li = document.createElement('li');
@@ -1683,12 +1698,45 @@
         }
       }
 
+      // Validate variant ID
+      if (!variantId) {
+        alert('Please select a size');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+        }
+        if (btnText) {
+          btnText.textContent = 'ADD TO BAG';
+        }
+        isSubmitting = false;
+        return false;
+      }
+
+      // Ensure variant ID is a valid number
+      const variantIdNum = parseInt(variantId, 10);
+      if (isNaN(variantIdNum)) {
+        console.error('Invalid variant ID:', variantId);
+        alert('Invalid product variant. Please try again.');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+        }
+        if (btnText) {
+          btnText.textContent = 'ADD TO BAG';
+        }
+        isSubmitting = false;
+        return false;
+      }
+
       const formData = new FormData();
-      formData.append('id', variantId);
+      formData.append('id', variantIdNum.toString());
       formData.append('quantity', '1');
 
       try {
-        const response = await fetch(window.routes.cart_add_url, {
+        // Use .js extension to ensure JSON response
+        const cartAddUrl = window.routes.cart_add_url.endsWith('.js') 
+          ? window.routes.cart_add_url 
+          : window.routes.cart_add_url + '.js';
+        
+        const response = await fetch(cartAddUrl, {
           method: 'POST',
           body: formData,
           headers: {
@@ -1699,18 +1747,29 @@
         const contentType = response.headers.get('content-type');
         let data;
 
+        // Handle response based on content type
         if (contentType && contentType.includes('application/json')) {
           data = await response.json();
         } else {
+          // Try to parse as JSON anyway
           const text = await response.text();
           try {
             data = JSON.parse(text);
           } catch {
+            // If not JSON, might be HTML error page
+            if (!response.ok) {
+              // For 422 or other errors, try to extract error message
+              const errorMatch = text.match(/<title[^>]*>([^<]+)<\/title>/i) || 
+                                text.match(/error[^>]*>([^<]+)/i);
+              const errorMsg = errorMatch ? errorMatch[1] : `Error ${response.status}: ${response.statusText}`;
+              throw new Error(errorMsg);
+            }
             throw new Error('Invalid response format');
           }
         }
 
-        if (response.ok && !data.errors) {
+        // Check for success
+        if (response.ok && !data.errors && !data.description) {
           // Success
           if (btnText) {
             btnText.textContent = 'ADDED';
@@ -1731,7 +1790,10 @@
           
           return true;
         } else {
-          const errorMessage = data.description || data.message || 'Error adding to cart. Please try again.';
+          // Error from Shopify
+          const errorMessage = data.description || data.message || 
+                              (data.errors ? JSON.stringify(data.errors) : null) ||
+                              `Error ${response.status}: ${response.statusText}`;
           alert(errorMessage);
           
           if (submitBtn) {
@@ -1745,7 +1807,8 @@
         }
       } catch (error) {
         console.error('Error adding to cart:', error);
-        alert('Error adding to cart. Please try again.');
+        const errorMessage = error.message || 'Error adding to cart. Please try again.';
+        alert(errorMessage);
         
         if (submitBtn) {
           submitBtn.disabled = false;
