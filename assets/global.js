@@ -1932,8 +1932,6 @@
         productGrid.style.opacity = '0.5';
         productGrid.style.transition = 'opacity 0.2s';
 
-        // Scroll to product grid section so user sees results
-        productGridSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
         try {
           // Fetch collection products via Shopify AJAX API
