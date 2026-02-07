@@ -1584,15 +1584,15 @@ body {
   overflow: hidden;
 }
 
-/* Quick Add Button */
+/* Quick Add Button - Black plus sign only, no border */
 .m-tile-slider__quick-add {
   position: absolute;
   bottom: 0.5rem;
   right: 0.5rem;
   width: 1.75rem;
   height: 1.75rem;
-  background: #fff;
-  border: 1px solid #000;
+  background: transparent;
+  border: none;
   border-radius: 0;
   display: flex !important;
   align-items: center;
@@ -1603,12 +1603,10 @@ body {
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 .m-tile-slider__quick-add:hover {
-  background: #000;
-  color: #fff;
   transform: scale(1.05);
 }
 
@@ -1621,7 +1619,7 @@ body {
 }
 
 .m-tile-slider__quick-add:hover .m-tile-slider__quick-add-icon {
-  color: #fff;
+  color: #000;
 }
 
 /* Proportional square product images in 1-column gallery */
