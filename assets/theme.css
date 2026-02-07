@@ -1760,6 +1760,11 @@ body {
   display: block;
 }
 
+/* Homepage product grid: show full 2048x2048 image without cropping */
+.o-listing-grid--2-columns .m-tile-slider__slide img {
+  object-fit: contain;
+}
+
 /* Product Listing Meta */
 .m-product-listing__meta {
   display: block;

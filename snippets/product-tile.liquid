@@ -41,7 +41,7 @@
             data-tile-slide
           >
             <img
-              src="{{ image | image_url: width: 500 }}"
+              src="{{ image | image_url: width: 2048, height: 2048, crop: 'center' }}"
               alt="{{ image.alt | default: product.title }}"
               loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
               sizes="(min-width: 1680px) 15vw, (min-width: 1024px) 20vw, (min-width: 768px) 33.33vw, 50vw"
