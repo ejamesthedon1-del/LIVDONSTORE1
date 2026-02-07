@@ -1770,23 +1770,15 @@
 
         // Check for success
         if (response.ok && !data.errors && !data.description) {
-          // Success
+          // Success - redirect to cart page
           if (btnText) {
             btnText.textContent = 'ADDED';
           }
           
           await updateCartCount();
           
-          setTimeout(() => {
-            closeModal();
-            if (btnText) {
-              btnText.textContent = 'ADD TO BAG';
-            }
-            if (submitBtn) {
-              submitBtn.disabled = false;
-            }
-            isSubmitting = false;
-          }, 1000);
+          // Redirect to cart page
+          window.location.href = window.routes.cart_url;
           
           return true;
         } else {
