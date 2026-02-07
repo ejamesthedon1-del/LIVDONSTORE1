@@ -1929,6 +1929,11 @@
         });
 
         isLoading = true;
+
+        // Lock the grid height so the page doesn't shrink during transitions
+        const currentHeight = productGrid.offsetHeight;
+        productGrid.style.minHeight = currentHeight + 'px';
+
         productGrid.style.opacity = '0.5';
         productGrid.style.transition = 'opacity 0.2s';
 
@@ -2058,6 +2063,11 @@
         } finally {
           isLoading = false;
           productGrid.style.opacity = '1';
+          // Only release min-height if new content is taller, otherwise keep it locked
+          const newHeight = productGrid.scrollHeight;
+          if (newHeight >= currentHeight) {
+            productGrid.style.minHeight = '';
+          }
         }
       });
     });
