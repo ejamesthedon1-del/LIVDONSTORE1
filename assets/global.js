@@ -900,29 +900,60 @@
     }
 
     // AJAX Item Removal
-    async function removeItemAjax(lineIndex, itemKey) {
+    async function removeItemAjax(itemEl, itemKey) {
       if (isUpdating) return;
       isUpdating = true;
 
-      const itemEl = document.querySelector(`[data-key="${itemKey}"]`);
-      if (itemEl) {
-        itemEl.style.opacity = '0.5';
+      if (!itemEl) {
+        itemEl = document.querySelector(`[data-key="${itemKey}"]`);
+      }
+      
+      if (!itemEl) {
+        console.error('Item element not found for key:', itemKey);
+        showCartMessage('Error: Could not find item to remove', 'error');
+        isUpdating = false;
+        return;
       }
 
+      // Calculate current line index dynamically from DOM position
+      const cartItems = Array.from(cartForm.querySelectorAll('[data-cart-item]'));
+      const currentLineIndex = cartItems.indexOf(itemEl) + 1; // 1-based indexing
+      
+      if (currentLineIndex === 0) {
+        console.error('Could not determine line index for item');
+        showCartMessage('Error: Could not determine item position', 'error');
+        isUpdating = false;
+        return;
+      }
+
+      itemEl.style.opacity = '0.5';
+
       try {
-        // Use FormData for cart change endpoint
+        // Use update endpoint with updates[] format (same as updateCartAjax)
         const formData = new FormData();
-        formData.append('line', lineIndex.toString());
-        formData.append('quantity', '0');
         
-        // Use .js extension to ensure JSON response
-        const changeUrl = window.routes.cart_change_url.endsWith('.js')
-          ? window.routes.cart_change_url
-          : window.routes.cart_change_url + '.js';
+        // Include all cart items in the update
+        cartItems.forEach((item, index) => {
+          const lineNumber = index + 1;
+          const quantityInput = item.querySelector('[data-quantity-input]');
+          let quantity;
+          
+          if (lineNumber === currentLineIndex) {
+            // Set target item quantity to 0 to remove it
+            quantity = '0';
+          } else {
+            // Keep other items' quantities as-is
+            quantity = quantityInput ? (quantityInput.value || '0') : '0';
+          }
+          
+          formData.append(`updates[${lineNumber}]`, quantity);
+        });
         
-        console.log('Removing item via:', changeUrl, 'line:', lineIndex);
+        const updateUrl = window.routes.cart_update_url + '.js';
+        console.log('Removing item via:', updateUrl, 'line:', currentLineIndex);
+        console.log('FormData entries:', Array.from(formData.entries()));
         
-        const response = await fetch(changeUrl, {
+        const response = await fetch(updateUrl, {
           method: 'POST',
           body: formData,
           headers: {
@@ -941,6 +972,7 @@
         } else {
           // Try to parse as JSON anyway
           const text = await response.text();
+          console.log('Response text:', text.substring(0, 500)); // Log first 500 chars for debugging
           try {
             data = JSON.parse(text);
           } catch {
@@ -981,8 +1013,15 @@
           if (itemEl) {
             itemEl.style.opacity = '1';
           }
+          
+          // Log full error details for debugging, especially 422 errors
+          if (response.status === 422) {
+            console.error('422 Error - Full response data:', data);
+            console.error('Request FormData:', Array.from(formData.entries()));
+          }
+          
           const errorMsg = data.description || data.message || 
-                          (data.errors ? JSON.stringify(data.errors) : null) ||
+                          (data.errors ? (Array.isArray(data.errors) ? data.errors.join(', ') : JSON.stringify(data.errors)) : null) ||
                           `Error ${response.status}: ${response.statusText}`;
           showCartMessage(errorMsg, 'error');
         }
@@ -1037,24 +1076,23 @@
       }
 
       const itemEl = removeLink.closest('[data-cart-item]');
-      const itemKey = itemEl ? itemEl.getAttribute('data-key') : null;
-      // Get line index from data attribute (Shopify uses 1-based indexing)
-      const lineIndex = removeLink.getAttribute('data-line-index');
-      
-      console.log('Removing item', { itemEl, itemKey, lineIndex });
-      
-      if (!lineIndex) {
-        console.error('Line index not found for remove link');
-        showCartMessage('Error: Could not determine item to remove', 'error');
+      if (!itemEl) {
+        console.error('Cart item element not found');
+        showCartMessage('Error: Could not find item to remove', 'error');
         return;
       }
 
-      if (itemKey) {
-        await removeItemAjax(parseInt(lineIndex), itemKey);
-      } else {
+      const itemKey = itemEl.getAttribute('data-key');
+      if (!itemKey) {
         console.error('Item key not found for remove link');
         showCartMessage('Error: Could not find item to remove', 'error');
+        return;
       }
+      
+      console.log('Removing item', { itemEl, itemKey });
+      
+      // Pass itemEl directly - function will calculate line index dynamically
+      await removeItemAjax(itemEl, itemKey);
     });
   }
 
