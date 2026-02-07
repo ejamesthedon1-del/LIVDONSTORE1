@@ -6,6 +6,9 @@
 (function() {
   'use strict';
 
+  // Initialization flags to prevent duplicate initialization
+  let cartPageInitialized = false;
+
   // Mobile Menu Toggle - Global functions for debugging
   window.openMobileMenu = function() {
     const mobileMenu = document.querySelector('[data-mobile-menu]');
@@ -716,6 +719,12 @@
       return;
     }
 
+    // Guard: prevent duplicate initialization
+    if (cartPageInitialized) {
+      console.log('Cart page already initialized, skipping');
+      return;
+    }
+
     const updateBtn = cartForm.querySelector('[data-update-cart]');
     const checkoutBtn = cartForm.querySelector('[data-checkout-btn]');
     const quantityInputs = cartForm.querySelectorAll('[data-quantity-input]');
@@ -1094,6 +1103,9 @@
       // Pass itemEl directly - function will calculate line index dynamically
       await removeItemAjax(itemEl, itemKey);
     });
+    
+    // Mark as initialized after all event listeners are attached
+    cartPageInitialized = true;
   }
 
   // Filter Dynamic Checkout Buttons - Hide Shop Pay, show only Apple Pay
