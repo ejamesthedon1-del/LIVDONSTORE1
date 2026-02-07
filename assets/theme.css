@@ -1536,9 +1536,21 @@ body {
   max-width: 100%;
 }
 
+@media (max-width: 1023px) {
+  .o-product-gallery-section {
+    margin-top: -1in; /* Bring product grid up one inch on mobile */
+  }
+}
+
 @media (min-width: 768px) {
   .o-product-gallery-section {
     padding: 0.75rem 1rem 3rem 1rem; /* Reduced top padding */
+  }
+}
+
+@media (min-width: 1024px) {
+  .o-product-gallery-section {
+    margin-top: 0; /* Reset on desktop */
   }
 }
 
