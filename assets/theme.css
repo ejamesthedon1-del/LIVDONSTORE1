@@ -1626,7 +1626,7 @@ body {
 
 /* Proportional square product images in 1-column gallery */
 .o-listing-grid--2-columns .m-tile-slider__visual {
-  aspect-ratio: 1 / 1; /* Perfect square */
+  aspect-ratio: 4 / 3;
   max-width: 440px; /* Slightly larger product images */
   width: 100%;
   margin: 0 auto; /* Center the images */
