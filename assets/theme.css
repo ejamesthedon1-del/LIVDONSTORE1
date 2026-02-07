@@ -1538,7 +1538,7 @@ body {
 
 @media (max-width: 1023px) {
   .o-product-gallery-section {
-    margin-top: -1in; /* Bring product grid up one inch on mobile */
+    margin-top: -0.75in; /* Slightly lower than -1in on mobile */
   }
 }
 
