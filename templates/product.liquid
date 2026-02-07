@@ -60,12 +60,28 @@
                   </a>
                 </p>
 
-                {% comment %} Estimated Delivery Date {% endcomment %}
+                {% comment %} Estimated Delivery Date - auto calculated 5 business days from today {% endcomment %}
                 <div class="o-product__delivery-info">
                   <p class="f-body--em">
-                    ESTIMATED DELIVERY DATE: STARTING FROM TUESDAY FEBRUARY 3
+                    ESTIMATED DELIVERY DATE: STARTING FROM <span id="estimated-delivery-date"></span>
                   </p>
                 </div>
+                <script>
+                  (function() {
+                    var today = new Date();
+                    var daysAdded = 0;
+                    var date = new Date(today);
+                    while (daysAdded < 5) {
+                      date.setDate(date.getDate() + 1);
+                      var day = date.getDay();
+                      if (day !== 0 && day !== 6) daysAdded++;
+                    }
+                    var days = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+                    var months = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+                    var el = document.getElementById('estimated-delivery-date');
+                    if (el) el.textContent = days[date.getDay()] + ' ' + months[date.getMonth()] + ' ' + date.getDate();
+                  })();
+                </script>
 
                 {% comment %} Expandable Sections {% endcomment %}
                 <div class="o-product__info-sections">
