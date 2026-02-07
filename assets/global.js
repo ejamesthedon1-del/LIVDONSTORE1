@@ -910,15 +910,23 @@
       }
 
       try {
-        // Use the correct Shopify cart change API endpoint
-        const changeUrl = `${window.routes.cart_change_url}?line=${lineIndex}&quantity=0`;
-        console.log('Removing item via:', changeUrl);
+        // Use FormData for cart change endpoint
+        const formData = new FormData();
+        formData.append('line', lineIndex.toString());
+        formData.append('quantity', '0');
+        
+        // Use .js extension to ensure JSON response
+        const changeUrl = window.routes.cart_change_url.endsWith('.js')
+          ? window.routes.cart_change_url
+          : window.routes.cart_change_url + '.js';
+        
+        console.log('Removing item via:', changeUrl, 'line:', lineIndex);
         
         const response = await fetch(changeUrl, {
           method: 'POST',
+          body: formData,
           headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'X-Requested-With': 'XMLHttpRequest'
           }
         });
         
@@ -927,18 +935,28 @@
         const contentType = response.headers.get('content-type');
         let data;
 
+        // Handle response based on content type
         if (contentType && contentType.includes('application/json')) {
           data = await response.json();
         } else {
+          // Try to parse as JSON anyway
           const text = await response.text();
           try {
             data = JSON.parse(text);
           } catch {
+            // If not JSON, might be HTML error page
+            if (!response.ok) {
+              const errorMatch = text.match(/<title[^>]*>([^<]+)<\/title>/i) || 
+                                text.match(/error[^>]*>([^<]+)/i);
+              const errorMsg = errorMatch ? errorMatch[1] : `Error ${response.status}: ${response.statusText}`;
+              throw new Error(errorMsg);
+            }
             throw new Error('Invalid response format');
           }
         }
 
-        if (response.ok && !data.errors) {
+        // Check for success
+        if (response.ok && !data.errors && !data.description) {
           // Success - remove item from DOM
           if (itemEl) {
             itemEl.style.transition = 'opacity 0.3s';
@@ -959,11 +977,13 @@
             }, 300);
           }
         } else {
-          // Error
+          // Error from Shopify
           if (itemEl) {
             itemEl.style.opacity = '1';
           }
-          const errorMsg = data.description || data.message || 'Error removing item';
+          const errorMsg = data.description || data.message || 
+                          (data.errors ? JSON.stringify(data.errors) : null) ||
+                          `Error ${response.status}: ${response.statusText}`;
           showCartMessage(errorMsg, 'error');
         }
       } catch (error) {
@@ -971,7 +991,8 @@
         if (itemEl) {
           itemEl.style.opacity = '1';
         }
-        showCartMessage('Error removing item. Please try again.', 'error');
+        const errorMessage = error.message || 'Error removing item. Please try again.';
+        showCartMessage(errorMessage, 'error');
       } finally {
         isUpdating = false;
       }
