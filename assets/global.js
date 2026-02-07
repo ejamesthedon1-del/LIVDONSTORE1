@@ -2061,6 +2061,20 @@
     });
   }
 
+  // FAQ collapsible toggle
+  function initFaqToggle() {
+    const faqButtons = document.querySelectorAll('[data-faq-toggle]');
+    if (!faqButtons.length) return;
+
+    faqButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const answer = button.nextElementSibling;
+        if (!answer) return;
+        answer.classList.toggle('is-open');
+      });
+    });
+  }
+
   function initializeAll() {
     initMobileMenu();
     initSearch();
@@ -2081,6 +2095,7 @@
     initQuickAddModal(); // Initialize quick add modal
     // filterCheckoutButtons(); // Disabled - show all payment options
     updateCartCount(); // Load initial cart count
+    initFaqToggle(); // Initialize FAQ collapsible toggle
   }
 
   // Try multiple initialization strategies to ensure it runs
