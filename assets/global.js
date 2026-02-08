@@ -562,7 +562,10 @@
       formData.append('quantity', quantity.toString());
 
       try {
-        const response = await fetch(window.routes.cart_add_url, {
+        const cartAddUrl = window.routes.cart_add_url.endsWith('.js')
+          ? window.routes.cart_add_url
+          : window.routes.cart_add_url + '.js';
+        const response = await fetch(cartAddUrl, {
           method: 'POST',
           body: formData,
           headers: {
