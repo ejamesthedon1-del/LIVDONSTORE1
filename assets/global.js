@@ -997,12 +997,9 @@
       const submitBtn = e.submitter;
       console.log('Cart form submitted', { submitBtn, name: submitBtn?.name });
       
-      // If checkout button clicked, redirect to checkout
+      // If checkout button clicked, redirect to Shopify checkout
       if (submitBtn && submitBtn.name === 'checkout') {
-        // Update cart first, then redirect
-        await updateCartAjax();
-        // Redirect to checkout after update completes
-        window.location.href = window.routes.cart_url + '?checkout';
+        window.location.href = '/checkout';
         return;
       }
 
