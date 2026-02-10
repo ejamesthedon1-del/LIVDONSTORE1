@@ -1938,6 +1938,8 @@
     const categoryLinks = document.querySelectorAll('[data-category-filter]');
     const productGridSection = document.querySelector('[data-product-grid-section]');
     let productGrid = document.querySelector('[data-product-grid]');
+    const productCountEl = document.querySelector('[data-product-count]');
+    const sortSelect = document.querySelector('[data-sort-select]');
     
     if (!categoryLinks.length || !productGridSection) return;
 
@@ -1951,157 +1953,210 @@
     }
 
     let isLoading = false;
+    let currentProducts = []; // Store current products for sorting
+    let currentCollectionHandle = 'all';
+    let currentCollectionTitle = 'All';
 
+    function updateProductCount(count) {
+      if (productCountEl) {
+        productCountEl.textContent = count + (count === 1 ? ' ITEM' : ' ITEMS');
+      }
+    }
+
+    function sortProducts(products, sortBy) {
+      const sorted = [...products];
+      switch (sortBy) {
+        case 'price-ascending':
+          sorted.sort((a, b) => parseFloat(a.variants[0].price) - parseFloat(b.variants[0].price));
+          break;
+        case 'price-descending':
+          sorted.sort((a, b) => parseFloat(b.variants[0].price) - parseFloat(a.variants[0].price));
+          break;
+        case 'title-ascending':
+          sorted.sort((a, b) => a.title.localeCompare(b.title));
+          break;
+        case 'title-descending':
+          sorted.sort((a, b) => b.title.localeCompare(a.title));
+          break;
+        case 'created-descending':
+          sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          break;
+        default: // best-selling - keep original order
+          break;
+      }
+      return sorted;
+    }
+
+    function renderProducts(products) {
+      productGrid.innerHTML = '';
+
+      if (products.length === 0) {
+        productGrid.innerHTML = `
+          <li class="o-listing-grid__empty" style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;">
+            <p class="f-body" style="font-size: 1rem; color: #666;">
+              Sorry, there are no <strong>${currentCollectionTitle}</strong> items at this time. Check back soon!
+            </p>
+          </li>
+        `;
+        return;
+      }
+
+      products.forEach(product => {
+        const li = document.createElement('li');
+        li.className = 'o-listing-grid__item';
+        
+        const images = product.images || [];
+        let slidesHtml = '';
+        images.forEach((img, i) => {
+          const imgUrl = img.src;
+          slidesHtml += `
+            <a
+              class="m-tile-slider__slide ${i === 0 ? 'm-tile-slider__slide--active' : ''}"
+              data-i="${i + 1}"
+              aria-roledescription="slide"
+              aria-label="${i + 1} OF ${images.length}"
+              href="/products/${product.handle}"
+              data-tile-slide
+            >
+              <img
+                src="${imgUrl}"
+                alt="${img.alt || product.title}"
+                loading="${i === 0 ? 'eager' : 'lazy'}"
+                sizes="(min-width: 1680px) 15vw, (min-width: 1024px) 20vw, (min-width: 768px) 33.33vw, 50vw"
+              >
+            </a>
+          `;
+        });
+
+        let indicatorHtml = '';
+        if (images.length > 1) {
+          indicatorHtml = `
+            <div class="m-tile-slider__indicator" style="--i-width: ${100 / images.length}%" data-tile-indicator>
+              <span style="left: 0%" data-tile-indicator-bar></span>
+            </div>
+          `;
+        }
+
+        const variant = product.variants[0];
+        const price = variant ? (parseFloat(variant.price) / 1).toFixed(2) : '0.00';
+        const priceFormatted = `$${price}`;
+
+        const quickAddHtml = `
+          <button 
+            type="button" 
+            class="m-tile-slider__quick-add" 
+            data-quick-add
+            data-product-id="${product.id}"
+            data-product-handle="${product.handle}"
+            aria-label="Quick add ${product.title} to cart"
+          >
+            <span class="m-tile-slider__quick-add-icon">+</span>
+          </button>
+        `;
+
+        li.innerHTML = `
+          <div class="m-tile-slider" data-behavior="mTileSlider">
+            <div class="m-tile-slider__visual">
+              ${quickAddHtml}
+              <div class="m-tile-slider__controls">
+                ${indicatorHtml}
+              </div>
+              <div class="m-tile-slider__wrapper" role="group" data-tile-slider>
+                ${slidesHtml}
+              </div>
+            </div>
+            <a href="/products/${product.handle}" class="m-product-listing__meta">
+              <h2 class="m-product-listing__meta-title f-body">${product.title}</h2>
+              <p class="m-product-listing__meta-price f-body--em">
+                <span class="prices">
+                  <strong data-description="value" class="f-body--em">${priceFormatted} USD</strong>
+                </span>
+              </p>
+            </a>
+          </div>
+        `;
+        productGrid.appendChild(li);
+      });
+
+      initProductTileSlider();
+      initQuickAddModal();
+    }
+
+    async function loadCollection(collectionHandle, collectionTitle) {
+      if (isLoading) return;
+
+      currentCollectionHandle = collectionHandle;
+      currentCollectionTitle = collectionTitle;
+
+      isLoading = true;
+      productGrid.style.opacity = '0.5';
+      productGrid.style.transition = 'opacity 0.2s';
+
+      try {
+        const response = await fetch(`/collections/${collectionHandle}/products.json?limit=20`);
+        
+        if (!response.ok) {
+          throw new Error(`Collection not found: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        currentProducts = data.products || [];
+
+        updateProductCount(currentProducts.length);
+
+        // Apply current sort
+        const sortBy = sortSelect ? sortSelect.value : 'best-selling';
+        const sorted = sortProducts(currentProducts, sortBy);
+        renderProducts(sorted);
+      } catch (error) {
+        console.error('Error loading collection:', error);
+        currentProducts = [];
+        updateProductCount(0);
+        productGrid.innerHTML = `
+          <li class="o-listing-grid__empty" style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;">
+            <p class="f-body" style="font-size: 1rem; color: #666;">
+              Sorry, there are no <strong>${collectionTitle}</strong> items at this time. Check back soon!
+            </p>
+          </li>
+        `;
+      } finally {
+        isLoading = false;
+        productGrid.style.opacity = '1';
+      }
+    }
+
+    // Category link clicks
     categoryLinks.forEach(link => {
-      link.addEventListener('click', async (e) => {
+      link.addEventListener('click', (e) => {
         e.preventDefault();
-        if (isLoading) return;
         
         const collectionHandle = link.getAttribute('data-collection');
         const collectionTitle = link.getAttribute('data-collection-title') || collectionHandle;
         
         if (!collectionHandle) return;
 
-        // Update active state on all category links (both mobile and desktop)
+        // Update active state
         document.querySelectorAll('[data-category-filter]').forEach(l => {
           l.classList.remove('o-category-slider__link--active');
         });
-        // Activate all links with same collection handle
         document.querySelectorAll(`[data-category-filter][data-collection="${collectionHandle}"]`).forEach(l => {
           l.classList.add('o-category-slider__link--active');
         });
 
-        isLoading = true;
-        productGrid.style.opacity = '0.5';
-        productGrid.style.transition = 'opacity 0.2s';
+        // Reset sort to default
+        if (sortSelect) sortSelect.value = 'best-selling';
 
-
-        try {
-          // Fetch collection products via Shopify AJAX API
-          const response = await fetch(`/collections/${collectionHandle}/products.json?limit=20`);
-          
-          if (!response.ok) {
-            throw new Error(`Collection not found: ${response.status}`);
-          }
-          
-          const data = await response.json();
-          const products = data.products || [];
-
-          // Clear current grid
-          productGrid.innerHTML = '';
-
-          if (products.length === 0) {
-            // Show empty state message
-            productGrid.innerHTML = `
-              <li class="o-listing-grid__empty" style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;">
-                <p class="f-body" style="font-size: 1rem; color: #666;">
-                  Sorry, there are no <strong>${collectionTitle}</strong> items at this time. Check back soon!
-                </p>
-              </li>
-            `;
-          } else {
-            // Build product tiles from API data
-            products.forEach(product => {
-              const li = document.createElement('li');
-              li.className = 'o-listing-grid__item';
-              
-              // Build image slides
-              const images = product.images || [];
-              let slidesHtml = '';
-              images.forEach((img, i) => {
-                // Use image src directly - API returns full CDN URL
-                const imgUrl = img.src;
-                slidesHtml += `
-                  <a
-                    class="m-tile-slider__slide ${i === 0 ? 'm-tile-slider__slide--active' : ''}"
-                    data-i="${i + 1}"
-                    aria-roledescription="slide"
-                    aria-label="${i + 1} OF ${images.length}"
-                    href="/products/${product.handle}"
-                    data-tile-slide
-                  >
-                    <img
-                      src="${imgUrl}"
-                      alt="${img.alt || product.title}"
-                      loading="${i === 0 ? 'eager' : 'lazy'}"
-                      sizes="(min-width: 1680px) 15vw, (min-width: 1024px) 20vw, (min-width: 768px) 33.33vw, 50vw"
-                    >
-                  </a>
-                `;
-              });
-
-              // Image indicator
-              let indicatorHtml = '';
-              if (images.length > 1) {
-                indicatorHtml = `
-                  <div class="m-tile-slider__indicator" style="--i-width: ${100 / images.length}%" data-tile-indicator>
-                    <span style="left: 0%" data-tile-indicator-bar></span>
-                  </div>
-                `;
-              }
-
-              // Price
-              const variant = product.variants[0];
-              const price = variant ? (parseFloat(variant.price) / 1).toFixed(2) : '0.00';
-              const priceFormatted = `$${price}`;
-
-              // Quick add button
-              const quickAddHtml = `
-                <button 
-                  type="button" 
-                  class="m-tile-slider__quick-add" 
-                  data-quick-add
-                  data-product-id="${product.id}"
-                  data-product-handle="${product.handle}"
-                  aria-label="Quick add ${product.title} to cart"
-                >
-                  <span class="m-tile-slider__quick-add-icon">+</span>
-                </button>
-              `;
-
-              li.innerHTML = `
-                <div class="m-tile-slider" data-behavior="mTileSlider">
-                  <div class="m-tile-slider__visual">
-                    ${quickAddHtml}
-                    <div class="m-tile-slider__controls">
-                      ${indicatorHtml}
-                    </div>
-                    <div class="m-tile-slider__wrapper" role="group" data-tile-slider>
-                      ${slidesHtml}
-                    </div>
-                  </div>
-                  <a href="/products/${product.handle}" class="m-product-listing__meta">
-                    <h2 class="m-product-listing__meta-title f-body">${product.title}</h2>
-                    <p class="m-product-listing__meta-price f-body--em">
-                      <span class="prices">
-                        <strong data-description="value" class="f-body--em">${priceFormatted} USD</strong>
-                      </span>
-                    </p>
-                  </a>
-                </div>
-              `;
-              productGrid.appendChild(li);
-            });
-
-            // Re-initialize tile sliders and quick add for new tiles
-            initProductTileSlider();
-            initQuickAddModal();
-          }
-        } catch (error) {
-          console.error('Error loading collection:', error);
-          productGrid.innerHTML = `
-            <li class="o-listing-grid__empty" style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;">
-              <p class="f-body" style="font-size: 1rem; color: #666;">
-                Sorry, there are no <strong>${collectionTitle}</strong> items at this time. Check back soon!
-              </p>
-            </li>
-          `;
-        } finally {
-          isLoading = false;
-          productGrid.style.opacity = '1';
-        }
+        loadCollection(collectionHandle, collectionTitle);
       });
     });
+
+    // Sort change
+    if (sortSelect) {
+      sortSelect.addEventListener('change', () => {
+        const sorted = sortProducts(currentProducts, sortSelect.value);
+        renderProducts(sorted);
+      });
+    }
   }
 
   // FAQ collapsible toggle

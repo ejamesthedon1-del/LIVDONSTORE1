@@ -703,6 +703,62 @@ body {
   display: block;
 }
 
+/* Category Bar - menu + count + sort */
+.o-category-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.o-category-bar__left {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.o-category-bar__right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.o-category-bar__count {
+  font-size: 0.5625rem;
+  letter-spacing: 0.02em;
+  color: #666;
+  white-space: nowrap;
+}
+
+.o-category-bar__sort-select {
+  font-size: 0.5625rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  color: #000;
+  cursor: pointer;
+  padding: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23000'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right center;
+  padding-right: 14px;
+}
+
+.o-category-bar__sort-select:focus {
+  outline: none;
+}
+
+.o-category-bar__sort-select option {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
 .a-rich-text__inner {
   margin-top: 1rem;
 }
