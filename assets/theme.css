@@ -2131,14 +2131,14 @@ body {
 .o-product__header {
   width: 100%;
   max-width: 100%;
-  padding: 1.5rem 1rem;
+  padding: 1rem 1rem 0.25rem;
   overflow-x: hidden;
   box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
   .o-product__header {
-    padding: 2rem;
+    padding: 1.5rem 2rem 0.25rem;
   }
 }
 
@@ -2484,7 +2484,7 @@ body {
 .o-product__content {
   width: 100%;
   max-width: 100%;
-  padding: 1rem 1rem; /* Reduced top padding by 0.5rem to move selectors closer to price */
+  padding: 0.25rem 1rem 1rem;
   overflow-x: hidden;
   box-sizing: border-box;
 }
@@ -2497,8 +2497,7 @@ body {
 
 @media (min-width: 768px) {
   .o-product__content {
-    padding: 1.5rem 2rem; /* Reduced top padding by 0.5rem to move selectors closer to price */
-    padding-bottom: 2rem; /* Normal padding on desktop */
+    padding: 0.25rem 2rem 2rem;
   }
 }
 
