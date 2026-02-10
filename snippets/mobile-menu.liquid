@@ -72,16 +72,6 @@
 
     {% comment %} Utility Links {% endcomment %}
     <div class="o-sidebar-nav__utilities">
-      {% comment %} Search option in menu {% endcomment %}
-      <button type="button" class="a-btn a-btn--as-link o-sidebar-nav__utility-link o-sidebar-nav__search-toggle" data-menu-search-toggle>
-        SEARCH
-      </button>
-      <a href="{{ pages.store-locator.url | default: '#' }}" class="a-btn a-btn--as-link o-sidebar-nav__utility-link" data-menu-close>
-        STORE LOCATOR
-      </a>
-      <a href="{{ routes.account_login_url }}" class="a-btn a-btn--as-link o-sidebar-nav__utility-link" data-menu-close>
-        SIGN IN / REGISTER
-      </a>
       {% if cart.item_count > 0 %}
         <a href="{{ routes.cart_url }}" class="a-btn a-btn--as-link o-sidebar-nav__utility-link" data-menu-close>
           SHOPPING BAG ({{ cart.item_count }})
