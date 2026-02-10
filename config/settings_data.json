@@ -26,7 +26,8 @@
           "headline": "NEW COLLECTION \"ARCHIVE STUDIO 2026\"",
           "subtext": "",
           "button_text": "DISCOVER OUR NEW COLLECTION",
-          "button_link": ""
+          "button_link": "",
+          "slide_duration": 3
         }
       },
       "image-slider": {
