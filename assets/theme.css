@@ -2111,6 +2111,19 @@ body {
   overflow-x: hidden;
 }
 
+/* Product Shipping Timer */
+.o-product__shipping-timer {
+  text-align: center;
+  padding: 0.5rem 1rem;
+}
+
+.o-product__shipping-timer-text {
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  color: #000;
+  margin: 0;
+}
+
 /* Product Gallery */
 .o-product__gallery {
   width: 100%;

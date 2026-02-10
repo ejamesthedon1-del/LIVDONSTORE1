@@ -6,6 +6,11 @@
   <div class="a17-grid__right">
       <div class="home-main homepage">
         {% comment %} Product Section {% endcomment %}
+        {% comment %} Free Shipping Countdown Timer {% endcomment %}
+        <div class="o-product__shipping-timer">
+          <p class="o-product__shipping-timer-text">FREE SHIPPING ON ALL ORDERS FOR NEXT <span data-shipping-countdown></span></p>
+        </div>
+
         <section class="o-product product-detail" data-pid="{{ product.id }}">
           <div class="o-product__product">
             {% comment %} Product Gallery {% endcomment %}
