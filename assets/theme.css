@@ -831,6 +831,49 @@ body {
   }
 }
 
+/* Hero Slideshow */
+.o-hero-slideshow {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.o-hero-slideshow__slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 0;
+}
+
+.o-hero-slideshow__slide--active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.o-hero-slideshow__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.o-hero-slideshow__link img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .o-hero-slideshow {
+    aspect-ratio: 16 / 9;
+  }
+}
+
 .m-media {
   position: relative;
 }

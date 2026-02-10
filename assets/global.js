@@ -1845,6 +1845,49 @@
     });
   }
 
+  // Hero Slideshow - subtle crossfade auto-advance
+  function initHeroSlideshow() {
+    const slideshow = document.querySelector('[data-hero-slideshow]');
+    if (!slideshow) return;
+
+    const slides = slideshow.querySelectorAll('[data-hero-slide]');
+    if (slides.length <= 1) return;
+
+    let currentIndex = 0;
+    let intervalId = null;
+
+    // Read duration from section settings (embedded as data attr), default 4s
+    const duration = (parseInt(slideshow.getAttribute('data-slide-duration')) || 4) * 1000;
+
+    function goToSlide(index) {
+      slides[currentIndex].classList.remove('o-hero-slideshow__slide--active');
+      currentIndex = index % slides.length;
+      slides[currentIndex].classList.add('o-hero-slideshow__slide--active');
+    }
+
+    function nextSlide() {
+      goToSlide(currentIndex + 1);
+    }
+
+    function startAutoplay() {
+      if (intervalId) return;
+      intervalId = setInterval(nextSlide, duration);
+    }
+
+    function stopAutoplay() {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+
+    // Pause on hover
+    slideshow.addEventListener('mouseenter', stopAutoplay);
+    slideshow.addEventListener('mouseleave', startAutoplay);
+
+    startAutoplay();
+  }
+
   function initCategoryTimer() {
     // Try multiple times to find the element (in case DOM isn't ready)
     let timerElement = document.querySelector('[data-timer-display]');
@@ -2085,6 +2128,7 @@
     initSortDropdown();
     initNotifyMe();
     initCategoryTimer();
+    initHeroSlideshow(); // Initialize hero slideshow
     initCategoryFilter(); // Initialize category menu filtering on product grid
     // initProductDrawer(); // Disabled - sticky footer removed
     // enhanceProductDrawer(); // Disabled - sticky footer removed
