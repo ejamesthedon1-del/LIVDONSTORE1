@@ -788,7 +788,7 @@ body {
 
 /* CELINE Blocks and Tetris Layout */
 .o-blocks {
-  padding: 1rem 1rem;
+  padding: 0.25rem 1rem;
 }
 
 @media (min-width: 768px) {
@@ -834,9 +834,16 @@ body {
 /* Hero Slideshow */
 .o-hero-slideshow {
   position: relative;
-  width: 100%;
+  width: 100vw;
+  margin-left: calc(-1rem);
   aspect-ratio: 4 / 5;
   overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .o-hero-slideshow {
+    margin-left: calc(-2rem);
+  }
 }
 
 .o-hero-slideshow__slide {
