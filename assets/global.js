@@ -1845,6 +1845,33 @@
     });
   }
 
+  // Free Shipping Countdown - 72 hours rolling
+  function initShippingCountdown() {
+    const el = document.querySelector('[data-shipping-countdown]');
+    if (!el) return;
+
+    // Use a rolling 72-hour window based on a fixed anchor
+    // Resets every 72 hours from a fixed point so all users see the same timer
+    const anchorMs = new Date('2026-01-01T00:00:00').getTime();
+    const windowMs = 72 * 60 * 60 * 1000;
+
+    function update() {
+      const now = Date.now();
+      const elapsed = (now - anchorMs) % windowMs;
+      const remaining = windowMs - elapsed;
+
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+      const pad = (n) => String(n).padStart(2, '0');
+      el.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+    }
+
+    update();
+    setInterval(update, 1000);
+  }
+
   // Hero Slideshow - subtle crossfade auto-advance
   function initHeroSlideshow() {
     const slideshow = document.querySelector('[data-hero-slideshow]');
@@ -2184,6 +2211,7 @@
     initNotifyMe();
     initCategoryTimer();
     initHeroSlideshow(); // Initialize hero slideshow
+    initShippingCountdown(); // Initialize free shipping countdown
     initCategoryFilter(); // Initialize category menu filtering on product grid
     // initProductDrawer(); // Disabled - sticky footer removed
     // enhanceProductDrawer(); // Disabled - sticky footer removed
