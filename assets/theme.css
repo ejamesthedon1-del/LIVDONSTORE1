@@ -1178,6 +1178,20 @@ body {
   }
 }
 
+/* Free shipping message */
+.o-hero__free-shipping {
+  text-align: center;
+  padding: 0.5rem 0;
+  margin-top: 0.75rem;
+}
+
+.o-hero__free-shipping-text {
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  color: #000;
+  margin: 0;
+}
+
 /* Hero: On mobile, hide headline and button; show category menu (TOPS, BOTTOMS, 1 OF 1) */
 .o-hero__category-menu--mobile-only {
   display: none;
