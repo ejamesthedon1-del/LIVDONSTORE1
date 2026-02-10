@@ -2093,7 +2093,7 @@
       productGrid.style.transition = 'opacity 0.2s';
 
       try {
-        const response = await fetch(`/collections/${collectionHandle}/products.json?limit=20`);
+        const response = await fetch(`/collections/${collectionHandle}/products.json?limit=20&sort_by=manual`);
         
         if (!response.ok) {
           throw new Error(`Collection not found: ${response.status}`);
