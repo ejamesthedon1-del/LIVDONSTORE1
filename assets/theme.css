@@ -788,7 +788,7 @@ body {
 
 /* CELINE Blocks and Tetris Layout */
 .o-blocks {
-  padding: 1rem 1rem;
+  padding: 0.25rem 1rem;
 }
 
 @media (min-width: 768px) {
