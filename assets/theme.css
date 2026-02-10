@@ -703,18 +703,14 @@ body {
   display: block;
 }
 
-/* Category Bar - menu + count + sort */
-.o-category-bar {
+/* Category Bar - info row below menu */
+.o-category-bar__info {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
   width: 100%;
-}
-
-.o-category-bar__left {
-  flex-shrink: 0;
-  overflow-x: auto;
+  margin-top: 0.5rem;
+  padding: 0 1rem;
 }
 
 .o-category-bar__count {
